@@ -2,8 +2,8 @@
 title: ASP.NET Core Http Security Header
 author: Murat Süzen
 date: 2022-05-15 11:33:00 -500
-categories: [NET CORE]
-tags: [.netcore]
+categories: [.NET 6.0,.NET CORE, ASP.NET CORE]
+tags: [.net 6.0,.net core,asp.net core]
 math: true
 mermaid: true
 image:
