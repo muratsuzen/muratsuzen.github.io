@@ -11,7 +11,6 @@ image:
   width: 800
   height: 500
   alt: Pieter Brueghel, The Tower of Babel (1563)
-
 ---
 
 Merhabalar bu makalede ASP.NET Core projesinde Redis ile distributed cache yapısını inceleyeceğiz. Öncelikle Redis hakkında bilgi sahibi olmak isterseniz Redis Nedir? Ne İşe Yarar? Nerelerde Kullanılır? konusunu incelediğim makalemi okuyabilirsiniz. Öncelikle bir netcorerediscache isminde ASP.NET Core Web API projesi oluşturuyorum. Projeye `Microsoft.Extensions.Caching.StackExchangeRedis` paketini ekliyorum. 
