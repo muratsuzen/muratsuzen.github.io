@@ -7,10 +7,10 @@ tags: [asp.net core,net 6.0,middleware]
 math: true
 mermaid: true
 image:
-  path: /assets/img/stocks/john-fowler.jpg
+  path: /assets/img/stocks/Ilya_Repin_Ceremonial_Sitting_of_the_State_Council_on_7_May_1901_Marking_the_Centenary_of_its_Foundation.jpg
   width: 800
   height: 500
-  alt: Photo by John Fowler on Unsplash
+  alt: İlya Repin, Ceremonial Sitting of the State Council on 7 May 1901 Marking the Centenary of its Foundation (1903)
 ---
 
 Merhabalar, bu makalede ASP.NET Core'da ara katman (Middleware) yapısını inceleceğiz. ASP.NET Core'da ara katman (Middleware) yapısı, uygulama çalıştığında bir istemciden (Client) gelen taleplerin (Request) istemciye geri döndürülmesi (Response) sürecindeki işlemleri gerçekleştirmek ve sürece yön vermek için kullanılmaktadır. 
