@@ -11,9 +11,13 @@
   icon: 'fab fa-linkedin'   # icons powered by <https://fontawesome.com/>
   url:  'https://www.linkedin.com/in/muratsuzen/' 
 -
-  type: email
-  icon: 'fas fa-envelope'
-  noblank: true            # open link in current tab
+  type: medium
+  icon: 'fab fa-medium'   # icons powered by <https://fontawesome.com/>
+  url:  'https://muratsuzen.medium.com/' 
+# -
+#   type: email
+#   icon: 'fas fa-envelope'
+#   noblank: true            # open link in current tab
 -
   type: rss
   icon: 'fas fa-rss'
