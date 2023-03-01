@@ -122,10 +122,10 @@ GEM
     webrick (1.8.1)
     yell (2.2.2)
 
-PLATFORMS
-  unknown
+PLATFORMS 
   x64-mingw-ucrt
   x86-mingw32
+  ruby 
   x86_64-linux
 
 DEPENDENCIES
