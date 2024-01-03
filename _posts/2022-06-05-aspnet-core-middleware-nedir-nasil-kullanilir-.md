@@ -8,6 +8,9 @@ math: true
 mermaid: true
 ---
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8591605056982916"
+     crossorigin="anonymous"></script>
+
 Merhabalar, bu makalede ASP.NET Core'da ara katman (Middleware) yapısını inceleceğiz. ASP.NET Core'da ara katman (Middleware) yapısı, uygulama çalıştığında bir istemciden (Client) gelen taleplerin (Request) istemciye geri döndürülmesi (Response) sürecindeki işlemleri gerçekleştirmek ve sürece yön vermek için kullanılmaktadır. 
 
 ![Request Delegate Pipeline](/assets/img/posts/request-delegate-pipeline.png){: .shadow width="800" height="400" }
