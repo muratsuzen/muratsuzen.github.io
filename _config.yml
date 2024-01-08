@@ -10,7 +10,7 @@ baseurl: ''
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
 # otherwise, the layout language will use the default value of 'en'.
-lang: tr-TR
+lang: en
 
 # Additional parameters for datetime localization, optional. › https://github.com/iamkun/dayjs/tree/dev/src/locale
 prefer_datetime_locale: tr
@@ -21,9 +21,9 @@ timezone: Europe/Istanbul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Murat Süzen                          # the main title
+title: Murat Suzen                          # the main title
 
-tagline: Evli, bir çocuk babası, blogger ve alaylı bir yazılımcı.   # it will display as the sub-title
+tagline: Married, one child, blogger is a software developer.
 
 description: >-                        # used by seo meta and the atom feed
   .Net Core, Angular, T-SQL, ASP.NET Core, Typescript
@@ -40,7 +40,7 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Murat Süzen
+  name: Murat Suzen
   email: muratsuzen@gmail.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
@@ -105,7 +105,7 @@ comments:
     category_id: DIC_kwDOHzYwF84CQwaD
     mapping: og:title
     input_position: top   # optional, default to 'bottom'
-    lang: tr
+    lang: en
 
 # Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
 assets:

@@ -1,9 +1,7 @@
 ---
-title: Hakkımda
+title: About Me
 icon: fas fa-info-circle
 order: 4
 ---
 
-2010 yılından itibaren `Microsoft .NET` uygulamaları geliştirmekteyim. Ayrıca .Net uygulamaları yanı sıra `Monotouch-Xamarin(IOS)` ile uygulamalar da geliştirdim. Şimdilerde LOGO ve PaperWork ürünleri ile entegreli .NET uygulamaları geliştirmekteyim. Bir `C Sharp (C#)` hayranı olduğumu da belirtmek isterim.
-
-Yazılım dünyasında sürekli yenilikleri takip edip, hem hobi hemde mesleki kazanım sağlaması açısından öğrenmeye devam ediyorum. Okuduğum makaleler, katıldığım seminer ve eğitimler ile öğrendiklerimi bloğumda sizlerle paylaşmaktan keyif alıyorum. Paylaştığım yazılar ile ilgili `olumlu/olumsuz` geri dönüşlerinizi beklerim.
+I constantly follow the innovations in the software world and continue to learn for both hobby and professional gain. I enjoy sharing with you on my blog what I have learned from the articles I have read, the seminars and trainings I have attended. I expect your `positive/negative` feedback about the articles I share.
