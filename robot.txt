@@ -1,5 +1,5 @@
-User-agent: *
-
-Disallow: /norobots/
-
 Sitemap: https://muratsuzen.github.io/sitemap.xml
+
+User-agent: *
+Allow: /posts/
+Disallow: /tags/
