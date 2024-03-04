@@ -1,8 +1,4 @@
 User-Agent: *
 Allow: 
-Disallow: /tags
-Disallow: /categories
-Disallow: /archives
-Disallow: /about
 
 Sitemap: https://muratsuzen.github.io/sitemap.xml
