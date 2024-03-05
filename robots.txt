@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: 
+
+Sitemap: https://muratsuzen.github.io/sitemap.xml
