@@ -83,7 +83,7 @@ theme_mode:   [dark]
 img_cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: #https://pbs.twimg.com/profile_images/1653039851950813184/sW1qEk8M_400x400.jpg
+avatar: https://muratsuzen.github.io/assets/img/favicons/android-chrome-192x192.png#google_vignette
 
 # boolean type, the global switch for ToC in posts.
 toc: true
