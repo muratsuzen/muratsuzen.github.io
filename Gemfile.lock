@@ -129,10 +129,8 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  ffi (< 1.17)
   html-proofer (~> 3.18)
   jekyll-theme-chirpy (~> 5.2, >= 5.3.2)
-  sass-embedded (< 1.55)
   tzinfo (~> 1.2)
   tzinfo-data
   wdm (~> 0.1.1)
