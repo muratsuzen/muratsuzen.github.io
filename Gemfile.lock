@@ -12,10 +12,9 @@ GEM
       ffi (>= 1.15.0)
     eventmachine (1.2.7)
     eventmachine (1.2.7-x86-mingw32)
-    ffi (1.17.1)
-    ffi (1.17.1-x64-mingw-ucrt)
-    ffi (1.17.1-x86-mingw32)
-    ffi (1.17.1-x86_64-linux-gnu)
+    ffi (1.16.3)
+    ffi (1.16.3-x64-mingw-ucrt)
+    ffi (1.16.3-x86-mingw32)
     forwardable-extended (2.6.0)
     google-protobuf (3.22.0)
     google-protobuf (3.22.0-x64-mingw-ucrt)
@@ -130,6 +129,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  ffi (< 1.17)
   html-proofer (~> 3.18)
   jekyll-theme-chirpy (~> 5.2, >= 5.3.2)
   tzinfo (~> 1.2)
