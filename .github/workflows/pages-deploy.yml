@@ -23,7 +23,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-          bundler-cache: true
+          bundler-cache: false  # ⚠️ cache'i kapatıyoruz, eski sistem sürümü sorun çıkarıyor
 
       - name: Update RubyGems
         run: gem update --system
