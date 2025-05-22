@@ -1,8 +1,8 @@
-name: Daily Blog Auto Commit
+name: Daily Blog Auto Post
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # Her gün sabah 06:00 TR
+    - cron: '37 21 * * *'  # Her gün saat 00:37 TR (21:37 UTC)
   workflow_dispatch:
 
 jobs:
