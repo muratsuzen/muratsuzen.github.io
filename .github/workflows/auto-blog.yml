@@ -2,7 +2,7 @@ name: Auto Blog Post with OpenAI
 
 on:
   schedule:
-    - cron: '7 22 * * *'  # Her gün saat 01:07 TR (UTC 22:07)
+    - cron: '15 22 * * *'  # Her gün saat 01:15 TR (22:15 UTC)
   workflow_dispatch:
 
 jobs:
