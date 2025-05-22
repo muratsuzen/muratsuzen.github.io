@@ -2,7 +2,7 @@ name: Daily Blog Auto Post
 
 on:
   schedule:
-    - cron: '37 21 * * *'  # Her gün saat 00:37 TR (21:37 UTC)
+    - cron: '40 21 * * *'  # Her gün saat 00:37 TR (21:37 UTC)
   workflow_dispatch:
 
 jobs:
