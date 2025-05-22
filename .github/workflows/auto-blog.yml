@@ -1,0 +1,44 @@
+name: Daily Blog Auto Post
+
+on:
+  schedule:
+    - cron: '0 7 * * *' # Her gün sabah 10:00'da (TR saatiyle)
+  workflow_dispatch:
+
+jobs:
+  post-blog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create daily blog post
+        run: |
+          mkdir -p _posts
+          FILE_NAME="_posts/$(date '+%Y-%m-%d')-auto-post.md"
+          echo "---" > $FILE_NAME
+          echo "title: \"Auto Blog Post for $(date '+%Y-%m-%d')\"" >> $FILE_NAME
+          echo "author: Murat Süzen" >> $FILE_NAME
+          echo "date: $(date '+%Y-%m-%d %H:%M:%S') +0300" >> $FILE_NAME
+          echo "categories: [Software, Automation]" >> $FILE_NAME
+          echo "tags: [auto, daily, markdown]" >> $FILE_NAME
+          echo "math: false" >> $FILE_NAME
+          echo "mermaid: false" >> $FILE_NAME
+          echo "---" >> $FILE_NAME
+          echo "" >> $FILE_NAME
+          echo "This is an automatically generated blog post. 🚀" >> $FILE_NAME
+
+      - name: Commit and push
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git add .
+          git commit -m "📝 Auto post for $(date '+%Y-%m-%d')"
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
