@@ -1,12 +1,12 @@
-name: Daily Blog Auto Post
+name: Daily Blog Auto Commit
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # Her gün sabah 06:00 (TR)
+    - cron: '0 3 * * *'  # Her gün sabah 06:00 TR
   workflow_dispatch:
 
 jobs:
-  post-blog:
+  commit-blog:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,31 +19,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Create daily blog post
-        run: |
-          mkdir -p _posts
-
-          TITLE="Understanding Dependency Injection in .NET"
-          SLUG=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g')
-          DATE=$(date '+%Y-%m-%d')
-          FILE_NAME="_posts/${DATE}-${SLUG}.md"
-
-          echo "---" > "$FILE_NAME"
-          echo "title: \"$TITLE\"" >> "$FILE_NAME"
-          echo "author: Murat Süzen" >> "$FILE_NAME"
-          echo "date: $(date '+%Y-%m-%d %H:%M:%S') +0300" >> "$FILE_NAME"
-          echo "categories: [Software, .NET]" >> "$FILE_NAME"
-          echo "tags: [dependency injection, dotnet, csharp]" >> "$FILE_NAME"
-          echo "math: false" >> "$FILE_NAME"
-          echo "mermaid: false" >> "$FILE_NAME"
-          echo "---" >> "$FILE_NAME"
-          echo "" >> "$FILE_NAME"
-          echo "Dependency Injection (DI) is a software design pattern that promotes loose coupling and testability in .NET applications..." >> "$FILE_NAME"
-
-      - name: Commit and push
+      - name: Commit and push generated blog post
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git add .
-          git commit -m "📝 Auto post: $TITLE"
+          git add _posts/*.md
+          git commit -m "📝 Auto blog post for $(date '+%Y-%m-%d')" || echo "No changes to commit"
           git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
