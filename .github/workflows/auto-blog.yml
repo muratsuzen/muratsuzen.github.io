@@ -28,37 +28,37 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python - <<EOF
-import openai
-from datetime import datetime
-import re
-import os
+          import openai
+          from datetime import datetime
+          import re
+          import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+          openai.api_key = os.getenv("OPENAI_API_KEY")
 
-date_str = datetime.now().strftime("%Y-%m-%d")
-timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+          date_str = datetime.now().strftime("%Y-%m-%d")
+          timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-title_prompt = "Give me a trending software development blog post title for today."
-title_response = openai.ChatCompletion.create(
-    model="gpt-4",
-    messages=[{"role": "user", "content": title_prompt}],
-    temperature=0.8
-)
-title = title_response["choices"][0]["message"]["content"].strip()
-slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
-filename = f"_posts/{date_str}-{slug}.md"
+          title_prompt = "Give me a trending software development blog post title for today."
+          title_response = openai.ChatCompletion.create(
+              model="gpt-4",
+              messages=[{"role": "user", "content": title_prompt}],
+              temperature=0.8
+          )
+          title = title_response["choices"][0]["message"]["content"].strip()
+          slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+          filename = f"_posts/{date_str}-{slug}.md"
 
-content_prompt = f"Write a detailed software development blog post with at least 1000 words. Title: '{title}'. Include practical examples, clear explanations, and code snippets if applicable. Format in markdown."
-content_response = openai.ChatCompletion.create(
-    model="gpt-4",
-    messages=[{"role": "user", "content": content_prompt}],
-    temperature=0.7
-)
-content = content_response["choices"][0]["message"]["content"].strip()
+          content_prompt = f"Write a detailed software development blog post with at least 1000 words. Title: '{title}'. Include practical examples, clear explanations, and code snippets if applicable. Format in markdown."
+          content_response = openai.ChatCompletion.create(
+              model="gpt-4",
+              messages=[{"role": "user", "content": content_prompt}],
+              temperature=0.7
+          )
+          content = content_response["choices"][0]["message"]["content"].strip()
 
-os.makedirs("_posts", exist_ok=True)
-with open(filename, 'w') as f:
-    f.write(f\"\"\"---
+          os.makedirs("_posts", exist_ok=True)
+          with open(filename, 'w') as f:
+              f.write(f\"\"\"---
 title: "{title}"
 author: Murat Süzen
 date: {timestamp} +0300
@@ -67,7 +67,7 @@ categories: [Software, Development]
 
 {content}
 \"\"\")
-EOF
+          EOF
 
       - name: Commit and push
         run: |
