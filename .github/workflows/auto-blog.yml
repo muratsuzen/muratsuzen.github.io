@@ -58,15 +58,13 @@ jobs:
 
           os.makedirs("_posts", exist_ok=True)
           with open(filename, 'w') as f:
-              f.write(f"""---
-title: "{title}"
-author: Murat Süzen
-date: {timestamp} +0300
-categories: [Software, Development]
----
-
-{content}
-""")
+              f.write("---\n")
+              f.write(f'title: "{title}"\n')
+              f.write("author: Murat Süzen\n")
+              f.write(f"date: {timestamp} +0300\n")
+              f.write("categories: [Software, Development]\n")
+              f.write("---\n\n")
+              f.write(content)
           EOF
 
       - name: Commit and push
