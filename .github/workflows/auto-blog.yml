@@ -21,7 +21,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install OpenAI SDK
-        run: pip install openai
+        run: pip install openai==0.28
 
       - name: Generate blog post using OpenAI
         env:
