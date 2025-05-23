@@ -2,7 +2,7 @@ name: Auto Blog Post with OpenAI
 
 on:
   schedule:
-    - cron: '15 22 * * *'  # Her gün saat 01:15 TR (22:15 UTC)
+    - cron: '45 10 * * *'  # Her gün 13:45 TR saatiyle (10:45 UTC)
   workflow_dispatch:
 
 jobs:
@@ -35,11 +35,8 @@ jobs:
 
           openai.api_key = os.getenv("OPENAI_API_KEY")
 
-          # Tarih ve saat bilgisi
           date_str = datetime.now().strftime("%Y-%m-%d")
           timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-          # Başlık üretimi
           title_prompt = "Give me a trending software development blog post title for today."
           title_response = openai.ChatCompletion.create(
               model="gpt-4",
@@ -50,7 +47,6 @@ jobs:
           slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
           filename = f"_posts/{date_str}-{slug}.md"
 
-          # İçerik üretimi
           content_prompt = f"Write a detailed software development blog post with at least 1000 words. Title: '{title}'. Include practical examples, clear explanations, and code snippets if applicable. Format in markdown."
           content_response = openai.ChatCompletion.create(
               model="gpt-4",
@@ -59,10 +55,22 @@ jobs:
           )
           content = content_response["choices"][0]["message"]["content"].strip()
 
-          # Front matter ve içerik birleştirme
-          front_matter = f'''---
+          with open(filename, 'w') as f:
+              f.write(f'''---
 title: "{title}"
 author: Murat Süzen
 date: {timestamp} +0300
 categories: [Software, Development]
-ta
+---
+
+{content}
+''')
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add _posts/
+          git commit -m "New blog post for $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
