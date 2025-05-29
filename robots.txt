@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://muratsuzen.github.io/posts.xml
