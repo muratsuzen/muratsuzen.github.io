@@ -4,4 +4,4 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-I constantly follow the innovations in the software world and continue to learn for both hobby and professional gain. I enjoy sharing with you on my blog what I have learned from the articles I have read, the seminars and trainings I have attended. I expect your `positive/negative` feedback about the articles I share.
+Yazılım dünyasındaki yenilikleri sürekli takip ediyor, hem hobi hem de profesyonel gelişim için öğrenmeye devam ediyorum. Okuduğum makalelerden, katıldığım seminer ve eğitimlerden öğrendiklerimi bloğumda sizinle paylaşmaktan keyif alıyorum. Paylaştığım makaleler hakkında `olumlu/olumsuz` geri bildirimlerinizi bekliyorum.
