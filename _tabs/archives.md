@@ -1,7 +1,6 @@
 ---
 layout: archives
-title: Archive
+title: Arşiv
 icon: fas fa-archive
 order: 3
 ---
-

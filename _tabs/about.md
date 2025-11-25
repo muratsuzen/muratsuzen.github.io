@@ -1,5 +1,5 @@
 ---
-title: About Me
+title: Hakkımda
 icon: fas fa-info-circle
 order: 4
 ---
