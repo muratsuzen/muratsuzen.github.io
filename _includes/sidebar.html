@@ -25,6 +25,12 @@
                     <span>{{ site.data.locales[include.lang].tabs.home | upcase }}</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="https://muratsuzen.github.io/en/" class="nav-link">
+                    <i class="fa fa-language"></i>
+                    <span>ENGLISH</span>
+                </a>
+            </li>
             <!-- the real tabs -->
             {% for tab in site.tabs %}
             <li class="nav-item{% if tab.url == page.url %}{{ " active" }}{% endif %}">
