@@ -2,7 +2,7 @@
 title: Building an ESP32 GPS Tracker with SIM800, WiFi, and AT Command Integration
 author: Murat Süzen
 date: 2025-05-10 02:00:00
-categories: [ESP32, IoT, GPS, SIM800]
+categories: [IoT, GPS Tracker]
 tags: [esp32, gps tracker, sim800, wifi, at commands, telemetry]
 math: false
 mermaid: false
@@ -20,6 +20,7 @@ In this article, we explore a robust ESP32-based GPS tracking system that integr
 ## System Overview
 
 The ESP32 runs firmware that does the following:
+
 - Continuously reads GPS data (latitude, longitude, speed, time).
 - Stores data points in a local log (`/gpslog.txt`).
 - Every 10 seconds, sends the collected data to a remote telemetry service over the internet, using either SIM800 (GPRS) or WiFi.
@@ -29,12 +30,14 @@ The ESP32 runs firmware that does the following:
 
 ## Internet Connection Modes
 
-✅ **SIM800 Mode:**  
-- Initializes GPRS (`AT+SAPBR`) and sends HTTP requests with AT commands.  
-- Retrieves and runs remote commands via `/api/TelemetryData/NextCommand/{DEVICE_ID}`.  
+✅ **SIM800 Mode:**
+
+- Initializes GPRS (`AT+SAPBR`) and sends HTTP requests with AT commands.
+- Retrieves and runs remote commands via `/api/TelemetryData/NextCommand/{DEVICE_ID}`.
 - Sends collected GPS telemetry via HTTP POST.
 
-✅ **WiFi Mode:**  
+✅ **WiFi Mode:**
+
 - Connects to a local WiFi network using configured SSID and password.
 - Uses `WiFiClient` to connect to the service IP and port.
 - Dynamically switches between WiFi or SIM800 via AT commands.
@@ -53,10 +56,12 @@ The ESP32 runs firmware that does the following:
 ## Dynamic Configuration with AT Commands
 
 The system accepts AT commands over:
+
 - **Serial input** (e.g., `AT+SETID=NEWID`).
 - **Remote service** (via HTTP GET).
 
 Supported commands:
+
 - `AT+SETID`, `AT+GETID`: manage device ID.
 - `AT+SETADDR`, `AT+GETADDR`: set or get the telemetry service IP and port.
 - `AT+SETMODE=WIFI` or `AT+SETMODE=SIM800`: switch internet modes.

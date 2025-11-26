@@ -2,11 +2,12 @@
 title: Using Multiple DbContext on .NET 6 Web API With Repository Pattern
 author: Murat Süzen
 date: 2024-01-07 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,repository pattern,dbcontext,net 6.0]
+categories: [ASP.NET Core, Design Patterns]
+tags: [asp.net core, web api, repository pattern, dbcontext, net 6.0]
 math: true
 mermaid: true
 ---
+
 Hello, I this article, I will show how to use of multiple DbContext in an ASP.NET Web API (.NET 6.0) project. We will connect to 2 different databases by changing the DbContext. Now let’s create ASP.NET Web API (.NET 6) project. Secondly, we will install the EntityFramework packages.
 
 ```shell
@@ -26,7 +27,7 @@ public class BaseContext : DbContext
 {
     public BaseContext(DbContextOptions options): base(options)
     {
-        
+
     }
 }
 ```
@@ -34,6 +35,7 @@ public class BaseContext : DbContext
 We will update DbOneContext and DbTwoContext concrete classes which inherits BaseContext.
 
 DbOneContext:
+
 ```csharp
 using Microsoft.EntityFrameworkCore;
 
@@ -49,6 +51,7 @@ public class DbOneContext : BaseContext
 ```
 
 DbTwoContext:
+
 ```csharp
 using Microsoft.EntityFrameworkCore;
 
@@ -116,7 +119,7 @@ public class BaseContext : DbContext
 {
     public BaseContext(DbContextOptions options): base(options)
     {
-        
+
     }
 
     public DbSett<Book> Books { get; set; }
@@ -304,12 +307,14 @@ namespace MultipleDbContext.Controllers
 We select the dbContext with the contextName parameter. We will do CRUD operations with BookRepository. After creating the controller, we will create the DbOne and DbTwo databases with Migration. Since there are multiple DbContext files, it is necessary to specify which one to create in the migration process.
 
 DbOneContext — Migration:
+
 ```shell
 Add-Migration -Context DbOneContext
 Update-Database -Context DbOneContext
 ```
 
 DbTwoContext — Migration:
+
 ```shell
 Add-Migration -Context DbTwoContext
 Update-Database -Context DbTwoContext
@@ -337,5 +342,3 @@ _Test Postman_
 ![Test Postman](/assets/img/posts/multiple_dbcontext_6.png)
 
 You can [**download**](https://github.com/muratsuzen/MultipleDbContext.git) the project here. Please let me know if there are typos in my post.
-
-

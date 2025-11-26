@@ -2,14 +2,17 @@
 title: Using API Key Authorization with Middleware and Attribute on ASP.NET Core Web API
 author: Murat Süzen
 date: 2024-01-08 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,repository pattern,dbcontext,net 6.0,middleware]
+categories: [ASP.NET Core, Middlewares]
+tags:
+  [asp.net core, web api, repository pattern, dbcontext, net 6.0, middleware]
 math: true
 mermaid: true
 ---
+
 Hello, in this article, we will API Key authorization on ASP.NET Core Web API with middleware and attribute. We will create an ASP.NET Core Web API project named ApiKeyAuthentication.
 
 ## Using Middleware
+
 We add a Middlewares folder to the project and add a class called ApiKeyMiddleware.
 
 ```csharp
@@ -46,6 +49,7 @@ namespace ApiKeyAuthentication.Middlewares
     }
 }
 ```
+
 ApiKeyMiddleware.cs
 
 When we examine the code, we check the X-API-KEY in HttpContext Headers. If there is a value, we compare it with the X-API-KEY value in appsettings. If the value is true, we continue the process.
@@ -107,8 +111,8 @@ app.MapControllers();
 
 app.Run();
 ```
-Program.cs
 
+Program.cs
 
 Here we should pay attention to the swagger configuration. If we want to send api key with Swagger, we configure AddSecurityDefinition and AddSecurityRequirement in the AddSwaggerGen method.
 
@@ -124,9 +128,11 @@ Here we should pay attention to the swagger configuration. If we want to send ap
   "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ=="
 }
 ```
+
 appsettings.json
 
 ## Using Atrribute
+
 We create a folder named Attributes and create a class called ApiKey Attribute.
 
 ```csharp
@@ -158,6 +164,7 @@ namespace ApiKeyAuthentication.Attributes
     }
 }
 ```
+
 ApiKeyAttribute.cs
 
 As we did in the Middleware class, we continue the process after reaching the api key value in the HttpContext Header and verifying it.**[AttributeUsage]** is the part we should pay attention to here. With this attribute, we set in which parts of the class our class can be used.
@@ -199,6 +206,7 @@ namespace ApiKeyAuthentication.Controllers
     }
 }
 ```
+
 WeatherForecastController.cs
 
 _Test Postman_
@@ -213,7 +221,4 @@ _Test Postman_
 ![Test Postman](/assets/img/posts/apikey-middleware3.png)
 _Test Postman_
 
-
 You can [**download**](https://github.com/muratsuzen/ApiKeyAuthentication.git) the project here. Please let me know if there are typos in my post.
-
-

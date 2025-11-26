@@ -2,8 +2,8 @@
 title: PostSharp Nedir? Nasıl Kullanılır?
 author: Murat Süzen
 date: 2021-02-01 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,postsharp]
+categories: [ASP.NET Core]
+tags: [asp.net core, postsharp]
 math: true
 mermaid: true
 ---
@@ -64,8 +64,7 @@ class Program
 }
 ```
 
-Yukarıdaki `OnMethodBoundaryAspect` sınıfına ilişkin kendi projelerimde kullanmış olduğum SecuredOperation örneğini inceleyelim. *Not: Kullanmış olduğum versiyon : v4.2.17.0*
-
+Yukarıdaki `OnMethodBoundaryAspect` sınıfına ilişkin kendi projelerimde kullanmış olduğum SecuredOperation örneğini inceleyelim. _Not: Kullanmış olduğum versiyon : v4.2.17.0_
 
 ```csharp
 [Serializable]
@@ -108,6 +107,7 @@ public class UserManager : IUserService
     }
 }
 ```
+
 Metod bazında yapıldığı gibi ayrıca sınıfın geneli için de tanımlama yapılabilir.
 
 ```csharp
@@ -127,7 +127,7 @@ public class UserManager : IUserService
 Principal tanımlamasını aşağıdaki şekilde yapabiliriz.
 
 ```csharp
-IPrincipal principal = new GenericPrincipal(new GenericIdentity("Admin"), new string[] { "Admin" }); 
+IPrincipal principal = new GenericPrincipal(new GenericIdentity("Admin"), new string[] { "Admin" });
 Thread.CurrentPrincipal = principal;
 ```
 

@@ -2,7 +2,7 @@
 title: Detailed Guide ESP32 GPS Data Collection and Transmission via SIM800
 author: Murat Süzen
 date: 2025-05-10 02:00:00
-categories: [ESP32, IoT, GPS, SIM800, Data Transmission]
+categories: [IoT, GPS Tracker]
 tags: [esp32, sim800, gps, telemetry, iot, gprs, data transmission]
 math: false
 mermaid: false
@@ -15,12 +15,14 @@ This guide dives deeply into how an ESP32-based system collects GPS data using T
 ## System Architecture Overview
 
 ✅ **Hardware components**:
+
 - ESP32 microcontroller
 - SIM800L (or SIM800C) GPRS modem
 - NEO-6M or similar GPS module
 - Power supply and antennas
 
 ✅ **Main functionalities**:
+
 - Read real-time GPS coordinates and speed
 - Log data locally using LittleFS
 - Batch-send collected data every 10 seconds over HTTP POST
@@ -51,6 +53,7 @@ if (gps.location.isUpdated()) {
 ```
 
 ✅ **Important notes**:
+
 - Always check `isUpdated()` to avoid stale data.
 - Use `.lat()` and `.lng()` for high-precision coordinates.
 - Retrieve time only if `gps.time.isValid()`.
@@ -69,6 +72,7 @@ appendToFile("/gpslog.txt", record);
 ```
 
 ✅ **Why store locally?**
+
 - If the connection is down, you avoid data loss.
 - You can batch-send multiple points in one POST request, reducing overhead.
 
@@ -92,6 +96,7 @@ Before sending, the code reads the log file and builds a valid JSON array:
 ```
 
 ✅ **Batching advantage**:
+
 - Reduce SIM800 data session usage.
 - Ensure multiple data points are preserved.
 
@@ -117,12 +122,14 @@ sendATCommand("AT+HTTPTERM", 1000);
 ```
 
 ✅ **Key points**:
+
 - Always initialize HTTP (`HTTPINIT`) before sending.
 - Use `HTTPPARA` to set headers and target URL.
 - Set `CID` to 1, which refers to the active GPRS context (`SAPBR`).
 - Use `HTTPDATA` to indicate payload length and prepare the modem.
 
 ✅ **GPRS prerequisites**:
+
 - Ensure APN is set (`AT+SAPBR=3,1,"APN","internet"`).
 - Ensure GPRS session is activated (`AT+SAPBR=1,1`).
 

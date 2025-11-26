@@ -2,7 +2,7 @@
 title: Understanding Async and Await in C#
 author: Murat Süzen
 date: 2025-05-08 09:00:00
-categories: [C#, Asynchronous Programming]
+categories: [ASP.NET Core, Asynchronous Programming]
 tags: [csharp, async, await, task, parallelism, dotnet]
 math: false
 mermaid: false
@@ -116,11 +116,11 @@ This prevents capturing the synchronization context (especially important for AS
 
 Many confuse **parallel** with **asynchronous**.
 
-| Asynchronous                           | Parallel                                  |
-|----------------------------------------|------------------------------------------|
-| Designed to free up the thread         | Designed to use multiple threads         |
-| Uses `async`/`await`, `Task`, `I/O`    | Uses `Parallel.For`, `Task.Run`, CPU work|
-| Best for I/O-bound work (disk, network)| Best for CPU-bound work (calculations)   |
+| Asynchronous                            | Parallel                                  |
+| --------------------------------------- | ----------------------------------------- |
+| Designed to free up the thread          | Designed to use multiple threads          |
+| Uses `async`/`await`, `Task`, `I/O`     | Uses `Parallel.For`, `Task.Run`, CPU work |
+| Best for I/O-bound work (disk, network) | Best for CPU-bound work (calculations)    |
 
 Example of parallel code (CPU-bound):
 

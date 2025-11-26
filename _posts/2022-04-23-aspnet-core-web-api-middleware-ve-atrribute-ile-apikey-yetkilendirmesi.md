@@ -2,8 +2,8 @@
 title: ASP.NET Core Web API Üzerinde Middleware ve Attribute ile API Key Yetkilendirmesi
 author: Murat Süzen
 date: 2022-04-23 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,net 6.0,web api,api key]
+categories: [ASP.NET Core, Middlewares]
+tags: [asp.net core, net 6.0, web api, api key]
 math: true
 mermaid: true
 image:
@@ -13,12 +13,13 @@ image:
   alt: Carl Bloch, In a Roman Osteria (1866)
 ---
 
-Merhabalar, bu makalede ASP.NET Core Web API projesinde API Key yetkilendirmesini middleware ve attribute yapılarıyla inceleyeceğiz. ApiKeyAuthentication isminde bir ASP.NET Core Web API projesi oluşturacağız. 
+Merhabalar, bu makalede ASP.NET Core Web API projesinde API Key yetkilendirmesini middleware ve attribute yapılarıyla inceleyeceğiz. ApiKeyAuthentication isminde bir ASP.NET Core Web API projesi oluşturacağız.
 
 ## Middleware Kullanımı
+
 ---
 
-Projeye Middlewares klasörü ekleyip içerisinde ApiKeyMiddleware isminde bir sınıf ekliyoruz. 
+Projeye Middlewares klasörü ekleyip içerisinde ApiKeyMiddleware isminde bir sınıf ekliyoruz.
 
 ```csharp
 namespace ApiKeyAuthentication.Middlewares
@@ -135,7 +136,7 @@ Burada dikkat edilmesi gereken ikinci nokta swagger yapılandırması. Swagger i
 
 ## Atrribute Kullanımı
 
-Attributes isimli klasör oluşturup içerisine ApiKeyAttribute isminde bir sınıf ekliyoruz. 
+Attributes isimli klasör oluşturup içerisine ApiKeyAttribute isminde bir sınıf ekliyoruz.
 
 ```csharp
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -206,6 +207,7 @@ namespace ApiKeyAuthentication.Controllers
     }
 }
 ```
+
 ![ApiKeyAuthentication 401 Error](/assets/img/posts/ApiKeyAuthentication_1.jpg)
 _401 Error_
 

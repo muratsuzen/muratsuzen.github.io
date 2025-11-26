@@ -2,7 +2,7 @@
 title: LINQ Queries in C# What Is LINQ and How to Use It
 author: Murat Süzen
 date: 2025-05-06 09:00:00
-categories: [C#, LINQ, Data Manipulation]
+categories: [ASP.NET Core, LINQ]
 tags: [csharp, linq, data querying, collections, dotnet]
 math: false
 mermaid: false
@@ -94,7 +94,7 @@ var count = people.Count();
 var grouped = people.GroupBy(p => p.City);
 foreach (var group in grouped)
 {
-    Console.WriteLine($"City: {group.Key}, Count: {group.Count()}");  
+    Console.WriteLine($"City: {group.Key}, Count: {group.Count()}");
 }
 ```
 

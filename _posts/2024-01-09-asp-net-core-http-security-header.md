@@ -2,11 +2,12 @@
 title: ASP.NET Core Http Security Header
 author: Murat Süzen
 date: 2024-01-09 05:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,middleware,net 6.0]
+categories: [ASP.NET Core, Security]
+tags: [asp.net core, web api, middleware, net 6.0]
 math: true
 mermaid: true
 ---
+
 Let’s examine how the Http Security Header structure is used on .NET Core in a sample ASP.NET Core project. First we will create a blank web project.
 
 ```bash
@@ -16,6 +17,7 @@ dotnet new web -o httpsecurityheader
 After creating the project, let’s examine the security headers.
 
 ## X-Frame-Options
+
 The X-Frame-Options header option is used to call your web page, called Clickjacking, on another web page with the iframe method and prevent any action.
 
 **DENY:** It completely prevents the page from being called in an iframe.
@@ -31,6 +33,7 @@ app.Use(async (context, next) =>
     await next();
 });
 ```
+
 **Note:** According to the information here, X-Frame-Options header information is created as SAMEORIGIN by default.
 To remove the X-Frame-Options header information, the AddAntiforgery method should be done as follows.
 
@@ -42,11 +45,13 @@ builder.Services.AddAntiforgery(x =>
 ```
 
 ## Strict-Transport-Security
+
 It is used to prevent man-in-the-middle (MITM) attacks and automatically convert HTTP requests made by the client to HTTPS. It is used with the UseHsts middleware structure in .NET Core projects.
 
 ```csharp
 app.UseHsts();
 ```
+
 The use of HSTS is not recommended in development environments due to browser caching.
 
 We can use the AddHSTS method for HSTS configuration.
@@ -82,7 +87,9 @@ builder.Services.AddHttpsRedirection(x =>
     x.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
 });
 ```
+
 ## X-Permitted-Cross-Domain-Policies
+
 If you are using Flash on your website, you can prevent clients from making cross-site requests by using the X-Permission-Cross-Domain-Policies header.
 
 ```csharp
@@ -94,6 +101,7 @@ app.Use(async (context, next) =>
 ```
 
 ## X-XSS-Protection
+
 The X-XSS-Protection header causes browsers to stop loading the web page when they detect a cross-site scripting attack.
 
 ```csharp
@@ -103,7 +111,9 @@ app.Use(async (context, next) =>
     await next();
 });
 ```
+
 ## X-Content-Type-Options
+
 It is used to prevent browsers from determining the MIME type sent with the Content Type header in requests sent from the client.
 
 ```csharp
@@ -115,6 +125,7 @@ app.Use(async (context, next) =>
 ```
 
 ## Referrer-Policy
+
 When a site accesses a different site, it sends its own address with a referrer. In some cases, the Referrer-Policy header is used when it is not desired to send the source address explicitly.
 
 ```csharp
@@ -126,6 +137,7 @@ app.Use(async (context, next) =>
 ```
 
 ## Feature-Policy
+
 The app’s camera, microphone, usb etc. It is the title that we determine whether or not it will need such requirements.
 
 ```csharp
@@ -137,6 +149,7 @@ app.Use(async (context, next) =>
 ```
 
 ## Content-Security-Policy
+
 Content-Security-Policy is a security policy used to control data injection attacks that may occur due to a web page’s style and script files.
 
 ```csharp

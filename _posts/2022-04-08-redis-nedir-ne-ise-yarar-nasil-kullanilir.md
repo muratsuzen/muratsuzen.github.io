@@ -2,8 +2,8 @@
 title: Redis Nedir? Ne İşe Yarar? Nasıl Kullanılır?
 author: Murat Süzen
 date: 2022-04-08 11:33:00 -500
-categories: [REDIS]
-tags: [redis,cache]
+categories: [Caching, Redis]
+tags: [redis, cache]
 math: true
 mermaid: true
 ---
@@ -37,18 +37,19 @@ Redis paketlerinin kurulu olduğu dizinde `"redis-cli.exe"` uygulamasını çal�
 ```bash
 127.0.0.1:6379> set userName Murat
 (error) NOAUTH Authentication required.
-``` 
+```
+
 Şifre gönderilmeden herhangi bir komut çalıştırıldığında yukarıdaki gibi bağlantı hatası ile karşılaşırız.
 
 ```bash
-127.0.0.1:6379> auth password123! 
+127.0.0.1:6379> auth password123!
 OK
-``` 
+```
 
 ```bash
 127.0.0.1:6379> set fullName Murat
 OK
-``` 
+```
 
 Şifreyi auth komutu ile set ettiğimizde "userName" anahtarına "Murat" değerini kayıt edebiliyoruz. Veriler `<key,value>` şeklinde string olarak tutulmaktadır.
 
@@ -57,7 +58,7 @@ OK
 OK
 127.0.0.1:6379> get fullName
 "Murat"
-``` 
+```
 
 Set komutuyla değer ataması yapılıyor, Get komutuyla gönderilen anahtar bilgisinin değeri alınıyor. Append komutu ile string bir değerin sonuna string veri ekleme işlemi yapılmaktadır.
 
@@ -66,13 +67,15 @@ Set komutuyla değer ataması yapılıyor, Get komutuyla gönderilen anahtar bil
 (integer) 11
 127.0.0.1:6379> get fullName
 "Murat Suzen"
-``` 
-Keys * komutu ile bütün anahtarların (key) listelenmesini sağlayabiliriz.
+```
+
+Keys \* komutu ile bütün anahtarların (key) listelenmesini sağlayabiliriz.
 
 ```bash
 127.0.0.1:6379> keys *
 1) "fullName"
-``` 
+```
+
 Del komutu ile verilen anahtar bilgisi silinir.
 
 ```bash
@@ -80,13 +83,15 @@ Del komutu ile verilen anahtar bilgisi silinir.
 (integer) 1
 127.0.0.1:6379> get fullName
 (nil)
-``` 
+```
+
 Flushall komutu ile tüm veriler silinir.
 
 ```bash
 127.0.0.1:6379> flushall
 OK
-``` 
+```
+
 Exists komutu ile gönderilen anahtarın (key) olup olmadığını kontrol edebiliriz
 
 ```bash
@@ -97,6 +102,5 @@ OK
 127.0.0.1:6379> exists key2
 (integer) 0
 ```
-Diğer Redis komutlarına [*buradan*](https://redis.io/commands) ulaşabilirsiniz. Ayrıca verileri görüntüleyip yönetebileceğiniz Another Redis Desktop Manager uygulamasını buradan indirebilirsiniz.
 
-
+Diğer Redis komutlarına [_buradan_](https://redis.io/commands) ulaşabilirsiniz. Ayrıca verileri görüntüleyip yönetebileceğiniz Another Redis Desktop Manager uygulamasını buradan indirebilirsiniz.

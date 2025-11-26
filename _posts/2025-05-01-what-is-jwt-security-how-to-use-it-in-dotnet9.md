@@ -2,7 +2,7 @@
 title: What is JWT Security? How to Use It in .NET 9 for Secure APIs
 author: Murat Süzen
 date: 2025-05-01 09:00:00
-categories: [ASP.NET Core, Security, JWT]
+categories: [ASP.NET Core, Security]
 tags:
   [
     jwt,
@@ -10,12 +10,11 @@ tags:
     api security,
     authentication,
     authorization,
-    token-based security
+    token-based security,
   ]
 math: false
 mermaid: false
 ---
-
 
 In the world of modern web development, **securing your APIs** is no longer optional. One of the most popular and effective methods today is using **JWT (JSON Web Token)** for authentication and authorization. This article explains what JWT is, why it matters, and how you can implement it in your .NET 9 applications.
 
@@ -24,11 +23,13 @@ In the world of modern web development, **securing your APIs** is no longer opti
 JWT (JSON Web Token) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed.
 
 A typical JWT contains:
+
 - Header: Defines the type of the token and signing algorithm
 - Payload: Contains the claims (user data, permissions, etc.)
 - Signature: Ensures that the token hasn’t been altered
 
 Why use JWT?
+
 - Stateless: No server-side session storage required
 - Scalable: Perfect for distributed and microservice architectures
 - Compact: Easy to transmit via URL, headers, or inside cookies
@@ -36,6 +37,7 @@ Why use JWT?
 ## How JWT Works in .NET 9
 
 In a typical flow:
+
 1. A user logs in with valid credentials.
 2. The server generates a JWT and sends it back to the client.
 3. The client stores the token (usually in local storage or a cookie).

@@ -2,8 +2,8 @@
 title: Adding Multiple Languages ​​with ASP.NET Core MVC
 author: Murat Süzen
 date: 2024-01-09 05:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,middleware,net 6.0]
+categories: [ASP.NET Core, Web Development]
+tags: [asp.net core, web api, middleware, net 6.0]
 math: true
 mermaid: true
 image:
@@ -12,6 +12,7 @@ image:
   height: 500
   alt: CMallorca, Llubí, Spain - Stefan Kunze
 ---
+
 Hello, in this article we will examine how we can add multiple language support to ASP.NET Core MVC application. First of all, since we will keep the language definitions in resource files, we will create the Resources folder in the application’s directory. Then we will add two Resource files named SharedResource.tr-TR.resx and SharedResource.en-US.resx.
 
 ![Test Postman](/assets/img/posts/multiple_lang_1.png)
@@ -27,6 +28,7 @@ namespace MultiLanguage
     }
 }
 ```
+
 We will create the Utilities folder in the application directory and add the SharedViewLocalizer class.
 
 ```csharp
@@ -138,7 +140,7 @@ We fill a section with the CultureInfo list we send with ViewData and add an Act
         );
 
         return LocalRedirect(returnUrl);
-    }  
+    }
 ```
 
 Then we modify the Index.cshtml file.

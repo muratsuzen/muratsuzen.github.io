@@ -2,7 +2,7 @@
 title: What’s New in C# 13? Official Features and Practical Examples
 author: Murat Süzen
 date: 2025-05-10 01:00:00
-categories: [C#, .NET, Language Features]
+categories: [Language Features, C# 13]
 tags: [csharp 13, new features, dotnet, official release, language updates]
 math: false
 mermaid: false
@@ -83,8 +83,8 @@ Why it matters:
 
 C# 13 further enhances lambdas with:
 
-- Capturing `ref` variables  
-- Allowing attributes on lambdas  
+- Capturing `ref` variables
+- Allowing attributes on lambdas
 - Improved target-typing for lambdas
 
 Example:
@@ -104,10 +104,11 @@ Why it matters:
 
 Introduced in C# 11, **raw string literals** are further refined in C# 13, including:
 
-- Better escape handling  
+- Better escape handling
 - Multiline formatting improvements
 
 Example:
 
 ```csharp
-var json = 
+var json =
+```

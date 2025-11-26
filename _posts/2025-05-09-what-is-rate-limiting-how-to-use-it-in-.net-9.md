@@ -2,12 +2,11 @@
 title: What is Rate Limiting? How to Use It in .NET 9?
 author: Murat Süzen
 date: 2025-05-09 09:00:00
-categories: [ASP.NET Core, API Security]
+categories: [ASP.NET Core, Security]
 tags: [rate limiting, .NET 9, api throttling, performance, protection]
 math: false
 mermaid: false
 ---
-
 
 Rate limiting is a critical technique in modern web development used to **control how many requests a client can make to a server over a specific period**. This prevents abuse, protects system resources, and ensures fair access across all users.
 
@@ -16,11 +15,13 @@ In .NET 9, rate limiting has been enhanced with built-in middleware that can be 
 ## Why Use Rate Limiting?
 
 Without rate limiting, your API could be flooded by excessive requests from:
+
 - Malicious attackers (DDoS attacks)
 - Misconfigured client apps making too many calls
 - Heavy users consuming disproportionate system resources
 
 Benefits:
+
 - Improves **system stability** under heavy load
 - Enhances **security** by stopping brute-force attacks
 - Guarantees **fairness** for all users
@@ -68,6 +69,7 @@ This setup allows each client **5 requests every 10 seconds**. Excess requests g
 ## Advanced Patterns
 
 You can use:
+
 - Sliding window or token bucket algorithms for smoother control
 - Per-endpoint or per-user limits
 - Distributed rate limiting with Redis or cloud services
@@ -79,4 +81,3 @@ You can use:
 - Use meaningful error responses to guide client-side handling
 
 By implementing rate limiting, your .NET 9 applications stay robust, fair, and secure.
-

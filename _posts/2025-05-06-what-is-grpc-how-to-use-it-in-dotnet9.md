@@ -2,8 +2,8 @@
 title: What is gRPC? How to Use It in .NET 9?
 author: Murat Süzen
 date: 2025-05-03 20:06:21
-categories: ['DotNet', 'gRPC', 'Trends']
-tags: ['grpc', 'dotnet9', 'microservices', 'communication']
+categories: [ASP.NET Core, gRPC]
+tags: ["grpc", "dotnet9", "microservices", "communication"]
 math: false
 mermaid: false
 # image:

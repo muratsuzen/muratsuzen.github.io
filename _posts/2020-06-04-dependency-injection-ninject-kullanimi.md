@@ -2,11 +2,12 @@
 title: Dependency Injection — Ninject Kullanımı
 author: Murat Süzen
 date: 2020-06-04 11:33:00 -500
-categories: [Dependency Injection]
-tags: [dependency injection,ninject]
+categories: [ASP.NET Core, Dependency Injection]
+tags: [dependency injection, ninject]
 math: true
 mermaid: true
 ---
+
 Merhabalar, yaygın olarak kullanılan kütüphanelerden bir tanesi Ninject'tir. İncelemek için bir önceki Dependency Injection örneğinin aynısı üzerinden gideceğiz. Yaptığımız örnekle çok benzer olduğunu söyleyebilirim. Hatta standart Dependency Injection kullanımına göre birazdaha fazla kod yazdığımızı görebilirsiniz. Fakat kurumsal projelerde yaygın kullanımının arkasında yatan sebep sadece standart kullanımlarından ziyade, projelerimizde birden fazla `loosely coupled` yani `gevşek bağlı` yapıları kullanma gerekinimindeki karmaşıklığı en az seviyieye indirmektedir. Birden fazla gevşek bağlı yapı durumuna örneğimizde deyineceğiz. Öncelikle Nuget paketinden `Install-Package Ninject` şeklinde Ninject paketini projemize indirip kuruyoruz. Daha sonrasında interface ve implemente yapılacak class larımızı oluşturuyoruz.
 
 ```csharp
@@ -43,18 +44,18 @@ class DatabaseLogger : ILogger
 Bu aşamaya kadar bir önceki örneğimizin aynısını yapıyoruz. Daha sonra yine bir önceki örneğimizdeki gibi sınıfları yönetebilmemiz için `LogManager` yapısını oluşturuyoruz.
 
 ```csharp
-class LogManager  
-    {  
-        readonly ILogger logger;         
-        [Inject]  
-        public LogManager(ILogger logger)  
-        {  
-            this.logger = logger;  
-        }        
-        public void Handle(string message)  
-        {  
-            this.logger.WriteLog(message);  
-        }  
+class LogManager
+    {
+        readonly ILogger logger;
+        [Inject]
+        public LogManager(ILogger logger)
+        {
+            this.logger = logger;
+        }
+        public void Handle(string message)
+        {
+            this.logger.WriteLog(message);
+        }
     }
 ```
 
@@ -86,7 +87,6 @@ class Program
 ```
 
 Bu kod parçasındaki dikkat edilmesi gereken nokta new `StandartKernel` içerisinde load metoduna Bindings sınıfımızı göndermektir. Bu şekilde yapılandırma sınıfını Ninject’e set etmiş oluyoruz. Birden fazla “gevşek bağlı” bir yapıyı aşağıdaki gibi yine NinjectModules yapsısındaki Bindings sınıfımız ile yapılandırabiliriz.
-
 
 ```csharp
 interface IConnections
@@ -132,7 +132,7 @@ interface IConnections
      {
          this.connections.GetConnectionString();
      }
- }   
+ }
 ```
 
 Bindings sınıfımız içerisine aynı şekilde diğer `Dependency Injection` yapısının tanımını yapabiliriz.
@@ -164,4 +164,5 @@ class Program
     }
 }
 ```
+
 Bir sonraki makalede görüşmek üzere.

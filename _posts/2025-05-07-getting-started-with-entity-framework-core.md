@@ -2,7 +2,7 @@
 title: Getting Started with Entity Framework Core
 author: Murat Süzen
 date: 2025-05-07 09:00:00
-categories: [C#, Entity Framework, Databases]
+categories: [ASP.NET Core, Entity Framework Core]
 tags: [entity framework core, ef core, csharp, orm, database access]
 math: false
 mermaid: false
@@ -91,7 +91,7 @@ db.SaveChanges();
 var products = db.Products.Where(p => p.Price > 1000).ToList();
 foreach (var product in products)
 {
-    Console.WriteLine($"{product.Name} - {product.Price}");  
+    Console.WriteLine($"{product.Name} - {product.Price}");
 }
 ```
 

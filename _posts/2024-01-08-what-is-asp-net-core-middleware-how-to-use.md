@@ -2,11 +2,12 @@
 title: What is ASP.NET Core Middleware? How to use?
 author: Murat Süzen
 date: 2024-01-08 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,middleware,net 6.0]
+categories: [ASP.NET Core, Middlewares]
+tags: [asp.net core, web api, middleware, net 6.0]
 math: true
 mermaid: true
 ---
+
 Hello, in this article we will examine the middleware structure in ASP.NET Core. Middleware is used to perform the operations between the request and response process and to guide the process when the application runs.
 
 ![Test Postman](/assets/img/posts/netcore-middleware1.png)
@@ -26,7 +27,6 @@ dotnet new webapi -o SampleMW
 ```
 
 When we created the project, some services and middleware were added as standard in Program.cs. When we examine these codes, we can see the middleware that can be added to the runtime with the app variable added in the WebApplication type.
-
 
 ![Test Postman](/assets/img/posts/netcore-middleware3.png)
 _app intellisense_
@@ -65,7 +65,7 @@ This is how we can add middleware. We can also create our own middleware that ca
 
 ## UseMiddleware Method
 
-Let’s create a class called CustomMiddleware. In this class, after the _next object of RequestDelegate type that we inject in the Constructor is triggered, the next middleware is called with the Invoke method when the related operations are completed.
+Let’s create a class called CustomMiddleware. In this class, after the \_next object of RequestDelegate type that we inject in the Constructor is triggered, the next middleware is called with the Invoke method when the related operations are completed.
 
 ```csharp
 namespace SampleMW
@@ -90,12 +90,12 @@ namespace SampleMW
 }
 ```
 
-
 ```bash
 app.UseMiddleware<CustomMiddleware>();
 ```
 
 ## Use Method
+
 When the operations are completed, it calls the next middleware. When the processes of the next middleware are completed, the process continues.
 
 ```csharp
@@ -117,6 +117,7 @@ app.Use(async (context, next) =>
 _Use Result_
 
 ## Run Method
+
 It prevents the next intermediate layer from working. In this case, the pipeline will be terminated. This interruption is called a short circuit. Let’s add the Run method to the above code block and run it.
 
 ```csharp
@@ -145,6 +146,7 @@ _Run Result_
 As you can see, the return was made without running the Use method containing the Use-Next text.
 
 ## Map Method
+
 We use it when we want to run different middleware by filtering according to the path of the request from the client.
 
 ```csharp
@@ -171,6 +173,7 @@ _Get /weatherforecast_
 _Get /home_
 
 ## MapWhen Method
+
 With the MapWhen method, filtering can be done according to any feature of the request from the client.
 
 ```csharp
@@ -188,5 +191,3 @@ app.MapWhen(x => x.Request.Path.Equals("/home") && x.Request.Method.Equals("GET"
 
 ![Get /home](/assets/img/posts/netcore-middleware7.png)
 _Get /home_
-
-

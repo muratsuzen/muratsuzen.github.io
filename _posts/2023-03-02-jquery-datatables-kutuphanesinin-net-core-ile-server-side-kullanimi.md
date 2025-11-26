@@ -2,8 +2,8 @@
 title: JQuery Datatables Kütüphanesinin .NET Core ile Server Side Kullanımı
 author: Murat Süzen
 date: 2023-03-02 08:00:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,net 7.0,jquery datatables]
+categories: [ASP.NET Core, Web Development]
+tags: [asp.net core, net 7.0, jquery datatables]
 math: true
 mermaid: true
 image:
@@ -12,6 +12,7 @@ image:
   height: 500
   alt: Photo by AXP Photography on Unsplash
 ---
+
 Web projelerinde en çok kullanılan Jquery veri tablo kütüphanelerinden biri olan [**Datatables**](https://datatables.net/) kütüphanesinin .NET Core üzerinde sunucu taraflı kullanımını inceleyeceğim. Datatables herhangi bir HTML tablosuna arama, sayfa geçişleri ve sıralama işlemlerini içeren gelişmiş kontroller ekler. Bu kontroller sayesinde verilerin daha performanslı kullanılması sağlanır. Öncelikle aşağıdaki gibi bir ASP.NET Core Web App (Model-View-Controller) projesi oluşturacağız.
 
 ![Create MVC](/assets/img/posts/jstables2.png)
@@ -34,18 +35,19 @@ namespace JSDatatables.DataAccess.Context
     {
         public ApplicationDbContext(DbContextOptions options):base(options)
         {
-            
+
         }
 
         public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {   
+        {
             base.OnModelCreating(modelBuilder);
         }
     }
 }
 ```
+
 Daha sonra `Product` isminde bir entity sınıfı ekleyeceğiz.
 
 ```csharp
@@ -59,12 +61,14 @@ namespace JSDatatables.DataAccess.Entity
     }
 }
 ```
+
 EntityFramework ile ilgili son işlem olarak `Program.cs` dosyasında DbContext yapılandırmasını tamamlayacağız.
 
 ```csharp
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseInMemoryDatabase("memorydb"));
 ```
+
 HomeController içerisinde `ApplicationDbContext` sınıfımızı Constructor ile ekleyelim.
 
 ```csharp
@@ -80,6 +84,7 @@ HomeController içerisinde `ApplicationDbContext` sınıfımızı Constructor il
         }
     }
 ```
+
 Bu işlemden sonra sahte bir veri elde etmek için for döngüsü ile Product ekleme işlemi yapacak olan bir metot oluşturup Index ismindeki Action da çağıracağız.
 
 ```csharp
@@ -103,56 +108,55 @@ Bu işlemden sonra sahte bir veri elde etmek için for döngüsü ile Product ek
         context.SaveChanges();
     }
 ```
+
 Verileri elde edecek metotu yazdıktan sonra Index ismindeki ActionResult için aynı isimle bir View ekleyeceğiz. Daha sonra `myTable` isminde bir table ekleyip (document).ready fonksiyonu ile Datatables kütüphanesini sayfaya ekleme işlemini yapacağız. Burada `processing: true,        serverSide: true` değerlerine dikkat etmemiz gerekmektedir. Bu şekilde sunucu taraflı işlemler için yapılandırmamızı tamamlayacağız.
 
 ```html
-@{
-    ViewData["Title"] = "Datatables";
-}
+@{ ViewData["Title"] = "Datatables"; }
 
-<link href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link
+  href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
+  rel="stylesheet"
+/>
 
 <div class="container">
-    <div class="table-responsive">
-        <table id="myTable" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Description"</th>
-                    <th>Price"</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+  <div class="table-responsive">
+    <table id="myTable" class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Description"</th>
+          <th>Price"</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
 </div>
 
-
-
 @section Scripts{
-    <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#myTable').DataTable(
-                {
-                    ajax: {
-                        url: "Home/GetProducts",
-                        type: "POST",
-                    },
-                    processing: true,
-                    serverSide: true,
-                    filter: true,
-                    columns: [
-                        { data: "id", name: "Id" },
-                        { data: "description", name: "Description" },
-                        { data: "price", name: "Price" },
-                    ]
-                }
-            );
-        });
-    </script>
+<script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#myTable").DataTable({
+      ajax: {
+        url: "Home/GetProducts",
+        type: "POST",
+      },
+      processing: true,
+      serverSide: true,
+      filter: true,
+      columns: [
+        { data: "id", name: "Id" },
+        { data: "description", name: "Description" },
+        { data: "price", name: "Price" },
+      ],
+    });
+  });
+</script>
 
 }
 ```
+
 Daha sonra Datatables için `GetProducts` isminde kayıt listeleyecek ve JsonResult tipinde Post metotu oluşturacağız.
 
 ```csharp
@@ -194,15 +198,17 @@ public JsonResult GetProducts()
     return Json(result);
 }
 ```
-GetProducts metotunu incelemeden önce `Request.Form` ile aldığımız değerlerin ne anlama geldiğine bakalım. 
+
+GetProducts metotunu incelemeden önce `Request.Form` ile aldığımız değerlerin ne anlama geldiğine bakalım.
 
 ![Request.Form](/assets/img/posts/jstables4.png){: .left }
 ![Request.Form](/assets/img/posts/jstables5.png)
 
-Projeyi çalıştırıp `GetProduct` metotuna breakpoint eklediğimizde debuging sırasında Request.Form içeriği resimlerde görüldüğü gibi gelmektedir. Datatables [**dökümanında**](https://datatables.net/examples/data_sources/server_side) yazıldığı üzere draw, recordsTotal, recordsFiltered, data alanlarını içeren bir Json nesnesi beklemektedir. 
->Not:Seçili olan sayfa numarasını almak için `start/length` işlemini kullanabiliriz.
+Projeyi çalıştırıp `GetProduct` metotuna breakpoint eklediğimizde debuging sırasında Request.Form içeriği resimlerde görüldüğü gibi gelmektedir. Datatables [**dökümanında**](https://datatables.net/examples/data_sources/server_side) yazıldığı üzere draw, recordsTotal, recordsFiltered, data alanlarını içeren bir Json nesnesi beklemektedir.
 
-IQueryable türündeki entity üzerinde sıralama işlemi yapmak için `OrderByField` fonksiyonunu yazacağız. 
+> Not:Seçili olan sayfa numarasını almak için `start/length` işlemini kullanabiliriz.
+
+IQueryable türündeki entity üzerinde sıralama işlemi yapmak için `OrderByField` fonksiyonunu yazacağız.
 
 ```csharp
 public IQueryable<T> OrderByField<T>(IQueryable<T> q, string SortField, bool Ascending)
@@ -216,6 +222,7 @@ public IQueryable<T> OrderByField<T>(IQueryable<T> q, string SortField, bool Asc
     return q.Provider.CreateQuery<T>(mce);
 }
 ```
+
 Uygulamayı çalıştırdığımızda Datatables ile verileri görüntüleyebiliriz. Örnek projeyi [**buradan**](https://github.com/muratsuzen/dotnetcore-samples/tree/main/JSDatatables) indirebilirsiniz.
 
 ![Datatables](/assets/img/posts/jstables6.png)
@@ -224,4 +231,3 @@ Referanslar :
 
 [**https://ronniediaz.com/2011/05/24/orderby-string-in-linq-c-net-dynamic-sorting-of-anonymous-types/**](https://ronniediaz.com/2011/05/24/orderby-string-in-linq-c-net-dynamic-sorting-of-anonymous-types/)
 [**https://www.c-sharpcorner.com/article/server-side-rendering-of-datatables-js-in-asp-net-core/**](https://www.c-sharpcorner.com/article/server-side-rendering-of-datatables-js-in-asp-net-core/)
-

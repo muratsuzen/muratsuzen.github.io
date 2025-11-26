@@ -2,7 +2,7 @@
 title: What Is Blazor? Building Web UIs with .NET and WebAssembly
 author: Murat Süzen
 date: 2025-05-04 09:00:00
-categories: [Blazor, Web Development, .NET]
+categories: [ASP.NET Core, Web Development]
 tags: [blazor, webassembly, csharp, web ui, dotnet]
 math: false
 mermaid: false
@@ -91,12 +91,12 @@ This component updates interactively when the button is clicked.
 
 ## Blazor WebAssembly vs Blazor Server
 
-| Feature             | Blazor WebAssembly                  | Blazor Server                        |
-|---------------------|-------------------------------------|--------------------------------------|
-| Runs in            | Browser (client-side, WebAssembly)  | Server (with SignalR connection)     |
-| Performance        | Faster for local interactions       | Lower initial download, higher latency|
-| Offline support    | Yes                                 | No                                   |
-| Resource usage     | Uses client resources               | Uses server resources                |
+| Feature         | Blazor WebAssembly                 | Blazor Server                          |
+| --------------- | ---------------------------------- | -------------------------------------- |
+| Runs in         | Browser (client-side, WebAssembly) | Server (with SignalR connection)       |
+| Performance     | Faster for local interactions      | Lower initial download, higher latency |
+| Offline support | Yes                                | No                                     |
+| Resource usage  | Uses client resources              | Uses server resources                  |
 
 Choose based on your app’s needs.
 
@@ -161,9 +161,9 @@ You can use `HttpClient` to make API calls:
 
 ## Real-World Use Cases
 
-- Internal business apps (dashboards, forms, management tools)  
-- Progressive Web Apps (PWAs) with offline support  
-- Interactive public websites with live data  
+- Internal business apps (dashboards, forms, management tools)
+- Progressive Web Apps (PWAs) with offline support
+- Interactive public websites with live data
 - Hybrid apps (with .NET MAUI or Electron)
 
 ---

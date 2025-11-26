@@ -2,7 +2,7 @@
 title: Understanding Dependency Injection in .NET
 author: Murat Süzen
 date: 2025-04-30 09:00:00
-categories: [ASP.NET Core, Design Patterns, .NET]
+categories: [ASP.NET Core, Dependency Injection]
 tags: [dependency injection, dotnet, ioc, services, design patterns]
 math: false
 mermaid: false
@@ -16,7 +16,7 @@ In this article, we’ll explore **what DI is**, **why it’s important**, **how
 
 ## What Is Dependency Injection?
 
-Dependency Injection is a technique where a class receives the services or objects it depends on (its *dependencies*) from an external system, instead of instantiating them directly.
+Dependency Injection is a technique where a class receives the services or objects it depends on (its _dependencies_) from an external system, instead of instantiating them directly.
 
 For example, rather than doing this:
 
@@ -41,7 +41,7 @@ public class OrderService
 }
 ```
 
-Now `OrderService` depends on an *injected* `PaymentService`.
+Now `OrderService` depends on an _injected_ `PaymentService`.
 
 ---
 
@@ -82,11 +82,11 @@ public class MyController : ControllerBase
 
 ## Service Lifetimes
 
-| Lifetime      | Description                                          |
-|---------------|------------------------------------------------------|
-| Transient     | New instance every time requested                    |
-| Scoped        | One instance per request (for web apps)              |
-| Singleton     | Single instance shared for the lifetime of the app   |
+| Lifetime  | Description                                        |
+| --------- | -------------------------------------------------- |
+| Transient | New instance every time requested                  |
+| Scoped    | One instance per request (for web apps)            |
+| Singleton | Single instance shared for the lifetime of the app |
 
 Example:
 

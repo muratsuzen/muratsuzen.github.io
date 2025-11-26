@@ -2,7 +2,7 @@
 title: What is Top-Level Program in C# 9 and Later?
 author: Murat Süzen
 date: 2025-05-09 09:00:00
-categories: [C#, .NET]
+categories: [Language Features, C# 9]
 tags: [csharp 9, top-level program, dotnet, programming, simplification]
 math: false
 mermaid: false

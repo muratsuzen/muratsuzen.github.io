@@ -2,20 +2,23 @@
 title: .NET Core ile Repository Pattern Kullanımı
 author: Murat Süzen
 date: 2021-11-26 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api]
+categories: [ASP.NET Core, Design Patterns]
+tags: [ASP.NET Core, Design Patterns]
 math: true
 mermaid: true
 ---
-Uygulama geliştirirken kullanıcıdan veri alır yada kullanıcıya veriler listeleriz. Bu verileri alırken yada listelerken herhangi bir veritabanından (ekleme,silme,güncelleme,listeleme) `CRUD` işlemleri yapıyoruz. Bu makalede .NET Core ile veritabanı işlemlerinde Repository Pattern yaklaşımını anlatmaya çalışacağım. 
+
+Uygulama geliştirirken kullanıcıdan veri alır yada kullanıcıya veriler listeleriz. Bu verileri alırken yada listelerken herhangi bir veritabanından (ekleme,silme,güncelleme,listeleme) `CRUD` işlemleri yapıyoruz. Bu makalede .NET Core ile veritabanı işlemlerinde Repository Pattern yaklaşımını anlatmaya çalışacağım.
 
 ## Repository Pattern Nedir?
+
 Veritabanı işlemleri için yazdığımız kod bloklarının tekrar kullanımını sağlayan bir yaklaşımdır. Veritabanı işlemleri için sürekli farklı kodlar yazmaktansa, Repsitory Pattern yaklaşımı ile tekrar kullanabileceğimiz kod blokları sayesinde karmaşıklıktan kurtulup yönetilebilir bir yapı oluşturabiliriz. Örnek bir proje oluşturup yaklaşımı inceleyelim.
 
 ```bash
 dotnet new sln
 ```
-Yeni bir solution oluşturduktan sonra Core, Entities, DataAccess,Business katmanlarını ve WebAPI projesini oluşturacağım. 
+
+Yeni bir solution oluşturduktan sonra Core, Entities, DataAccess,Business katmanlarını ve WebAPI projesini oluşturacağım.
 
 ```bash
 dotnet new classlib -o reppat.Core
@@ -81,6 +84,7 @@ namespace reppat.Core.Entities
     }
 }
 ```
+
 IEntity interface'inin eklenmesinden sonra yine Core katmanına DataAccess klasörü ve içerisine `IBaseEntityRepository` isminde bir interface ekliyorum. Bu interface Repository Pattern yapısının temelini oluşturmaktadır.
 
 ```csharp
@@ -105,7 +109,8 @@ namespace reppat.Core.DataAccess
     }
 }
 ```
-Yukarıdaki kod bloğunu inceleyelim. IBaseEntityRepository'den türeyebilecek (implement edilebilecek) sınıflar için bir where koşulu bulunmaktadır. Bu where koşulu görüldüğü gibi T objesinin bir class ve new() yani instance alınabilecek bir sınıf olması gerekmektedir. Ayrıca daha önceki kod bloğunda tanımladığımız IEntity interface'inden türeyen sınıfları içermesi gerekmektedir. Bu şekilde bir sınıfın filtrelenmesi sağlamaktadır. Metodları incelediğimizde bir Expression filtresi görüyoruz. Bu filteler ile veritabanından tüm veri getirilmeden önce bir filtre gönderilerek sadece istenilen bilgilerin listelenmesi sağlanmaktadır. 
+
+Yukarıdaki kod bloğunu inceleyelim. IBaseEntityRepository'den türeyebilecek (implement edilebilecek) sınıflar için bir where koşulu bulunmaktadır. Bu where koşulu görüldüğü gibi T objesinin bir class ve new() yani instance alınabilecek bir sınıf olması gerekmektedir. Ayrıca daha önceki kod bloğunda tanımladığımız IEntity interface'inden türeyen sınıfları içermesi gerekmektedir. Bu şekilde bir sınıfın filtrelenmesi sağlamaktadır. Metodları incelediğimizde bir Expression filtresi görüyoruz. Bu filteler ile veritabanından tüm veri getirilmeden önce bir filtre gönderilerek sadece istenilen bilgilerin listelenmesi sağlanmaktadır.
 
 Veritabanı işlemlerini genellikle ORM (Entity Framework, Hibernate vb.) araçları ile yapıyoruz. Kullandığımız ORM aracına göre Core katmanında klasör oluşturuyorum. Ben EntityFramework isminde bir klasör oluşturup içerisine EfBaseEntityRepository isminde bir sınıf ekliyorum. EfBaseEntityRepository sınıfını IBaseEntityRepository interface'den türetiyoruz. Core katmanına nuget paket yönetimi ile `Microsoft.EntityFrameworkCore` paketini ekliyorum.
 
@@ -161,6 +166,7 @@ namespace reppat.Core.DataAccess.EntityFramework
     }
 }
 ```
+
 Yukarıdaki kod bloğunu inceleyelim. Görüdüğü gibi TEntity ve TContext isimlerinde iki parametre alan bir sınıf oluşturduk. `TEntity` parametresi IEntity interface'inden türetilen ve instance alınabilecek sınıf tipinde olacağını where koşulu ile anlayabiliyoruz. TContext isimli parametresinin instance alınabilen ve Entity Framework ORM aracının veritabanı işlemlerini yapılandırabildiğimiz `DbContext` tipinde olacağını görüyoruz. Parametreleri inceledeğimize göre metodları geliştirme işlemine geçebiliriz.
 
 ```csharp
@@ -172,6 +178,7 @@ public TEntity Get(Expression<Func<TEntity, bool>> filter)
         }
     }
 ```
+
 Parametre olarak gönderilen TEntity, sınıfın where koşulundan geçtiğine göre artık bu sınıfn bir DbContext içerisindeki DbSet ile tanımlanan entity olduğunu biliyoruz. Böylece using bloğunda context isminde aldığım instance ile, DbContext'in Set metoduna TEntity'i tanıtıp SingleOrDefault yada FirstOrDefault metodları ile parametreden gelen Expression filtresini veriyorum. Get metodu gönderdiğimiz filtreye uygun olarak kayıtlarımızı geri döndürecektir.
 
 ```csharp
@@ -183,6 +190,7 @@ public List<TEntity> GetList(Expression<Func<TEntity, bool>> filter = null)
         }
     }
 ```
+
 Get metodunda olduğu gibi GetList metodunda da aynı işlemleri yapıyorum. Burada farklı olarak filter parametresi eğer gönderilmezse ve null ise ToList() metodu ile tüm listeyi geri döndürüyorum.
 
 ```csharp
@@ -215,7 +223,7 @@ public TEntity Update(TEntity entity)
     }
 ```
 
-Update metodunda Add işlemlerinin aynısını yapıyorum. Fakat buradaki farklı olan kısım görüldüğü üzere State = EntityState.Modified tanımı. Bu tanım ile DbContext'e gönderilen objenin yani veritabanı tablosunun güncelleneceğini iletiyorum. Burada kısa bir bilgiyle Entry ve Attach farkına değinmek istiyorum. Attach metodu ile gönderilen veritabanı tablo objesinin sadece değişen alanların güncellenmesi sağlanır. Ancak Entry metodu tam tersine gönderilen objenin tüm alanlarını güncelleme işlemi isteğidir. SaveChanges() ile işlem yapılmış olur. Siz uygulamanızın performans yapılandırmasına göre farklı tercih edebilirsiniz. 
+Update metodunda Add işlemlerinin aynısını yapıyorum. Fakat buradaki farklı olan kısım görüldüğü üzere State = EntityState.Modified tanımı. Bu tanım ile DbContext'e gönderilen objenin yani veritabanı tablosunun güncelleneceğini iletiyorum. Burada kısa bir bilgiyle Entry ve Attach farkına değinmek istiyorum. Attach metodu ile gönderilen veritabanı tablo objesinin sadece değişen alanların güncellenmesi sağlanır. Ancak Entry metodu tam tersine gönderilen objenin tüm alanlarını güncelleme işlemi isteğidir. SaveChanges() ile işlem yapılmış olur. Siz uygulamanızın performans yapılandırmasına göre farklı tercih edebilirsiniz.
 
 ```csharp
 public void Delete(TEntity entity)
@@ -229,7 +237,7 @@ public void Delete(TEntity entity)
     }
 ```
 
-Delete metodunda gönderilen entity State = EntityState.Deleted tanımı ile silinecek olarak işaretlenip SaveChanges() metodu ile silme işlemi tamamlanıyor. 
+Delete metodunda gönderilen entity State = EntityState.Deleted tanımı ile silinecek olarak işaretlenip SaveChanges() metodu ile silme işlemi tamamlanıyor.
 
 ```csharp
 public void AddRange(List<TEntity> entities)
@@ -269,6 +277,7 @@ DataAccess katmanında veritabanı işlemlerini yapmak için geliştirmeye devam
 Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 6.0.0
 Install-Package Microsoft.EntityFrameworkCore -Version 6.0.0
 ```
+
 Microsoft.EntityFrameworkCore ve Microsoft.EntityFrameworkCore.SqlServer paketlerinin kurulumunu yapıyorum. OnConfiguring metodunu override yapıp veritabanı bağlantısını ekliyorum.
 
 ```csharp
@@ -285,7 +294,7 @@ namespace reppat.DataAccess.Concrete.EntityFramework.Contexts
     {
         public ReppatContext()
         {
-            
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -296,7 +305,7 @@ namespace reppat.DataAccess.Concrete.EntityFramework.Contexts
 }
 ```
 
-Bağlantı ayarlarını eklediğimize göre Entities katmanında tablo yapılarını içeren sınıfları oluşturabiriz. Ben bir tablo ile örnek yapmak istiyorum. Bu nedenle Entities katmanına Concrete isminde bir klasör oluşturup Personal isimli bir sınıf ekliyorum. Bu örnek projenin personel kart bilgilerini içeren bir sınıf olacak. 
+Bağlantı ayarlarını eklediğimize göre Entities katmanında tablo yapılarını içeren sınıfları oluşturabiriz. Ben bir tablo ile örnek yapmak istiyorum. Bu nedenle Entities katmanına Concrete isminde bir klasör oluşturup Personal isimli bir sınıf ekliyorum. Bu örnek projenin personel kart bilgilerini içeren bir sınıf olacak.
 
 ```csharp
 using reppat.Core.Entities;
@@ -317,7 +326,7 @@ namespace reppat.Entities.Concrete
 }
 ```
 
-Personal sınıfını DbSet ile ReppatContext içerisine tanımlıyorum. 
+Personal sınıfını DbSet ile ReppatContext içerisine tanımlıyorum.
 
 ```csharp
 public DbSet<Personal> Personals { get; set; }
@@ -339,7 +348,7 @@ Yukarıdaki kod ile initial isminde bir migration sınıfı oluşturuluyor. `Upd
 ![Reppat DB](/assets/img/posts/reppat_db.jpg)
 _Reppat DB_
 
-DataAccess katmanında Abstract klasöründe IPersonalDal isminde interface ekliyorum. IBaseEntityRepository interface'inden türetip parametre olarak istediğimiz IEntity tipindeki Personal sınıfını veriyorum. 
+DataAccess katmanında Abstract klasöründe IPersonalDal isminde interface ekliyorum. IBaseEntityRepository interface'inden türetip parametre olarak istediğimiz IEntity tipindeki Personal sınıfını veriyorum.
 
 ```csharp
 using reppat.Core.DataAccess;
@@ -396,12 +405,12 @@ namespace reppat.Business.Abstract
         Personal Get(int personalId);
         List<Personal> GetList();
         Personal Add(Personal personal);
-        Personal Update(Personal personal);        
+        Personal Update(Personal personal);
     }
 }
 ```
 
-IPersonalService interface'ini ekledikten sonra Concrete klasörüne PersonalManager sınıfını ekliyorum. 
+IPersonalService interface'ini ekledikten sonra Concrete klasörüne PersonalManager sınıfını ekliyorum.
 
 ```csharp
 using reppat.Business.Abstract;
@@ -447,7 +456,7 @@ namespace reppat.Business.Concrete
 }
 ```
 
-Yukarıdaki kod bloğunda görüldüğü üzere IPersonalDal interface'i constructor ile parametre olarak alıyorum. Ancak _personalDal'ın instanceini almadığımız için bu şekilde bir projede kullandığımızda hata alacağız. Bunun için Dependency Injection ile IPersonalDal istediğimizde EfPersonalDal sınıfını kullanılmasını sağlayacağız. WebAPI projemizi geliştirmeye başlayalım. 
+Yukarıdaki kod bloğunda görüldüğü üzere IPersonalDal interface'i constructor ile parametre olarak alıyorum. Ancak \_personalDal'ın instanceini almadığımız için bu şekilde bir projede kullandığımızda hata alacağız. Bunun için Dependency Injection ile IPersonalDal istediğimizde EfPersonalDal sınıfını kullanılmasını sağlayacağız. WebAPI projemizi geliştirmeye başlayalım.
 
 WebAPI projemizde Controller klasörüne PersonalController isminde bir API Controller ekliyorum ve içeriğini aşağıdaki gibi geliştiriyorum.
 
@@ -483,9 +492,9 @@ namespace reppat.WebAPI.Controllers
             }
             catch (Exception exp)
             {
-                return BadRequest(exp.Message); 
+                return BadRequest(exp.Message);
             }
-            
+
         }
 
         [HttpPut]
@@ -523,7 +532,7 @@ namespace reppat.WebAPI.Controllers
 }
 ```
 
-Bu şekilde projeyi çalıştırıp Swagger yardımıyla test yaptığımızda aşağıdaki hatayı alıyorum. 
+Bu şekilde projeyi çalıştırıp Swagger yardımıyla test yaptığımızda aşağıdaki hatayı alıyorum.
 
 ![Reppat API ERROR](/assets/img/posts/reppat_api_error.jpg)
 _Reppat API ERROR_
@@ -535,4 +544,4 @@ builder.Services.AddSingleton<IPersonalDal, EfPersonalDal>();
 builder.Services.AddSingleton<IPersonalService, PersonalManager>();
 ```
 
-Tanımlamaları yaptıktan sonra projeyi çalıştırıp bir personel ekleme işlemini yapıyorum ve sıkıntısız bir şekilde sonuç alıyorum. Repository Pattern konusunu .NET Core ile incelemiş olduk. Makale biraz uzun olduğu için umarım sıkılmamışsınızdır. Uygulamayı [**buradan**](https://github.com/muratsuzen/dotnetcore-samples/tree/main/reppat) indirebilirsiniz. Bir sonraki makalede görüşmek üzere. 
+Tanımlamaları yaptıktan sonra projeyi çalıştırıp bir personel ekleme işlemini yapıyorum ve sıkıntısız bir şekilde sonuç alıyorum. Repository Pattern konusunu .NET Core ile incelemiş olduk. Makale biraz uzun olduğu için umarım sıkılmamışsınızdır. Uygulamayı [**buradan**](https://github.com/muratsuzen/dotnetcore-samples/tree/main/reppat) indirebilirsiniz. Bir sonraki makalede görüşmek üzere.

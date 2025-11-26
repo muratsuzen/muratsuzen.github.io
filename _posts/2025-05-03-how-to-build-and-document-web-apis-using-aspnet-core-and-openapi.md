@@ -2,7 +2,7 @@
 title: How to Build and Document Web APIs Using ASP.NET Core and OpenAPI
 author: Murat Süzen
 date: 2025-05-03 09:00:00
-categories: [ASP.NET Core, Web API, Documentation]
+categories: [ASP.NET Core, OpenAPI]
 tags: [aspnet core, web api, openapi, swagger, dotnet, api documentation]
 math: false
 mermaid: false
@@ -35,8 +35,8 @@ This scaffolds a minimal API project with a sample `WeatherForecast` controller.
 
 ### Step 2: Explore the Structure
 
-- `Program.cs` — main app configuration  
-- `Controllers/WeatherForecastController.cs` — sample API controller  
+- `Program.cs` — main app configuration
+- `Controllers/WeatherForecastController.cs` — sample API controller
 - `appsettings.json` — configuration file
 
 ---

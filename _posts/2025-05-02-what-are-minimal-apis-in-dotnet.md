@@ -2,7 +2,7 @@
 title: What Are Minimal APIs in .NET?
 author: Murat Süzen
 date: 2025-05-02 09:00:00
-categories: [ASP.NET Core, Web API, Minimal APIs]
+categories: [ASP.NET Core, Minimal API]
 tags: [minimal apis, aspnet core, dotnet, web api, lightweight apis]
 math: false
 mermaid: false

@@ -2,7 +2,7 @@
 title: What is SQL Query Optimization? How to Use It for Faster Databases
 author: Murat Süzen
 date: 2025-04-28 09:00:00
-categories: [SQL]
+categories: [SQL, Data Analysis]
 tags: [query optimization]
 math: false
 mermaid: false
@@ -15,11 +15,13 @@ In this article, we will explore what SQL query optimization is, why it matters,
 ## Why SQL Query Optimization Matters
 
 Databases are at the core of most applications. Slow SQL queries can cause:
+
 - Long page load times
 - Frustrated users
 - High infrastructure costs due to resource waste
 
 Efficient queries ensure:
+
 - Faster data retrieval
 - Lower CPU and memory usage
 - Scalable systems that handle more users
@@ -27,8 +29,9 @@ Efficient queries ensure:
 ## Common Causes of Slow SQL Queries
 
 Before you optimize, you need to understand why queries slow down. Common causes include:
+
 - Missing indexes on frequently searched columns
-- SELECT * instead of selecting only necessary columns
+- SELECT \* instead of selecting only necessary columns
 - Unnecessary joins or subqueries
 - Non-sargable WHERE clauses (using functions on indexed columns)
 - Retrieving too much data (large result sets)
@@ -40,22 +43,27 @@ Before you optimize, you need to understand why queries slow down. Common causes
 Indexes are like lookup tables that speed up data retrieval. Without them, databases perform full table scans.
 
 Example:
+
 ```sql
 CREATE INDEX idx_customer_email ON Customers(Email);
 ```
 
 With this index, queries filtering by email run significantly faster.
 
-### 2. Avoid SELECT *
+### 2. Avoid SELECT \*
 
 Instead of:
+
 ```sql
 SELECT * FROM Orders;
 ```
+
 use:
+
 ```sql
 SELECT OrderID, CustomerID, OrderDate FROM Orders;
 ```
+
 This reduces the amount of data transferred and processed.
 
 ### 3. Use WHERE Clauses Efficiently
@@ -63,10 +71,13 @@ This reduces the amount of data transferred and processed.
 Write sargable queries — queries that can use indexes effectively.
 
 Bad:
+
 ```sql
 WHERE YEAR(OrderDate) = 2024;
 ```
+
 Better:
+
 ```sql
 WHERE OrderDate >= '2024-01-01' AND OrderDate < '2025-01-01';
 ```
@@ -76,6 +87,7 @@ WHERE OrderDate >= '2024-01-01' AND OrderDate < '2025-01-01';
 Only join necessary tables and ensure join keys are indexed.
 
 Example:
+
 ```sql
 SELECT c.CustomerName, o.OrderID
 FROM Customers c
@@ -88,11 +100,13 @@ WHERE c.Country = 'USA';
 When you only need a few rows, use LIMIT or TOP.
 
 Example (SQL Server):
+
 ```sql
 SELECT TOP 10 * FROM Orders ORDER BY OrderDate DESC;
 ```
 
 Example (MySQL):
+
 ```sql
 SELECT * FROM Orders ORDER BY OrderDate DESC LIMIT 10;
 ```
@@ -102,6 +116,7 @@ SELECT * FROM Orders ORDER BY OrderDate DESC LIMIT 10;
 ### Use Execution Plans
 
 Most database systems (SQL Server, PostgreSQL, MySQL) provide execution plans to show how queries are processed. Look for:
+
 - Table scans (slow)
 - Index seeks (fast)
 - Expensive joins or sorts
@@ -111,6 +126,7 @@ Most database systems (SQL Server, PostgreSQL, MySQL) provide execution plans to
 Sometimes replacing a correlated subquery with a join improves performance.
 
 Example:
+
 ```sql
 SELECT c.CustomerName
 FROM Customers c
@@ -118,7 +134,9 @@ WHERE EXISTS (
     SELECT 1 FROM Orders o WHERE o.CustomerID = c.CustomerID
 );
 ```
+
 can become:
+
 ```sql
 SELECT DISTINCT c.CustomerName
 FROM Customers c
@@ -140,13 +158,17 @@ For huge tables, consider partitioning to improve performance on queries scannin
 ## Example Case Study
 
 A company noticed their product listing page was slow. Investigation revealed this query:
+
 ```sql
 SELECT * FROM Products WHERE Category = 'Electronics';
 ```
+
 The `Category` column had no index, and the table had 1 million rows. After adding an index:
+
 ```sql
 CREATE INDEX idx_products_category ON Products(Category);
 ```
+
 the query time dropped from 2.5 seconds to 0.05 seconds — a 50x improvement.
 
 ## Final Thoughts

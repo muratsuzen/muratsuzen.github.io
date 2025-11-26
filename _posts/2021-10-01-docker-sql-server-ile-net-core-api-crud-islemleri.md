@@ -2,8 +2,8 @@
 title: Docker üzerinde SQL Server ile .Net Core Web API CRUD İşlemleri
 author: Murat Süzen
 date: 2021-10-01 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,crud,docker]
+categories: [ASP.NET Core]
+tags: [asp.net core, web api, crud, docker]
 math: true
 mermaid: true
 ---
@@ -24,7 +24,7 @@ Docker container yapısının çalışıp çalışmadığını docker desktop ü
 ![Docker MSSQL Server Container](/assets/img/posts/docker-sqlserver-container.png)
 _Docker MSSQL Server Container_
 
-Kurmuş olduğumuz SQL Server'a bağlanmamız için ben Azure Data Studio uygulamasını indirip kuruyorum. Bu uygulamayı da buradan indirebilirsiniz.  Studio uygulamasının da kurulumunu tamamladıktan sonra `dotnet new webapi -o docker-web-api` komutuyla yeni bir .Net Core Web API uygulaması oluşturuyorum.
+Kurmuş olduğumuz SQL Server'a bağlanmamız için ben Azure Data Studio uygulamasını indirip kuruyorum. Bu uygulamayı da buradan indirebilirsiniz. Studio uygulamasının da kurulumunu tamamladıktan sonra `dotnet new webapi -o docker-web-api` komutuyla yeni bir .Net Core Web API uygulaması oluşturuyorum.
 
 ![dotnet new web api](/assets/img/posts/docker-dotnet-new-web-api.png)
 _dotnet new web api_
@@ -42,12 +42,11 @@ using System.Collections.Generic;
 public class Post
 {
     public int Id { get; set; }
-    public string Name { get; set; }    
+    public string Name { get; set; }
 }
 ```
 
 DbContext sınıfını BlogContext adıyla oluşturup veritabanı bağlantısını ve sınıfı DbSet ile tanımlıyorum.
-
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +56,7 @@ public class BlogContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("Server=localhost;Database=myBlog;User Id=sa;Password=r00t.R00T;");
-        
+
         base.OnConfiguring(optionsBuilder);
     }
 
@@ -65,7 +64,7 @@ public class BlogContext : DbContext
 }
 ```
 
-Tabloların oluşturulması için migration yapmamız gerekiyor. Migration işlemlerini yapmak için `dotnet tool install --global dotnet-ef` kod bloğunu kullanarak .NET Core CLI aracını kuruyorum. Migration yapısını oluşturmak için `dotnet ef migrations add InitialCreate` kod bloğunu çalıştırdığımda aşağıdaki gibi migration dosyaları oluşturuluyor. 
+Tabloların oluşturulması için migration yapmamız gerekiyor. Migration işlemlerini yapmak için `dotnet tool install --global dotnet-ef` kod bloğunu kullanarak .NET Core CLI aracını kuruyorum. Migration yapısını oluşturmak için `dotnet ef migrations add InitialCreate` kod bloğunu çalıştırdığımda aşağıdaki gibi migration dosyaları oluşturuluyor.
 
 ![migration](/assets/img/posts/docker-web-api-migration.png)
 _migration_
@@ -132,10 +131,5 @@ namespace docker_web_api.Controllers
     }
 }
 ```
+
 Projeyi çalıştırıp <https://localhost:5001/swagger/index.html/> adresinden swagger yardımıyla veri işlemlerini test edebilirsiniz. Projeyi [**buradan**](https://github.com/muratsuzen/dotnetcore-samples/tree/main/docker-web-api) indirebilirsiniz. Bir sonraki makalede görüşmek üzere.
-
-
-
-
-
-

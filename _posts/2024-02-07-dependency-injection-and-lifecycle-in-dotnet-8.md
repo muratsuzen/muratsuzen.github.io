@@ -2,7 +2,7 @@
 title: Dependency Injection and Lifecycle in .NET 8
 author: Murat Süzen
 date: 2024-02-07 05:33:00
-categories: [ASP.NET CORE, Dependency Injection]
+categories: [ASP.NET Core, Dependency Injection]
 tags:
   [
     dependency injection,

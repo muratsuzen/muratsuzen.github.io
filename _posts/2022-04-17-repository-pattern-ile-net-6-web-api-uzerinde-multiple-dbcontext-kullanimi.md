@@ -2,8 +2,8 @@
 title: Repository Pattern İle .NET 6 Web API Üzerinde Multiple DbContext Kullanımı
 author: Murat Süzen
 date: 2022-04-17 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,net 6.0,web api,api key,repository pattern]
+categories: [ASP.NET Core, Design Patterns]
+tags: [ASP.NET Core, Design Patterns]
 math: true
 mermaid: true
 image:
@@ -32,10 +32,11 @@ public class BaseContext : DbContext
 {
     public BaseContext(DbContextOptions options): base(options)
     {
-        
+
     }
 }
 ```
+
 DbOneContext ve DbTwoContext sınıfları BaseContext den türetip aşağıdaki şekilde implemente ediyorum.
 
 ```csharp
@@ -119,12 +120,13 @@ public class BaseContext : DbContext
 {
     public BaseContext(DbContextOptions options): base(options)
     {
-        
+
     }
 
     public DbSett<Book> Books { get; set; }
 }
 ```
+
 Data klasörüne `DbContextFactory` isminde bir sınıf oluşturuyorum. Bu sınıfta bir IDictionary içersinde contextName değeri ile ilgili BaseContext nesnesini geri alıyoruz.
 
 ```csharp
@@ -146,6 +148,7 @@ namespace MultipleDbContext.Data
     }
 }
 ```
+
 Artık Repository yapısını oluşturabilirim. Öncelikle proejeye Repository isminde bir klasör oluşturup içerisine `IBookReposiory` adında bir interface ve `BookRepository` adında bir class ekliyorum.
 
 ```csharp
@@ -160,6 +163,7 @@ public interface IBookRepository
     List<Book> Get(string contextName);
 }
 ```
+
 ContextName bilgisini parametre ile gönderiyorum. Bu şekilde DbContext ayrımını yapacağım.
 
 ```csharp
@@ -201,18 +205,21 @@ namespace MultipleDbContext.Repository
     }
 }
 ```
+
 Bu sınıfta constructor içerisinde DbContextFactory ile DbContext nesnelerini Repository içerisine taşıyorum. Parametre ile gönderilen DbContexti çalıştırıyorum. Bu yapılandırma için `AutoFac` IOC container'ını projeye ekliyorum.
 
 ```bash
 Install-Package Autofac -Version 6.3.0
 Install-Package Autofac.Extensions.DependencyInjection -Version 7.2.0
 ```
+
 Paketi indirdikten sonra hemen Program.cs içerisinde AutoFac yapılandırmasını yapıyorum.
 
 ```csharp
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(b => b.RegisterModule(new AutoFacModule()));
 ```
+
 Burada registerModule ile kendi oluşturduğum AutoFacModule clasını tanımlıyorum.
 
 ```csharp
@@ -235,6 +242,7 @@ public class AutoFacModule : Module
     }
 }
 ```
+
 AutoFac IOC yapılandırması sonrasında controllers klasörüne BookController isminde bir web api controller ekliyorum.
 
 ```csharp
@@ -296,17 +304,20 @@ namespace MultipleDbContext.Controllers
     }
 }
 ```
+
 BookController'da görüldüğü üzere contextName parametresi ile hangi dbContext'e bağlanacağımı alıyorum. Daha sonra BookRepository yardımıyla CRUD işlemlerini yapacağım. Controller yapısını oluşturduktan sonra Migration yardımıyla `DbOne` ve `DbTwo` veritabanlarını oluşturuyorum. Birden fazla DbContext dosyası olduğu için migration işlemi yaparken hangisini oluşturacağını belirtmek gerekiyor.
 
 ```bash
 Add-Migration -Context DbOneContext
 Update-Database -Context DbOneContext
 ```
+
 ```bash
 Add-Migration -Context DbTwoContext
 Update-Database -Context DbTwoContext
 ```
-Migration işlemleri sonrasında aşağıdaki gibi veritabanlarının oluşmuş olduğunu görebilirsiniz. 
+
+Migration işlemleri sonrasında aşağıdaki gibi veritabanlarının oluşmuş olduğunu görebilirsiniz.
 
 ![MultipleContext](/assets/img/posts/MultipleContext.jpg)
 

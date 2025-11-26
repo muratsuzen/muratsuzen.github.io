@@ -2,7 +2,7 @@
 title: ESP32 GPS Tracker with SIM800 and WiFi Today’s Deep Dive
 author: Murat Süzen
 date: 2025-05-10 02:00:00
-categories: [ESP32, IoT, GPS, SIM800, WiFi]
+categories: [IoT, GPS Tracker]
 tags: [esp32, sim800, wifi, gps, telemetry, at commands, iot project]
 math: false
 mermaid: false
@@ -27,6 +27,7 @@ This setup logs GPS coordinates, stores them, and sends them over HTTP to a serv
 ## 🌐 Dual Connectivity: Why Use Both?
 
 Many IoT systems face environments where WiFi is unavailable or unreliable. By adding SIM800, your tracker can:
+
 - **Fallback to mobile networks** when WiFi fails.
 - Cover remote regions without WiFi infrastructure.
 - Switch between modes using `AT+SETMODE=WIFI` or `AT+SETMODE=SIM800` without rebooting.
@@ -62,25 +63,29 @@ if (gps.location.isUpdated()) {
 
 ### Preparing SIM800
 
-1️⃣ Activate bearer (APN):  
+1️⃣ Activate bearer (APN):
+
 ```csharp
 sendATCommand("AT+SAPBR=1,1", 2000);
 ```
 
-2️⃣ Setup HTTP:  
+2️⃣ Setup HTTP:
+
 ```csharp
 sendATCommand("AT+HTTPINIT", 1000);
 sendATCommand("AT+HTTPPARA=\"URL\",\"http://server/api\"", 1000);
 ```
 
-3️⃣ Push data:  
+3️⃣ Push data:
+
 ```csharp
 sendATCommand("AT+HTTPDATA=length,timeout", 1000);
 sim800Serial.print(jsonPayload);
 sendATCommand("AT+HTTPACTION=1", 10000);
 ```
 
-4️⃣ Cleanup:  
+4️⃣ Cleanup:
+
 ```csharp
 sendATCommand("AT+HTTPTERM", 1000);
 ```
@@ -111,14 +116,14 @@ if (client.connect(SERVICE_IP.c_str(), SERVICE_PORT.toInt())) {
 
 With the built-in AT command system, you can change settings live:
 
-| Command             | Action                                  |
-|---------------------|----------------------------------------|
-| `AT+SETID=<ID>`     | Update device ID                       |
-| `AT+SETADDR=<IP:PORT>` | Change server address                 |
-| `AT+SETMODE=WIFI`   | Switch to WiFi mode                    |
-| `AT+SETMODE=SIM800` | Switch to SIM800 mode                  |
-| `AT+STARTGPS`       | Enable GPS logging                     |
-| `AT+STOPGPS`        | Disable GPS logging                    |
+| Command                | Action                |
+| ---------------------- | --------------------- |
+| `AT+SETID=<ID>`        | Update device ID      |
+| `AT+SETADDR=<IP:PORT>` | Change server address |
+| `AT+SETMODE=WIFI`      | Switch to WiFi mode   |
+| `AT+SETMODE=SIM800`    | Switch to SIM800 mode |
+| `AT+STARTGPS`          | Enable GPS logging    |
+| `AT+STOPGPS`           | Disable GPS logging   |
 
 ✅ **Field tip**: You can also pull commands from the server dynamically via `/api/TelemetryData/NextCommand/{DEVICE_ID}`.
 
@@ -126,9 +131,9 @@ With the built-in AT command system, you can change settings live:
 
 ## 🌍 Real-World Use Cases
 
-- Vehicle tracking in mixed rural/urban zones  
-- Wildlife monitoring where WiFi is rare  
-- Delivery fleet systems that need dual redundancy  
+- Vehicle tracking in mixed rural/urban zones
+- Wildlife monitoring where WiFi is rare
+- Delivery fleet systems that need dual redundancy
 - Remote sensors pushing environmental data
 
 ---

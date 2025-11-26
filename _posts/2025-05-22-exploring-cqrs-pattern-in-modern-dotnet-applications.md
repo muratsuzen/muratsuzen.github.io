@@ -2,7 +2,7 @@
 title: "Exploring CQRS Pattern in Modern .NET Applications"
 author: Murat Süzen
 date: 2025-05-22 21:49:23 +0300
-categories: [Software, .NET, Architecture]
+categories: [ASP.NET Core, CQRS]
 tags: [cqrs, dotnet, clean architecture, csharp]
 math: false
 mermaid: false
@@ -85,4 +85,3 @@ public class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, List<User>>
 ## ✅ Conclusion
 
 CQRS empowers developers to write clean, focused logic for different operations. In complex .NET systems, applying CQRS with MediatR and EF Core can significantly improve structure and scalability.
-

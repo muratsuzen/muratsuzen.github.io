@@ -2,12 +2,14 @@
 title: Asp.NET Core Web API - Hangfire Kullanımı
 author: Murat Süzen
 date: 2020-10-10 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,hangfire]
+categories: [ASP.NET Core, Hangfire]
+tags: [asp.net core, web api, hangfire]
 math: true
 mermaid: true
 ---
+
 ## Hangfire Nedir?
+
 Hangfire, uygulamalarımızda arka planda çalıştırmak istediğimiz işleri ( background jobs) yönetebildiğimiz açık kaynaklı bir kütüphanedir. Peki neden böyle bir kütüphaneye gereksinim duyuyoruz. Bunu bir örnek ile açıklayayım. Örnek olarak bir tedarik firmasında ürünlerinizin fiyatlarının yeni ayda değiştiğini düşünelim. Bu değişikliği sizden ürün tedarik eden yüzlerce müşterinize mail göndererek bildirmeniz gerekiyor. Mail gönderim ekranında tüm müşterilerinizi seçip mail göndermeyi başlattığınızda bu yüzlerce mail gönderim işleminin bitmesini beklemek zorunda kalacaksınız. İşte bu ve buna benzer bir iş parçacığının tek bir thread üzerinde yapmak yerine Hangfire ile farklı threat larda ve istediğimiz zamanlarda gönderimini sağlayabiliriz.
 
 ASP.NET Core uygulamalarını yerel olarak geliştirmek ve çalıştırmak için aşağıdakileri indirip yükleyin:
@@ -33,21 +35,26 @@ Yazının detayına girmeden önce .Net Core ile ilgili en son yazdığım ASP.N
 ```shell
 dotnet add package Hangfire.AspNetCore --version 1.7.12
 ```
+
 ## Hangfire için Veritabanı Oluşturma
+
 Hangfire yapısı veri ve ayarları saklamak için Redis yada SQL veritabanına ihtiyaç duymaktadır. Bu makalede SQL veritabanı oluşturarak Hangfire kullanımına değineceğim. Öncelikle Hangfire için bir veritabanı oluşturalım.
 
 ```sql
 CREATE DATABASE [Hangfire]GO
 ```
+
 ## Hangfire Veritabanı Yapılandırılması
+
 Oluşturduğumuz veritabanı için bir bağlantı bilgisi eklememiz gerekmektedir. Bu bağlantı bilgisini appsettings.json içerisinde aşağıdaki şekilde ekliyorum.
 
 ```json
-"ConnectionStrings": 
-    {    
-        "HangfireConnection": "Server=.\\sqlexpress;Database=Hangfire;Integrated Security=SSPI;"  
+"ConnectionStrings":
+    {
+        "HangfireConnection": "Server=.\\sqlexpress;Database=Hangfire;Integrated Security=SSPI;"
     }
 ```
+
 Hangfire uyarı mesajlarını farklı bir türde göstermek için aşağıdaki şekilde Logging alanını düzenleyebilirsiniz.
 
 ```json
@@ -57,7 +64,9 @@ Hangfire uyarı mesajlarını farklı bir türde göstermek için aşağıdaki �
     }
 }
 ```
+
 ## Hangfire Yapılandırılması
+
 Projemizde Hangfire yapılandırma kodlarını yazacağımız `Startup.cs` dosyasında aşağıdaki ayarlamaları yapmamız gerekmektedir.
 
 ```csharp
@@ -67,6 +76,7 @@ public void ConfigureServices(IServiceCollection services)
      services.AddHangfireServer();
  }
 ```
+
 Hangfire dashboard kullanımı için ApplicationBuilder ayarlarında UseHangfireDashboard() tanımını yapmalıyız.
 
 ```csharp
@@ -79,6 +89,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 Yapılandırma sonrasında projemizi çalıştırdığımızda <http://localhost:57992/hangfire/> yolundan Hangfire Dashboard sayfasına erişebiliriz.
 
 ## Hangfire Background Job Tipleri
+
 - `Fire and forget jobs :` Yapılacak işin belirli bir zamana programlanmadan hemen yapılması ve tekrar etmeden tek bir defa çalıştırılmasını sağlayan background job tipidir.
 
 ```csharp
@@ -108,7 +119,7 @@ Hangfire kütüphanesinin ücretli bölümünde bulunan `Batch (PRO)` ve `Batch 
 - `Batch (PRO) :` Tanımlanan birden fazla işi tek bir grup şeklinde çalıştıran background job türüdür.
 
 ```csharp
-var batchId = BatchJob.StartNew(x => { x.Enqueue(() => Console.WriteLine("Job 1")); 
+var batchId = BatchJob.StartNew(x => { x.Enqueue(() => Console.WriteLine("Job 1"));
     x.Enqueue(() => Console.WriteLine("Job 2")); });
 ```
 

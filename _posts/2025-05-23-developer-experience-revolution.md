@@ -2,7 +2,7 @@
 title: "The Quiet Revolution: How Developer Experience Is Reshaping Modern Software Teams"
 author: Murat Süzen
 date: 2025-05-23 13:45:00 +0300
-categories: [Software, Development]
+categories: [Other]
 ---
 
 In recent years, a quiet yet powerful revolution has been brewing in software teams around the world. It's not about adopting the flashiest new framework or the latest language trend. It's about a deeper, more human shift: the prioritization of **Developer Experience (DX)**. While User Experience (UX) has long dominated product conversations, DX is now emerging as a strategic pillar in modern development organizations. But what does it really mean?

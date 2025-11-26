@@ -2,7 +2,7 @@
 title: What is Rate Limit? How to use in .NET 8?
 author: Murat Süzen
 date: 2024-03-04 05:33:00
-categories: [ASP.NET CORE, Rate Limit]
+categories: [ASP.NET Core, Rate Limit]
 tags: [rate limit, .NET 8]
 math: true
 mermaid: true

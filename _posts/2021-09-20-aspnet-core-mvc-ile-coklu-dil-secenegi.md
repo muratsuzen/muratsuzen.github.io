@@ -2,12 +2,13 @@
 title: ASP.NET Core MVC ile Çoklu Dil Seçeneği Ekleme
 author: Murat Süzen
 date: 2021-09-20 11:33:00 -500
-categories: [ASP.NET CORE MVC]
-tags: [asp.net core,mvc]
+categories: [ASP.NET Core]
+tags: [asp.net core, mvc]
 math: true
 mermaid: true
 ---
-Merhabalar bu makalede ASP.NET Core MVC uygulamasına nasıl çoklu dil desteği ekleyebileceğimizi inceleyeceğim. Öncelikle destekleyeceğimiz dil tanımlarını resource dosyalarında tutacağım için uygulamanın dizinine `Resources`  klasörünü oluşturuyorum. Daha sonra içerisine `SharedResource.tr-TR.resx` ve `SharedResource.en-US.resx` isminde iki Resource dosyası ekliyorum. Burada dikkat etmeniz gereken yer Languages. ifadesinden sonra Culture isimleri olmalı. Farklı dilleri de bu şekilde ekleyerek çoğaltabilirsiniz. 
+
+Merhabalar bu makalede ASP.NET Core MVC uygulamasına nasıl çoklu dil desteği ekleyebileceğimizi inceleyeceğim. Öncelikle destekleyeceğimiz dil tanımlarını resource dosyalarında tutacağım için uygulamanın dizinine `Resources` klasörünü oluşturuyorum. Daha sonra içerisine `SharedResource.tr-TR.resx` ve `SharedResource.en-US.resx` isminde iki Resource dosyası ekliyorum. Burada dikkat etmeniz gereken yer Languages. ifadesinden sonra Culture isimleri olmalı. Farklı dilleri de bu şekilde ekleyerek çoğaltabilirsiniz.
 
 ![Resource Files](/assets/img/posts/resource-files.jpg)
 _Resource Files_
@@ -23,7 +24,7 @@ namespace MultiLanguage
 }
 ```
 
-Uygulama dizinine Utilities klasörü oluşturup IStringLocalizer yapısını ayağa kaldıracak SharedViewLocalizer sınıfını geliştirelim. 
+Uygulama dizinine Utilities klasörü oluşturup IStringLocalizer yapısını ayağa kaldıracak SharedViewLocalizer sınıfını geliştirelim.
 
 ```csharp
 using System.Reflection;
@@ -100,6 +101,7 @@ namespace MultiLanguage.ExtensionMethods
     }
 }
 ```
+
 Daha sonra HomeController sınıfında Index metoduna services ayarlarında tanımladığım kullanabileceğim CultureInfo değerlerinden oluşan bir listeyi `ViewData` olarak set ediyorum.
 
 ```csharp
@@ -136,6 +138,7 @@ public IActionResult SetLanguage(string culture, string returnUrl)
     return LocalRedirect(returnUrl);
 }
 ```
+
 Daha sonra Index.cshtml dosyasını aşağıdaki değişikliği yapıyorum.
 
 ![Index](/assets/img/posts/index.jpg)
@@ -152,7 +155,7 @@ _EN-Resource_
 ![Index-Page](/assets/img/posts/index-page.jpg)
 _Index-Page_
 
-Projeyi [**buradan**](https://github.com/muratsuzen/dotnetcore-samples/tree/main/MultiLanguage) indirebilirsiniz. Bir sonraki makalede görüşmek üzere. 
+Projeyi [**buradan**](https://github.com/muratsuzen/dotnetcore-samples/tree/main/MultiLanguage) indirebilirsiniz. Bir sonraki makalede görüşmek üzere.
 
 Kaynaklar :
 

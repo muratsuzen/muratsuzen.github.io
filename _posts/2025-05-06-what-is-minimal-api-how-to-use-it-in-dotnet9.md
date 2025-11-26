@@ -2,8 +2,8 @@
 title: What is Minimal API? How to Use It in .NET 9?
 author: Murat Süzen
 date: 2025-05-04 20:06:21
-categories: ['DotNet', 'Minimal API', 'Trends']
-tags: ['minimal api', 'dotnet9', 'rest api', 'lightweight']
+categories: [ASP.NET Core, Minimal API]
+tags: ["minimal api", "dotnet9", "rest api", "lightweight"]
 math: false
 mermaid: false
 # image:

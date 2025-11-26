@@ -2,11 +2,12 @@
 title: ASP.NET Core Web API - JWT Authentication Kullanımı
 author: Murat Süzen
 date: 2021-01-10 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,jwt authentication]
+categories: [ASP.NET Core, Security]
+tags: [asp.net core, web api, jwt authentication]
 math: true
 mermaid: true
 ---
+
 Merhabalar bu makalede .Net Core 3.1 versiyonu ile bir Web API örnek projede JWT (JSON Web Token) kimlik doğrulama yapısını inceleyeceğim. Daha önceki Web API makalelerine buradan ulaşabilirsiniz. Uygulama dosyalarını aspnetcore-3-1-web-api-jwt Github adresinde bulabilirsiniz.
 
 ## ASP.NET Core Web API – User Entity
@@ -45,6 +46,7 @@ namespace WebApi.Entities
     }
 }
 ```
+
 ## ASP.NET Core Web API – AuthModel
 
 `AuthModel` token bilgisi almak için istemcinin göndermiş olduğu istekte User sınıfının sadece username ve password bilgisini parametre olarak göndermesi için kısıtlı bir sınıftır.
@@ -56,6 +58,7 @@ public class AuthModel
     public string Password { get; set; }
 }
 ```
+
 ## ASP.NET Core Web API – Startup
 
 Startup ​​sınıfı, uygulamanın tüm isteklerin nasıl işleneceğini yapılandırdığımız sınıftır.
@@ -94,6 +97,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     app.UseAuthorization();
 }
 ```
+
 ## ASP.NET Core Web API – UserService
 
 UserService sınıfında IUserService interface dosyasından implement ettikten sonra statik olarak bir User listesi dolduruyorum. Bu User verisi ile Authenticate metodunda UserName ve Password kontrolü ile user nesnesi geriye döndürüyorum.
@@ -150,7 +154,6 @@ namespace WebApi.Services
 
 ItemService sınıfınıd IItemService interface dosyasından implemente ediyorum. Bu sınıfta ürünler listesini geri döndüreceğimiz metodu yazalım.
 
-
 ```csharp
 namespace WebApi.Services
 {
@@ -179,7 +182,6 @@ namespace WebApi.Services
 ##ASP.NET Core Web API – ItemController
 
 ItemController sınıfı `[Authorize]` attribute ile yetkilendirildiği için UserName ve Password gönderilerek işlem yapılabilir.
-
 
 ```csharp
 namespace WebApi.Controllers
@@ -240,6 +242,7 @@ public class UserController : ControllerBase
     }
 }
 ```
+
 ## ASP.NET Core Web API – AppSettings
 
 ```csharp
@@ -259,7 +262,7 @@ public class AppSettings
 
 ## Postman ile Kullanımı
 
-Proje içeren dosyaları indirdiğimizde aspnetcore-3-1-web-api-jwt\WebApi klasöründeki WebApi.sln projesini açıp çalıştırıyoruz. 
+Proje içeren dosyaları indirdiğimizde aspnetcore-3-1-web-api-jwt\WebApi klasöründeki WebApi.sln projesini açıp çalıştırıyoruz.
 
 ![JWT Project Folder](/assets/img/posts/jwt-project-folder.jpg)
 _JWT Project Folder_
@@ -273,6 +276,3 @@ Daha sonra elde ettiğimiz token bilgisi ile user servisine get işlemi yapıyor
 
 ![JWT Get User](/assets/img/posts/jwt-get-user.jpg)
 _JWT Get User_
-
-
-

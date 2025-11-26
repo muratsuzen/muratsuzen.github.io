@@ -2,11 +2,12 @@
 title: ASP.NET Core Web API - Basic Authentication Kullanımı
 author: Murat Süzen
 date: 2021-01-15 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api,basic authentication]
+categories: [ASP.NET Core, Security]
+tags: [asp.net core, web api, basic authentication]
 math: true
 mermaid: true
 ---
+
 Merhabalar bu makalede .Net Core 3.1 versiyonu ile bir Web API örnek projede Basic kimlik doğrulama yapısını inceleyeceğim. Bir önceki [**ASP.NET Core 3.1 Web API – JWT Authentication Kullanımı**](../asp-net-core-web-api-jwt-authentication-kullanimi/) makalesini inceleyebilirsiniz. Uygulama dosyalarını [**aspnetcore-3-1-web-api-basic**](https://github.com/muratsuzen/dotnetcore-samples/tree/main/aspnetcore-3-1-web-api-basic/WebApi) Github adresinde bulabilirsiniz.
 
 ## ASP.NET Core Web API – User Entity
@@ -28,6 +29,7 @@ namespace WebApi.Entities
 ```
 
 ## ASP.NET Core Web API – Item Entity
+
 Ürün bilgilerini tuttuğumuz Item sınıfını veritabanında Item tablosu olarak düşünebilirsiniz.
 
 ```csharp
@@ -45,6 +47,7 @@ namespace WebApi.Entities
 ```
 
 ## ASP.NET Core Web API – AuthModel
+
 `AuthModel` token bilgisi almak için istemcinin göndermiş olduğu istekte User sınıfının sadece username ve password bilgisini parametre olarak göndermesi için kısıtlı bir sınıftır.
 
 ```csharp
@@ -56,6 +59,7 @@ public class AuthModel
 ```
 
 ## ASP.NET Core Web API – Startup
+
 Startup ​​sınıfı, uygulamanın tüm isteklerin nasıl işleneceğini yapılandırdığımız sınıftır.
 
 ```csharp
@@ -102,6 +106,7 @@ public class UserService : IUserService
 ```
 
 ## ASP.NET Core Web API – ItemService
+
 ItemService sınıfınıd IItemService interface dosyasından implemente ediyorum. Bu sınıfta ürünler listesini geri döndüreceğimiz metodu yazalım.
 
 ```csharp
@@ -128,7 +133,9 @@ namespace WebApi.Services
     }
 }
 ```
+
 ## ASP.NET Core Web API – ItemController
+
 ItemController sınıfı `[Authorize]` attribute ile yetkilendirildiği için UserName ve Password gönderilerek işlem yapılabilir.
 
 ```csharp
@@ -157,6 +164,7 @@ namespace WebApi.Controllers
 ```
 
 ## ASP.NET Core Web API – UserController
+
 Not: Tüm controller sınıfının `[Authorize]` attribute ile yetkilendirilmesi yanlızca `[AllowAnonymous]` attribute içeren metotları kapsamamaktadır. Çünkü `[AllowAnonymous]` attribute içeren metotlar `[Authorize]` attribute yapısını ezmektedir.
 
 ```csharp
@@ -189,6 +197,7 @@ public class UserController : ControllerBase
     }
 }
 ```
+
 ## ASP.NET Core Web API – BasicAuthHandler
 
 Oluşturmuş olduğumuz BasicAuthHandler sınıfı ile AuthenticationSchemeOptions özelliğini kullanarak HandleAuthenticate yapısı ile kimlik doğrulama işlemlerini yapacağız. Aşağıdaki kod bloğunda görebileceğiniz üzere Request.Headers içerisinde Authorization keyini yakalamaya çalışıp değerini AuthenticationHeaderValue.Parse metodu ile parametre değerine ulaşıyorum. Kullanıcı adı ve şifreyi “:” karakteri ile birleştirdiğim için örn:(murat:1234) split ile ayrıştırp kullanıcı adı ve şifreyi alıyorum. Kullanıcı bilgileri ile bir claim oluşturup `AuthenticationTicket` ile yeni bir Ticket oluşturuyorum ve AuthenticateResult.Success(ticket) ile döndürüyorum.

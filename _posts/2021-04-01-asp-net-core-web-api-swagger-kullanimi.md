@@ -2,18 +2,19 @@
 title: ASP.NET Core Web API - Swagger Kullanımı
 author: Murat Süzen
 date: 2021-04-01 11:33:00 -500
-categories: [ASP.NET CORE]
-tags: [asp.net core,web api]
+categories: [ASP.NET Core, Swagger]
+tags: [asp.net core, web api]
 math: true
 mermaid: true
 ---
+
 Web API projeleri geliştirdiğimizde API uygulamalarımızın nasıl kullanılacağını anlatacağımız dokümantasyonlara ihtiyacımız bulunmaktadır. Bu dokümantasyonlar, API projelerimizin ne işe yaradığını, hangi parametreler ile hangi formatlarda veri gönderip alabileceğinin bilgilerini içermektedir. Bu dokümantasyonların yazılması ve güncel tutulması işlemleri zordur. Bu nedenle Web API projesinin geliştirme aşamasında otomatik olarak oluşturulması gerekmektedir. Bu noktada kullanabileceğimiz API dokümantasyon yazılımı olan Swagger’i ASP.NET Core 3.1 Web API uygulamasında nasıl kullanabileceğimizi inceleyelim. Bir önceki ASP.NET Core 3.1 Web API – Basic Authentication Kullanımı konulu makaleyi inceleyebilirsiniz.
 
 ## ASP.NET Core 3.1 Web API – Swagger Örnek Projeyi Yapısı
 
 Örnek olarak yapacağım API projesinin içeriğini şu şekilde oluşturacağım:
 
-- `/item/get :`  Başarılı bir işlem gerçekleşirse 200 Ok durum bilgisinde tüm ürünlerin listesi getirilecek, hatalı bir işlemde 400 BadRequest sonucu döndürülecektir.
+- `/item/get :` Başarılı bir işlem gerçekleşirse 200 Ok durum bilgisinde tüm ürünlerin listesi getirilecek, hatalı bir işlemde 400 BadRequest sonucu döndürülecektir.
 
 - `/item/get/id :` Başarılı bir işlem gerçekleşirse 200 Ok durum bilgisinde, ürünler listesinden gönderdiğimiz id bilgisine göre 1 ürün getirilecektir. Hatalı bir işlemde 400 BadRequest sonucu döndürülecektir.
 
@@ -47,7 +48,7 @@ Proje oluşturmak için `dotnet new webapi` komutunu kullanıyoruz.
 
 - `Path: /Entities/Item.cs`
 
-Ürün bilgilerini taşıdığımız item sınıfını oluşturuyorum. Entity yapıları uygulamanın farklı bölümlerinde veri iletimi için kullanılır. Ayrıca controller yardımıyla http yanıtlarını döndürmek içinde kullanılabilmektedir. Entities sınıfları Entityframework ile Code First yaklaşımında veritabanı tablolarını oluşturmak için kullandığımız sınıflarıdır. *Not: Entities yapılarında kısıtlı veri döndürmek istendiğinde Models klasöründe ihtiyaca yönelik sınıflar kullanılmalıdır.*
+Ürün bilgilerini taşıdığımız item sınıfını oluşturuyorum. Entity yapıları uygulamanın farklı bölümlerinde veri iletimi için kullanılır. Ayrıca controller yardımıyla http yanıtlarını döndürmek içinde kullanılabilmektedir. Entities sınıfları Entityframework ile Code First yaklaşımında veritabanı tablolarını oluşturmak için kullandığımız sınıflarıdır. _Not: Entities yapılarında kısıtlı veri döndürmek istendiğinde Models klasöründe ihtiyaca yönelik sınıflar kullanılmalıdır._
 
 ```csharp
 namespace WebApi.Entities
@@ -215,6 +216,7 @@ namespace WebApi.Controllers
     }
 }
 ```
+
 ## ASP.NET Core Web API – WebApi.csproj
 
 - `Path:/WebApi.csproj`
@@ -229,6 +231,7 @@ namespace WebApi.Controllers
   </ItemGroup>
 </Project>
 ```
+
 ## ASP.NET Core Web API – Swagger Sonuç
 
 Terminalde dotnet run watch komutunu çalıştırıp projemizi <localhost:4000/swagger/> adresine gidiyoruz.

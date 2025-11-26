@@ -2,7 +2,7 @@
 title: The Latest Trends in Software Development Technologies to Watch in 2025
 author: Murat Süzen
 date: 2025-01-09 05:33:00
-categories: [Software Developement]
+categories: [Other]
 tags: [software development]
 math: true
 mermaid: true

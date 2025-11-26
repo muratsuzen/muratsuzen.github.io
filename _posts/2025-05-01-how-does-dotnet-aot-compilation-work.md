@@ -2,7 +2,7 @@
 title: How Does .NET Ahead-of-Time (AOT) Compilation Work?
 author: Murat Süzen
 date: 2025-05-01 09:00:00
-categories: [ASP.NET Core, .NET Performance]
+categories: [ASP.NET Core, Performance]
 tags: [dotnet, aot compilation, performance, native compile, optimization]
 math: false
 mermaid: false
@@ -41,10 +41,10 @@ This produces a native executable that includes your app, its dependencies, and 
 
 ## Types of AOT in .NET
 
-| Type                   | Description                                        |
-|------------------------|----------------------------------------------------|
-| ReadyToRun (R2R)       | Partial AOT; IL + native mix, improves startup     |
-| Full Native AOT        | Full AOT; no IL, pure native code, fastest startup |
+| Type             | Description                                        |
+| ---------------- | -------------------------------------------------- |
+| ReadyToRun (R2R) | Partial AOT; IL + native mix, improves startup     |
+| Full Native AOT  | Full AOT; no IL, pure native code, fastest startup |
 
 Full Native AOT is available in .NET 7+ and is especially useful for microservices, serverless, and CLI tools.
 
@@ -109,14 +109,16 @@ You’ll get a `hello.exe` or equivalent binary that runs natively.
 
 ## Benefits and Trade-offs
 
-✅ Benefits:  
-- Blazing-fast startup  
-- Lower memory usage  
+✅ Benefits:
+
+- Blazing-fast startup
+- Lower memory usage
 - No JIT-related runtime costs
 
-⚠ Trade-offs:  
-- Larger binaries (everything is baked in)  
-- Longer build times  
+⚠ Trade-offs:
+
+- Larger binaries (everything is baked in)
+- Longer build times
 - Less runtime flexibility (no reflection or dynamic code generation)
 
 ---
@@ -135,9 +137,9 @@ You may need to refactor code or use `DynamicDependency` and `RequiresUnreferenc
 
 ## Real-World Use Cases
 
-- **Cloud microservices** needing rapid scale-out  
-- **Serverless APIs** (AWS Lambda, Azure Functions) for minimal cold start  
-- **Desktop or IoT apps** where resources are limited  
+- **Cloud microservices** needing rapid scale-out
+- **Serverless APIs** (AWS Lambda, Azure Functions) for minimal cold start
+- **Desktop or IoT apps** where resources are limited
 - **CLI utilities** for maximum portability and speed
 
 ---

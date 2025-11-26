@@ -2,7 +2,7 @@
 title: What’s New in C# 12? Exploring the Latest Features
 author: Murat Süzen
 date: 2025-01-10 09:00:00
-categories: [C#, .NET, Language Features]
+categories: [Language Features, C# 12]
 tags: [csharp 12, new features, dotnet, language updates, productivity]
 math: false
 mermaid: false
