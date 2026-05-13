@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Getting Started with Entity Framework Core | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Getting Started with Entity Framework Core" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Entity Framework Core (EF Core) is Microsoft’s modern object-relational mapper (ORM) for .NET. It enables developers to interact with databases using C# objects, reducing the need to write raw SQL and making data access more maintainable, testable, and scalable." />
+<meta property="og:description" content="Entity Framework Core (EF Core) is Microsoft’s modern object-relational mapper (ORM) for .NET. It enables developers to interact with databases using C# objects, reducing the need to write raw SQL and making data access more maintainable, testable, and scalable." />
+<link rel="canonical" href="http://localhost:4000/2025/getting-started-with-entity-framework-core/" />
+<meta property="og:url" content="http://localhost:4000/2025/getting-started-with-entity-framework-core/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-07T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Getting Started with Entity Framework Core" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-07T12:00:00+03:00","datePublished":"2025-05-07T12:00:00+03:00","description":"Entity Framework Core (EF Core) is Microsoft’s modern object-relational mapper (ORM) for .NET. It enables developers to interact with databases using C# objects, reducing the need to write raw SQL and making data access more maintainable, testable, and scalable.","headline":"Getting Started with Entity Framework Core","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/getting-started-with-entity-framework-core/"},"url":"http://localhost:4000/2025/getting-started-with-entity-framework-core/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Entity Framework Core (EF Core) is Microsoft’s modern object-relational mapper (ORM) for .NET. It enables developers to interact with databases using C# objects, reducing the need to write raw SQL and making data access more maintainable, testable, and scalable.</p>
+
+<p>In this guide, we’ll explore <strong>what EF Core is</strong>, <strong>how to set it up</strong>, <strong>basic CRUD operations</strong>, and <strong>best practices</strong>. You’ll get hands-on examples to kickstart your database projects confidently.</p>
+
+<hr />
+
+<h2 id="what-is-entity-framework-core">What Is Entity Framework Core?</h2>
+
+<p>Entity Framework Core is a lightweight, extensible, open-source, and cross-platform ORM. It maps .NET classes (entities) to database tables, allowing you to work with data using LINQ queries and C# code instead of SQL.</p>
+
+<h3 id="why-use-ef-core">Why Use EF Core?</h3>
+
+<p>✅ Reduce boilerplate code<br />
+✅ Automatically generate database schemas (migrations)<br />
+✅ Use strong typing and compile-time checks<br />
+✅ Easily switch between different database providers (SQL Server, PostgreSQL, SQLite, etc.)<br />
+✅ Improve maintainability and testability</p>
+
+<hr />
+
+<h2 id="setting-up-ef-core">Setting Up EF Core</h2>
+
+<p>Let’s create a basic project using EF Core.</p>
+
+<h3 id="step-1-install-nuget-packages">Step 1: Install NuGet Packages</h3>
+
+<p>Run this in the terminal:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+</code></pre></div></div>
+
+<p>These packages provide the core library, the SQL Server provider, and tooling support.</p>
+
+<h3 id="step-2-define-the-data-model">Step 2: Define the Data Model</h3>
+
+<p>Create a <code class="language-plaintext highlighter-rouge">Product</code> entity:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">Product</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">decimal</span> <span class="n">Price</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="step-3-create-the-dbcontext">Step 3: Create the DbContext</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">AppDbContext</span> <span class="p">:</span> <span class="n">DbContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">DbSet</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="n">Products</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnConfiguring</span><span class="p">(</span><span class="n">DbContextOptionsBuilder</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">=&gt;</span> <span class="n">options</span><span class="p">.</span><span class="nf">UseSqlServer</span><span class="p">(</span><span class="s">"Server=localhost;Database=MyAppDb;Trusted_Connection=True;"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This context class bridges your entities and the database.</p>
+
+<hr />
+
+<h2 id="performing-crud-operations">Performing CRUD Operations</h2>
+
+<h3 id="create-insert">Create (Insert)</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">var</span> <span class="n">db</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">AppDbContext</span><span class="p">();</span>
+<span class="n">db</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">Product</span> <span class="p">{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"Laptop"</span><span class="p">,</span> <span class="n">Price</span> <span class="p">=</span> <span class="m">1500</span> <span class="p">});</span>
+<span class="n">db</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="read-query">Read (Query)</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">products</span> <span class="p">=</span> <span class="n">db</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Price</span> <span class="p">&gt;</span> <span class="m">1000</span><span class="p">).</span><span class="nf">ToList</span><span class="p">();</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">product</span> <span class="k">in</span> <span class="n">products</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">$"</span><span class="p">{</span><span class="n">product</span><span class="p">.</span><span class="n">Name</span><span class="p">}</span><span class="s"> - </span><span class="p">{</span><span class="n">product</span><span class="p">.</span><span class="n">Price</span><span class="p">}</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="update">Update</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">product</span> <span class="p">=</span> <span class="n">db</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">First</span><span class="p">();</span>
+<span class="n">product</span><span class="p">.</span><span class="n">Price</span> <span class="p">=</span> <span class="m">1200</span><span class="p">;</span>
+<span class="n">db</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="delete">Delete</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">product</span> <span class="p">=</span> <span class="n">db</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">First</span><span class="p">();</span>
+<span class="n">db</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">Remove</span><span class="p">(</span><span class="n">product</span><span class="p">);</span>
+<span class="n">db</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="using-migrations">Using Migrations</h2>
+
+<p>EF Core can generate database schemas using migrations.</p>
+
+<h3 id="add-initial-migration">Add Initial Migration</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet ef migrations add InitialCreate
+</code></pre></div></div>
+
+<h3 id="apply-migration">Apply Migration</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet ef database update
+</code></pre></div></div>
+
+<p>This creates tables in the database automatically.</p>
+
+<hr />
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+
+<h3 id="relationships">Relationships</h3>
+
+<p>Define one-to-many, many-to-many, and one-to-one relationships using navigation properties and Fluent API.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">Category</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="n">Products</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="lazy-loading-vs-eager-loading">Lazy Loading vs Eager Loading</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Eager loading</span>
+<span class="kt">var</span> <span class="n">products</span> <span class="p">=</span> <span class="n">db</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">Include</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Category</span><span class="p">).</span><span class="nf">ToList</span><span class="p">();</span>
+
+<span class="c1">// Lazy loading (requires setup)</span>
+<span class="kt">var</span> <span class="n">categoryName</span> <span class="p">=</span> <span class="n">product</span><span class="p">.</span><span class="n">Category</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="asynchronous-operations">Asynchronous Operations</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">products</span> <span class="p">=</span> <span class="k">await</span> <span class="n">db</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">ToListAsync</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Async queries help avoid blocking the main thread, especially in web apps.</p>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Use migrations to manage schema changes<br />
+✅ Write unit tests using in-memory providers (e.g., InMemoryDatabase)<br />
+✅ Avoid N+1 query problems by using <code class="language-plaintext highlighter-rouge">Include()</code><br />
+✅ Keep <code class="language-plaintext highlighter-rouge">DbContext</code> usage short-lived (scoped per request)<br />
+✅ Use value converters for custom types (like enums)</p>
+
+<hr />
+
+<h2 id="real-world-scenario-aspnet-core-integration">Real-World Scenario: ASP.NET Core Integration</h2>
+
+<p>In an ASP.NET Core API:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+<span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"api/[controller]"</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ProductsController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">AppDbContext</span> <span class="n">_context</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nf">ProductsController</span><span class="p">(</span><span class="n">AppDbContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+    <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;&gt;</span> <span class="nf">Get</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">_context</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">ToListAsync</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="p">[</span><span class="n">HttpPost</span><span class="p">]</span>
+    <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="nf">Post</span><span class="p">(</span><span class="n">Product</span> <span class="n">product</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_context</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="n">product</span><span class="p">);</span>
+        <span class="k">await</span> <span class="n">_context</span><span class="p">.</span><span class="nf">SaveChangesAsync</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nf">CreatedAtAction</span><span class="p">(</span><span class="k">nameof</span><span class="p">(</span><span class="n">Get</span><span class="p">),</span> <span class="k">new</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="n">product</span><span class="p">.</span><span class="n">Id</span> <span class="p">},</span> <span class="n">product</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>Entity Framework Core simplifies data access in .NET applications, allowing developers to work with databases efficiently using familiar C# constructs. By mastering EF Core, you unlock the ability to build data-driven applications with less effort and fewer bugs.</p>
+
+<p>In tomorrow’s article, we’ll explore <strong>LINQ queries</strong> — how to filter, project, and manipulate data elegantly in C#.</p>
+
+<p>Stay tuned for more advanced .NET insights!</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-entity-framework-core">What Is Entity Framework Core?</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#why-use-ef-core">Why Use EF Core?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#setting-up-ef-core">Setting Up EF Core</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-install-nuget-packages">Step 1: Install NuGet Packages</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-define-the-data-model">Step 2: Define the Data Model</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-3-create-the-dbcontext">Step 3: Create the DbContext</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#performing-crud-operations">Performing CRUD Operations</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#create-insert">Create (Insert)</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#read-query">Read (Query)</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#update">Update</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#delete">Delete</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#using-migrations">Using Migrations</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#add-initial-migration">Add Initial Migration</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#apply-migration">Apply Migration</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#advanced-topics">Advanced Topics</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#relationships">Relationships</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#lazy-loading-vs-eager-loading">Lazy Loading vs Eager Loading</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#asynchronous-operations">Asynchronous Operations</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-scenario-asp-net-core-integration">Real-World Scenario: ASP.NET Core Integration</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

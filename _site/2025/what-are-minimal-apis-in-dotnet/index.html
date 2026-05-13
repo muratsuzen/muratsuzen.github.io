@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What Are Minimal APIs in .NET? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What Are Minimal APIs in .NET?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Minimal APIs are a lightweight, fast way to build HTTP APIs in ASP.NET Core with minimal setup and overhead. Introduced in .NET 6, they let you define routes, handlers, and endpoints directly in Program.cs without needing controllers, attributes, or complex configuration." />
+<meta property="og:description" content="Minimal APIs are a lightweight, fast way to build HTTP APIs in ASP.NET Core with minimal setup and overhead. Introduced in .NET 6, they let you define routes, handlers, and endpoints directly in Program.cs without needing controllers, attributes, or complex configuration." />
+<link rel="canonical" href="http://localhost:4000/2025/what-are-minimal-apis-in-dotnet/" />
+<meta property="og:url" content="http://localhost:4000/2025/what-are-minimal-apis-in-dotnet/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-02T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What Are Minimal APIs in .NET?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-02T12:00:00+03:00","datePublished":"2025-05-02T12:00:00+03:00","description":"Minimal APIs are a lightweight, fast way to build HTTP APIs in ASP.NET Core with minimal setup and overhead. Introduced in .NET 6, they let you define routes, handlers, and endpoints directly in Program.cs without needing controllers, attributes, or complex configuration.","headline":"What Are Minimal APIs in .NET?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/what-are-minimal-apis-in-dotnet/"},"url":"http://localhost:4000/2025/what-are-minimal-apis-in-dotnet/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Minimal APIs are a lightweight, fast way to build HTTP APIs in ASP.NET Core with minimal setup and overhead. Introduced in .NET 6, they let you define routes, handlers, and endpoints directly in <code class="language-plaintext highlighter-rouge">Program.cs</code> without needing controllers, attributes, or complex configuration.</p>
+
+<p>In this article, we’ll explore <strong>what Minimal APIs are</strong>, <strong>why they’re useful</strong>, <strong>how to implement them</strong>, and walk through real examples and best practices.</p>
+
+<hr />
+
+<h2 id="what-are-minimal-apis">What Are Minimal APIs?</h2>
+
+<p>Minimal APIs provide a simplified approach to building RESTful services:</p>
+
+<p>✅ Write HTTP routes and handlers directly in the app startup file.<br />
+✅ Focus on the essentials — no extra ceremony or layers.<br />
+✅ Perfect for small services, microservices, or serverless apps.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/hello"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="s">"Hello, world!"</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>That’s a complete, runnable API!</p>
+
+<hr />
+
+<h2 id="why-use-minimal-apis">Why Use Minimal APIs?</h2>
+
+<p>✅ <strong>Simplicity</strong> — Less code, fewer files.<br />
+✅ <strong>Performance</strong> — Lower startup overhead.<br />
+✅ <strong>Flexibility</strong> — Combine with DI, middleware, or full MVC when needed.<br />
+✅ <strong>Perfect for microservices</strong> — Small, focused endpoints.</p>
+
+<hr />
+
+<h2 id="setting-up-a-minimal-api">Setting Up a Minimal API</h2>
+
+<h3 id="step-1-create-a-new-project">Step 1: Create a New Project</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet new web -o MinimalApiApp
+cd MinimalApiApp
+</code></pre></div></div>
+
+<h3 id="step-2-define-endpoints">Step 2: Define Endpoints</h3>
+
+<p>In <code class="language-plaintext highlighter-rouge">Program.cs</code>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/greet"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="s">"Hello from Minimal API!"</span><span class="p">);</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Run it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet run
+</code></pre></div></div>
+
+<p>Visit <code class="language-plaintext highlighter-rouge">https://localhost:5001/greet</code>.</p>
+
+<hr />
+
+<h2 id="adding-parameters-and-routes">Adding Parameters and Routes</h2>
+
+<h3 id="simple-parameter">Simple Parameter</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/square/{number:int}"</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span> <span class="n">number</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">number</span> <span class="p">*</span> <span class="n">number</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Calling <code class="language-plaintext highlighter-rouge">/square/5</code> returns <code class="language-plaintext highlighter-rouge">25</code>.</p>
+
+<h3 id="query-string-parameters">Query String Parameters</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/welcome"</span><span class="p">,</span> <span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="s">$"Welcome, </span><span class="p">{</span><span class="n">name</span><span class="p">}</span><span class="s">!"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">WithName</span><span class="p">(</span><span class="s">"WelcomeEndpoint"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="working-with-dependency-injection">Working with Dependency Injection</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="p">&lt;</span><span class="n">MyService</span><span class="p">&gt;();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/service"</span><span class="p">,</span> <span class="p">(</span><span class="n">MyService</span> <span class="n">service</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">service</span><span class="p">.</span><span class="nf">GetMessage</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">MyService</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="nf">GetMessage</span><span class="p">()</span> <span class="p">=&gt;</span> <span class="s">"Hello from DI service!"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="handling-post-requests">Handling POST Requests</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">MapPost</span><span class="p">(</span><span class="s">"/products"</span><span class="p">,</span> <span class="p">(</span><span class="n">Product</span> <span class="n">product</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="c1">// Save product (mocked)</span>
+    <span class="k">return</span> <span class="n">Results</span><span class="p">.</span><span class="nf">Created</span><span class="p">(</span><span class="s">$"/products/</span><span class="p">{</span><span class="n">product</span><span class="p">.</span><span class="n">Id</span><span class="p">}</span><span class="s">"</span><span class="p">,</span> <span class="n">product</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Product</code> class:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">record</span> <span class="nc">Product</span><span class="p">(</span><span class="kt">int</span> <span class="n">Id</span><span class="p">,</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">,</span> <span class="kt">decimal</span> <span class="n">Price</span><span class="p">);</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="adding-middleware">Adding Middleware</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">$"Request: </span><span class="p">{</span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Path</span><span class="p">}</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>This runs on every request.</p>
+
+<hr />
+
+<h2 id="error-handling-and-validation">Error Handling and Validation</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/divide"</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">b</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Results</span><span class="p">.</span><span class="nf">BadRequest</span><span class="p">(</span><span class="s">"Cannot divide by zero."</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">Results</span><span class="p">.</span><span class="nf">Ok</span><span class="p">(</span><span class="n">a</span> <span class="p">/</span> <span class="n">b</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Use Minimal APIs for small services or prototypes.<br />
+✅ Add authentication and authorization as needed.<br />
+✅ Validate input carefully — fewer layers mean more responsibility.<br />
+✅ Organize routes logically, even without controllers.<br />
+✅ Use OpenAPI/Swagger for documentation (<code class="language-plaintext highlighter-rouge">builder.Services.AddEndpointsApiExplorer()</code>).</p>
+
+<hr />
+
+<h2 id="real-world-example-health-check">Real-World Example: Health Check</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/health"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="n">Results</span><span class="p">.</span><span class="nf">Ok</span><span class="p">(</span><span class="k">new</span> <span class="p">{</span> <span class="n">status</span> <span class="p">=</span> <span class="s">"Healthy"</span><span class="p">,</span> <span class="n">time</span> <span class="p">=</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span> <span class="p">}));</span>
+</code></pre></div></div>
+
+<p>This provides a simple endpoint for monitoring or health checks.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>Minimal APIs in ASP.NET Core offer a fast, efficient way to build lightweight HTTP services with minimal setup. By learning how to use them effectively, you can build focused microservices, APIs, and serverless functions that are easy to maintain and deploy.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-are-minimal-apis">What Are Minimal APIs?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#why-use-minimal-apis">Why Use Minimal APIs?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#setting-up-a-minimal-api">Setting Up a Minimal API</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-create-a-new-project">Step 1: Create a New Project</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-define-endpoints">Step 2: Define Endpoints</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#adding-parameters-and-routes">Adding Parameters and Routes</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#simple-parameter">Simple Parameter</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#query-string-parameters">Query String Parameters</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#working-with-dependency-injection">Working with Dependency Injection</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#handling-post-requests">Handling POST Requests</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#adding-middleware">Adding Middleware</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#error-handling-and-validation">Error Handling and Validation</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-example-health-check">Real-World Example: Health Check</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

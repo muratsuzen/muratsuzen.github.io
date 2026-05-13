@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What are High-Value Customers? How to Find Them Using SQL | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What are High-Value Customers? How to Find Them Using SQL" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In today’s data-driven businesses, identifying high-value customers is critical for marketing, sales, and retention strategies. But how can we systematically identify these customers from raw transaction data? In this article, we will explore how to use SQL queries to identify top-tier customers who generate the most revenue." />
+<meta property="og:description" content="In today’s data-driven businesses, identifying high-value customers is critical for marketing, sales, and retention strategies. But how can we systematically identify these customers from raw transaction data? In this article, we will explore how to use SQL queries to identify top-tier customers who generate the most revenue." />
+<link rel="canonical" href="http://localhost:4000/2025/what-are-high-value-customers-how-to-find-them-using-sql/" />
+<meta property="og:url" content="http://localhost:4000/2025/what-are-high-value-customers-how-to-find-them-using-sql/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-04-30T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What are High-Value Customers? How to Find Them Using SQL" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-04-30T12:00:00+03:00","datePublished":"2025-04-30T12:00:00+03:00","description":"In today’s data-driven businesses, identifying high-value customers is critical for marketing, sales, and retention strategies. But how can we systematically identify these customers from raw transaction data? In this article, we will explore how to use SQL queries to identify top-tier customers who generate the most revenue.","headline":"What are High-Value Customers? How to Find Them Using SQL","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/what-are-high-value-customers-how-to-find-them-using-sql/"},"url":"http://localhost:4000/2025/what-are-high-value-customers-how-to-find-them-using-sql/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>In today’s data-driven businesses, identifying <strong>high-value customers</strong> is critical for marketing, sales, and retention strategies. But how can we systematically identify these customers from raw transaction data? In this article, we will explore how to use SQL queries to identify top-tier customers who generate the most revenue.</p>
+
+<h2 id="why-high-value-customers-matter">Why High-Value Customers Matter</h2>
+
+<p>High-value customers often:</p>
+<ul>
+  <li>Generate the majority of a company’s revenue</li>
+  <li>Show consistent repeat purchases</li>
+  <li>Are more receptive to upsell and loyalty programs</li>
+</ul>
+
+<p>Knowing who they are allows businesses to:</p>
+<ul>
+  <li>Offer targeted promotions</li>
+  <li>Provide personalized support</li>
+  <li>Allocate marketing resources efficiently</li>
+</ul>
+
+<h2 id="sql-scenario-northwind-database">SQL Scenario: Northwind Database</h2>
+
+<p>We will use the Northwind sample database, focusing on orders from 2016. Our goal: <strong>find customers who placed orders totaling $15,000 or more in 2016.</strong></p>
+
+<h2 id="step-1-understand-the-tables">Step 1: Understand the Tables</h2>
+
+<p>We need three main tables:</p>
+<ul>
+  <li><strong>Customers</strong> → customer details</li>
+  <li><strong>Orders</strong> → order details, including date</li>
+  <li><strong>OrderDetails</strong> → individual product prices and quantities per order</li>
+</ul>
+
+<h2 id="step-2-write-the-base-query">Step 2: Write the Base Query</h2>
+
+<p>First, pull all relevant order data:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+    <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span><span class="p">,</span>
+    <span class="n">Customers</span><span class="p">.</span><span class="n">CompanyName</span><span class="p">,</span>
+    <span class="n">Orders</span><span class="p">.</span><span class="n">OrderID</span><span class="p">,</span>
+    <span class="k">SUM</span><span class="p">(</span><span class="n">OrderDetails</span><span class="p">.</span><span class="n">Quantity</span> <span class="o">*</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">UnitPrice</span><span class="p">)</span> <span class="k">AS</span> <span class="n">TotalOrderAmount</span>
+<span class="k">FROM</span> <span class="n">Customers</span>
+<span class="k">JOIN</span> <span class="n">Orders</span> <span class="k">ON</span> <span class="n">Orders</span><span class="p">.</span><span class="n">CustomerID</span> <span class="o">=</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span>
+<span class="k">JOIN</span> <span class="n">OrderDetails</span> <span class="k">ON</span> <span class="n">Orders</span><span class="p">.</span><span class="n">OrderID</span> <span class="o">=</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">OrderID</span>
+<span class="k">WHERE</span> <span class="n">OrderDate</span> <span class="o">&gt;=</span> <span class="s1">'2016-01-01'</span> <span class="k">AND</span> <span class="n">OrderDate</span> <span class="o">&lt;</span> <span class="s1">'2017-01-01'</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span><span class="p">,</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CompanyName</span><span class="p">,</span> <span class="n">Orders</span><span class="p">.</span><span class="n">OrderID</span>
+<span class="k">HAVING</span> <span class="k">SUM</span><span class="p">(</span><span class="n">OrderDetails</span><span class="p">.</span><span class="n">Quantity</span> <span class="o">*</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">UnitPrice</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">10000</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">TotalOrderAmount</span> <span class="k">DESC</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>This query finds <strong>individual orders</strong> over $10,000.</p>
+
+<h2 id="step-3-aggregate-per-customer">Step 3: Aggregate Per Customer</h2>
+
+<p>Instead of per order, sum all orders per customer:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+    <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span><span class="p">,</span>
+    <span class="n">Customers</span><span class="p">.</span><span class="n">CompanyName</span><span class="p">,</span>
+    <span class="k">SUM</span><span class="p">(</span><span class="n">OrderDetails</span><span class="p">.</span><span class="n">Quantity</span> <span class="o">*</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">UnitPrice</span><span class="p">)</span> <span class="k">AS</span> <span class="n">TotalOrderAmount</span>
+<span class="k">FROM</span> <span class="n">Customers</span>
+<span class="k">JOIN</span> <span class="n">Orders</span> <span class="k">ON</span> <span class="n">Orders</span><span class="p">.</span><span class="n">CustomerID</span> <span class="o">=</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span>
+<span class="k">JOIN</span> <span class="n">OrderDetails</span> <span class="k">ON</span> <span class="n">Orders</span><span class="p">.</span><span class="n">OrderID</span> <span class="o">=</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">OrderID</span>
+<span class="k">WHERE</span> <span class="n">OrderDate</span> <span class="o">&gt;=</span> <span class="s1">'2016-01-01'</span> <span class="k">AND</span> <span class="n">OrderDate</span> <span class="o">&lt;</span> <span class="s1">'2017-01-01'</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span><span class="p">,</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CompanyName</span>
+<span class="k">HAVING</span> <span class="k">SUM</span><span class="p">(</span><span class="n">OrderDetails</span><span class="p">.</span><span class="n">Quantity</span> <span class="o">*</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">UnitPrice</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">15000</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">TotalOrderAmount</span> <span class="k">DESC</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>This identifies <strong>top customers by total 2016 spend</strong>.</p>
+
+<h2 id="step-4-including-discounts">Step 4: Including Discounts</h2>
+
+<p>To account for discounts, adjust the calculation:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+    <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span><span class="p">,</span>
+    <span class="n">Customers</span><span class="p">.</span><span class="n">CompanyName</span><span class="p">,</span>
+    <span class="k">SUM</span><span class="p">(</span><span class="n">OrderDetails</span><span class="p">.</span><span class="n">Quantity</span> <span class="o">*</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">UnitPrice</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">Discount</span><span class="p">))</span> <span class="k">AS</span> <span class="n">TotalOrderAmountWithDiscount</span>
+<span class="k">FROM</span> <span class="n">Customers</span>
+<span class="k">JOIN</span> <span class="n">Orders</span> <span class="k">ON</span> <span class="n">Orders</span><span class="p">.</span><span class="n">CustomerID</span> <span class="o">=</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span>
+<span class="k">JOIN</span> <span class="n">OrderDetails</span> <span class="k">ON</span> <span class="n">Orders</span><span class="p">.</span><span class="n">OrderID</span> <span class="o">=</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">OrderID</span>
+<span class="k">WHERE</span> <span class="n">OrderDate</span> <span class="o">&gt;=</span> <span class="s1">'2016-01-01'</span> <span class="k">AND</span> <span class="n">OrderDate</span> <span class="o">&lt;</span> <span class="s1">'2017-01-01'</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CustomerID</span><span class="p">,</span> <span class="n">Customers</span><span class="p">.</span><span class="n">CompanyName</span>
+<span class="k">HAVING</span> <span class="k">SUM</span><span class="p">(</span><span class="n">OrderDetails</span><span class="p">.</span><span class="n">Quantity</span> <span class="o">*</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">UnitPrice</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">OrderDetails</span><span class="p">.</span><span class="n">Discount</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">15000</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">TotalOrderAmountWithDiscount</span> <span class="k">DESC</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Now you are factoring in <strong>realized revenue</strong> after discounts.</p>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<ul>
+  <li>Use indexes on date and customer fields for performance</li>
+  <li>Consider excluding canceled or returned orders</li>
+  <li>Combine with customer metadata for deeper segmentation (e.g., region, industry)</li>
+  <li>Automate reporting for monthly or quarterly updates</li>
+</ul>
+
+<h2 id="final-thoughts">Final Thoughts</h2>
+
+<p>Identifying high-value customers is a powerful way to focus business efforts where they matter most. With well-constructed SQL queries, you can extract these insights directly from your database and make data-driven decisions.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#why-high-value-customers-matter">Why High-Value Customers Matter</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#sql-scenario-northwind-database">SQL Scenario: Northwind Database</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-1-understand-the-tables">Step 1: Understand the Tables</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-2-write-the-base-query">Step 2: Write the Base Query</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-3-aggregate-per-customer">Step 3: Aggregate Per Customer</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-4-including-discounts">Step 4: Including Discounts</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#final-thoughts">Final Thoughts</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

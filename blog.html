@@ -1,0 +1,42 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+---
+
+{% assign postsByYear = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
+
+{% for year in postsByYear limit: 2 %}
+  <div class="year-group">
+    <h2 class="year-title">{{ year.name }}</h2>
+    {% for post in year.items %}
+      <div class="post-item">
+        <span class="post-date">
+          {{ post.date | date: "%b %-d" }}
+        </span>
+        <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endfor %}
+
+<div class="archive-link-container">
+    <a href="{{ '/archive/' | relative_url }}" class="archive-btn">View Full Archive →</a>
+</div>
+
+<style>
+.archive-link-container {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+}
+.archive-btn {
+    text-decoration: none;
+    color: #718096;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+.archive-btn:hover {
+    color: #343C4B;
+}
+</style>

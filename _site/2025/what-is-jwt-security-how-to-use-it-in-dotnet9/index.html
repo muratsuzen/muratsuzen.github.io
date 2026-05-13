@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What is JWT Security? How to Use It in .NET 9 for Secure APIs | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What is JWT Security? How to Use It in .NET 9 for Secure APIs" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In the world of modern web development, securing your APIs is no longer optional. One of the most popular and effective methods today is using JWT (JSON Web Token) for authentication and authorization. This article explains what JWT is, why it matters, and how you can implement it in your .NET 9 applications." />
+<meta property="og:description" content="In the world of modern web development, securing your APIs is no longer optional. One of the most popular and effective methods today is using JWT (JSON Web Token) for authentication and authorization. This article explains what JWT is, why it matters, and how you can implement it in your .NET 9 applications." />
+<link rel="canonical" href="http://localhost:4000/2025/what-is-jwt-security-how-to-use-it-in-dotnet9/" />
+<meta property="og:url" content="http://localhost:4000/2025/what-is-jwt-security-how-to-use-it-in-dotnet9/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-01T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What is JWT Security? How to Use It in .NET 9 for Secure APIs" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-01T12:00:00+03:00","datePublished":"2025-05-01T12:00:00+03:00","description":"In the world of modern web development, securing your APIs is no longer optional. One of the most popular and effective methods today is using JWT (JSON Web Token) for authentication and authorization. This article explains what JWT is, why it matters, and how you can implement it in your .NET 9 applications.","headline":"What is JWT Security? How to Use It in .NET 9 for Secure APIs","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/what-is-jwt-security-how-to-use-it-in-dotnet9/"},"url":"http://localhost:4000/2025/what-is-jwt-security-how-to-use-it-in-dotnet9/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>In the world of modern web development, <strong>securing your APIs</strong> is no longer optional. One of the most popular and effective methods today is using <strong>JWT (JSON Web Token)</strong> for authentication and authorization. This article explains what JWT is, why it matters, and how you can implement it in your .NET 9 applications.</p>
+
+<h2 id="what-is-jwt">What is JWT?</h2>
+
+<p>JWT (JSON Web Token) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed.</p>
+
+<p>A typical JWT contains:</p>
+
+<ul>
+  <li>Header: Defines the type of the token and signing algorithm</li>
+  <li>Payload: Contains the claims (user data, permissions, etc.)</li>
+  <li>Signature: Ensures that the token hasn’t been altered</li>
+</ul>
+
+<p>Why use JWT?</p>
+
+<ul>
+  <li>Stateless: No server-side session storage required</li>
+  <li>Scalable: Perfect for distributed and microservice architectures</li>
+  <li>Compact: Easy to transmit via URL, headers, or inside cookies</li>
+</ul>
+
+<h2 id="how-jwt-works-in-net-9">How JWT Works in .NET 9</h2>
+
+<p>In a typical flow:</p>
+
+<ol>
+  <li>A user logs in with valid credentials.</li>
+  <li>The server generates a JWT and sends it back to the client.</li>
+  <li>The client stores the token (usually in local storage or a cookie).</li>
+  <li>The client sends the token with every request (commonly in the Authorization header).</li>
+  <li>The server validates the token and grants or denies access.</li>
+</ol>
+
+<h2 id="step-by-step-using-jwt-in-net-9">Step-by-Step: Using JWT in .NET 9</h2>
+
+<h3 id="step-1-install-required-nuget-packages">Step 1: Install Required NuGet Packages</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
+</code></pre></div></div>
+
+<h3 id="step-2-configure-jwt-authentication-in-programcs">Step 2: Configure JWT Authentication in Program.cs</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Authentication.JwtBearer</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.IdentityModel.Tokens</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddAuthentication</span><span class="p">(</span><span class="n">JwtBearerDefaults</span><span class="p">.</span><span class="n">AuthenticationScheme</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">AddJwtBearer</span><span class="p">(</span><span class="n">options</span> <span class="p">=&gt;</span>
+    <span class="p">{</span>
+        <span class="n">options</span><span class="p">.</span><span class="n">TokenValidationParameters</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TokenValidationParameters</span>
+        <span class="p">{</span>
+            <span class="n">ValidateIssuer</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+            <span class="n">ValidateAudience</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+            <span class="n">ValidateLifetime</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+            <span class="n">ValidateIssuerSigningKey</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span>
+            <span class="n">ValidIssuer</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">"Jwt:Issuer"</span><span class="p">],</span>
+            <span class="n">ValidAudience</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">"Jwt:Audience"</span><span class="p">],</span>
+            <span class="n">IssuerSigningKey</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SymmetricSecurityKey</span><span class="p">(</span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="nf">GetBytes</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">"Jwt:Key"</span><span class="p">]))</span>
+        <span class="p">};</span>
+    <span class="p">});</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddAuthorization</span><span class="p">();</span>
+
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseAuthentication</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="nf">UseAuthorization</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapControllers</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="step-3-generate-tokens">Step 3: Generate Tokens</h3>
+
+<p>Typically, you create a token when the user successfully logs in.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">System.IdentityModel.Tokens.Jwt</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Security.Claims</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.IdentityModel.Tokens</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="kt">string</span> <span class="nf">GenerateJwtToken</span><span class="p">(</span><span class="kt">string</span> <span class="n">username</span><span class="p">,</span> <span class="kt">string</span> <span class="n">secretKey</span><span class="p">,</span> <span class="kt">string</span> <span class="n">issuer</span><span class="p">,</span> <span class="kt">string</span> <span class="n">audience</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">claims</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span>
+    <span class="p">{</span>
+        <span class="k">new</span> <span class="nf">Claim</span><span class="p">(</span><span class="n">JwtRegisteredClaimNames</span><span class="p">.</span><span class="n">Sub</span><span class="p">,</span> <span class="n">username</span><span class="p">),</span>
+        <span class="k">new</span> <span class="nf">Claim</span><span class="p">(</span><span class="n">JwtRegisteredClaimNames</span><span class="p">.</span><span class="n">Jti</span><span class="p">,</span> <span class="n">Guid</span><span class="p">.</span><span class="nf">NewGuid</span><span class="p">().</span><span class="nf">ToString</span><span class="p">())</span>
+    <span class="p">};</span>
+
+    <span class="kt">var</span> <span class="n">key</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SymmetricSecurityKey</span><span class="p">(</span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="nf">GetBytes</span><span class="p">(</span><span class="n">secretKey</span><span class="p">));</span>
+    <span class="kt">var</span> <span class="n">creds</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SigningCredentials</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">SecurityAlgorithms</span><span class="p">.</span><span class="n">HmacSha256</span><span class="p">);</span>
+
+    <span class="kt">var</span> <span class="n">token</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">JwtSecurityToken</span><span class="p">(</span>
+        <span class="n">issuer</span><span class="p">,</span>
+        <span class="n">audience</span><span class="p">,</span>
+        <span class="n">claims</span><span class="p">,</span>
+        <span class="n">expires</span><span class="p">:</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="nf">AddHours</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+        <span class="n">signingCredentials</span><span class="p">:</span> <span class="n">creds</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">JwtSecurityTokenHandler</span><span class="p">().</span><span class="nf">WriteToken</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="step-4-protect-api-endpoints">Step 4: Protect API Endpoints</h3>
+
+<p>Add the <code class="language-plaintext highlighter-rouge">[Authorize]</code> attribute to any controller or action you want to secure.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Authorization</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Mvc</span><span class="p">;</span>
+
+<span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+<span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"[controller]"</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">SecureDataController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+    <span class="p">[</span><span class="n">Authorize</span><span class="p">]</span>
+    <span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">GetSecureInfo</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nf">Ok</span><span class="p">(</span><span class="k">new</span> <span class="p">{</span> <span class="n">message</span> <span class="p">=</span> <span class="s">"This is a protected endpoint."</span> <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="why-jwt-security-matters">Why JWT Security Matters</h2>
+
+<ul>
+  <li>Strong API protection without managing server-side sessions</li>
+  <li>Easily integrates with third-party systems and microservices</li>
+  <li>Supports roles and claims-based access control</li>
+  <li>Widely supported by frontend frameworks, mobile apps, and external clients</li>
+</ul>
+
+<h2 id="best-practices-for-jwt-in-net-9">Best Practices for JWT in .NET 9</h2>
+
+<ul>
+  <li>Keep your signing keys secure and rotate them regularly</li>
+  <li>Set appropriate token expiration times</li>
+  <li>Use HTTPS to prevent token interception</li>
+  <li>Store tokens securely on the client side (avoid local storage if possible; prefer secure cookies)</li>
+  <li>Consider using refresh tokens for longer-lived sessions</li>
+</ul>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>JWT is a powerful tool for securing your .NET 9 Web APIs. By following these steps and best practices, you can implement a robust, scalable, and maintainable authentication system for your applications.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-jwt">What is JWT?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#how-jwt-works-in-net-9">How JWT Works in .NET 9</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-by-step-using-jwt-in-net-9">Step-by-Step: Using JWT in .NET 9</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-install-required-nuget-packages">Step 1: Install Required NuGet Packages</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-configure-jwt-authentication-in-program-cs">Step 2: Configure JWT Authentication in Program.cs</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-3-generate-tokens">Step 3: Generate Tokens</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-4-protect-api-endpoints">Step 4: Protect API Endpoints</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#why-jwt-security-matters">Why JWT Security Matters</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices-for-jwt-in-net-9">Best Practices for JWT in .NET 9</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#conclusion">Conclusion</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

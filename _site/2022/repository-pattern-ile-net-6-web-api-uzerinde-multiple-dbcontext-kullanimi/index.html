@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Repository Pattern İle .NET 6 Web API Üzerinde Multiple DbContext Kullanımı | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Repository Pattern İle .NET 6 Web API Üzerinde Multiple DbContext Kullanımı" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar bu makalede bir Asp .Net Web API projesinde multiple DbContext kullanımına değineceğim. Senaryoda 2 farklı veritabanına Repository Pattern yardımıyla DbContext değiştirerek bağlantı yapacağım. Öncelikle bir Asp .Net Web API (6.0) projesi oluşturuyorum. İlk iş olarak EntityFrameWork paketlerini yüklüyorum." />
+<meta property="og:description" content="Merhabalar bu makalede bir Asp .Net Web API projesinde multiple DbContext kullanımına değineceğim. Senaryoda 2 farklı veritabanına Repository Pattern yardımıyla DbContext değiştirerek bağlantı yapacağım. Öncelikle bir Asp .Net Web API (6.0) projesi oluşturuyorum. İlk iş olarak EntityFrameWork paketlerini yüklüyorum." />
+<link rel="canonical" href="http://localhost:4000/2022/repository-pattern-ile-net-6-web-api-uzerinde-multiple-dbcontext-kullanimi/" />
+<meta property="og:url" content="http://localhost:4000/2022/repository-pattern-ile-net-6-web-api-uzerinde-multiple-dbcontext-kullanimi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:image" content="http://localhost:4000/assets/img/stocks/caravaggio-supper_at_emmaus-1602.jpg" />
+<meta property="og:image:height" content="500" />
+<meta property="og:image:width" content="800" />
+<meta property="og:image:alt" content="Caravaggio, Supper at Emmaus (1602)" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-17T19:33:00+03:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="http://localhost:4000/assets/img/stocks/caravaggio-supper_at_emmaus-1602.jpg" />
+<meta name="twitter:image:alt" content="Caravaggio, Supper at Emmaus (1602)" />
+<meta property="twitter:title" content="Repository Pattern İle .NET 6 Web API Üzerinde Multiple DbContext Kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2022-04-17T19:33:00+03:00","datePublished":"2022-04-17T19:33:00+03:00","description":"Merhabalar bu makalede bir Asp .Net Web API projesinde multiple DbContext kullanımına değineceğim. Senaryoda 2 farklı veritabanına Repository Pattern yardımıyla DbContext değiştirerek bağlantı yapacağım. Öncelikle bir Asp .Net Web API (6.0) projesi oluşturuyorum. İlk iş olarak EntityFrameWork paketlerini yüklüyorum.","headline":"Repository Pattern İle .NET 6 Web API Üzerinde Multiple DbContext Kullanımı","image":{"width":800,"height":500,"alt":"Caravaggio, Supper at Emmaus (1602)","url":"http://localhost:4000/assets/img/stocks/caravaggio-supper_at_emmaus-1602.jpg","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/repository-pattern-ile-net-6-web-api-uzerinde-multiple-dbcontext-kullanimi/"},"url":"http://localhost:4000/2022/repository-pattern-ile-net-6-web-api-uzerinde-multiple-dbcontext-kullanimi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar bu makalede bir Asp .Net Web API projesinde multiple DbContext kullanımına değineceğim. Senaryoda 2 farklı veritabanına Repository Pattern yardımıyla DbContext değiştirerek bağlantı yapacağım. Öncelikle bir Asp .Net Web API (6.0) projesi oluşturuyorum. İlk iş olarak <code class="language-plaintext highlighter-rouge">EntityFrameWork</code> paketlerini yüklüyorum.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Install-Package Microsoft.EntityFrameworkCore <span class="nt">-Version</span> 6.0.4
+Install-Package Microsoft.EntityFrameworkCore.SqlServer <span class="nt">-Version</span> 6.0.4
+Install-Package Microsoft.EntityFrameworkCore.Tools <span class="nt">-Version</span> 6.0.4
+</code></pre></div></div>
+
+<p>Paket yüklemesi tamamlandığında DbContext sınıflarını oluşturuyorum. Proje dizinine Data isminde klasör ekliyorum. Data klasörüne <code class="language-plaintext highlighter-rouge">DbOneContext</code>, <code class="language-plaintext highlighter-rouge">DbTwoContext</code> ve <code class="language-plaintext highlighter-rouge">BaseContext</code> isminde üç class ekliyorum. BaseContext clasını DbContext sınıfından türetip constructor ile <code class="language-plaintext highlighter-rouge">DbContextOptions</code> parametresini alıyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">BaseContext</span> <span class="p">:</span> <span class="n">DbContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">BaseContext</span><span class="p">(</span><span class="n">DbContextOptions</span> <span class="n">options</span><span class="p">):</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>DbOneContext ve DbTwoContext sınıfları BaseContext den türetip aşağıdaki şekilde implemente ediyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">DbOneContext</span> <span class="p">:</span> <span class="n">BaseContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">DbOneContext</span><span class="p">(</span><span class="n">DbContextOptions</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;</span> <span class="n">options</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">DbTwoContext</span> <span class="p">:</span> <span class="n">BaseContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">DbTwoContext</span><span class="p">(</span><span class="n">DbContextOptions</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;</span> <span class="n">options</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>DbConext sınıflarını oluşturduktan sonra appsettings.json dosyasına girip ConnectionString tanımlarını yapıyorum.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"Logging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"LogLevel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"Default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Information"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Microsoft.AspNetCore"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Warning"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"AllowedHosts"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ConnectionStrings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"DbOneContext"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Data Source=.;Initial Catalog=DBONE;User ID=sa;Password=Pw123456"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"DbTwoContext"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Data Source=.;Initial Catalog=DBTWO;User ID=sa;Password=Pw123456"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Daha sonra Program.cs dosyasının içerisinde projeye contextleri tanıtıyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;(</span><span class="n">options</span> <span class="p">=&gt;</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="nf">GetConnectionString</span><span class="p">(</span><span class="s">"DbOneContext"</span><span class="p">)));</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;(</span><span class="n">options</span> <span class="p">=&gt;</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="nf">GetConnectionString</span><span class="p">(</span><span class="s">"DbTwoContext"</span><span class="p">)));</span>
+</code></pre></div></div>
+
+<p>Projeye <code class="language-plaintext highlighter-rouge">Models</code> isminde bir klasör ekliyorum. İçerisine veritabanı tablosunu oluşturacağım entity için bir <code class="language-plaintext highlighter-rouge">Book</code> isminde class ekliyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">MultipleDbContext.Models</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Book</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Anchor</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Daha sonra <code class="language-plaintext highlighter-rouge">BaseContext</code> içerisinde DbSet ile Book entity sınıfını tanıtıyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">BaseContext</span> <span class="p">:</span> <span class="n">DbContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">BaseContext</span><span class="p">(</span><span class="n">DbContextOptions</span> <span class="n">options</span><span class="p">):</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="n">DbSett</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="n">Books</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Data klasörüne <code class="language-plaintext highlighter-rouge">DbContextFactory</code> isminde bir sınıf oluşturuyorum. Bu sınıfta bir IDictionary içersinde contextName değeri ile ilgili BaseContext nesnesini geri alıyoruz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">DbContextFactory</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">IDictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">BaseContext</span><span class="p">&gt;</span> <span class="n">_context</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">DbContextFactory</span><span class="p">(</span><span class="n">IDictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">BaseContext</span><span class="p">&gt;</span> <span class="n">context</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">BaseContext</span> <span class="nf">GetContext</span><span class="p">(</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">_context</span><span class="p">[</span><span class="n">contextName</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Artık Repository yapısını oluşturabilirim. Öncelikle proejeye Repository isminde bir klasör oluşturup içerisine <code class="language-plaintext highlighter-rouge">IBookReposiory</code> adında bir interface ve <code class="language-plaintext highlighter-rouge">BookRepository</code> adında bir class ekliyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Repository</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">interface</span> <span class="nc">IBookRepository</span>
+<span class="p">{</span>
+    <span class="k">void</span> <span class="nf">Add</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">);</span>
+    <span class="k">void</span> <span class="nf">Update</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">);</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">(</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ContextName bilgisini parametre ile gönderiyorum. Bu şekilde DbContext ayrımını yapacağım.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Repository</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">BookRepository</span> <span class="p">:</span> <span class="n">IBookRepository</span>
+    <span class="p">{</span>
+        <span class="n">DbContextFactory</span> <span class="n">_contexts</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">BookRepository</span><span class="p">(</span><span class="n">DbContextFactory</span> <span class="n">contexts</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_contexts</span> <span class="p">=</span> <span class="n">contexts</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Add</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="n">_contexts</span><span class="p">.</span><span class="nf">GetContext</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="kt">var</span> <span class="n">addedEntity</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="nf">Attach</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+            <span class="n">addedEntity</span><span class="p">.</span><span class="n">State</span> <span class="p">=</span> <span class="n">EntityState</span><span class="p">.</span><span class="n">Added</span><span class="p">;</span>
+            <span class="n">context</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Update</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="n">_contexts</span><span class="p">.</span><span class="nf">GetContext</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="kt">var</span> <span class="n">updatedEntity</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="nf">Entry</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+            <span class="n">updatedEntity</span><span class="p">.</span><span class="n">State</span> <span class="p">=</span> <span class="n">EntityState</span><span class="p">.</span><span class="n">Modified</span><span class="p">;</span>
+            <span class="n">context</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">(</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="n">_contexts</span><span class="p">.</span><span class="nf">GetContext</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">context</span><span class="p">.</span><span class="n">Books</span><span class="p">.</span><span class="nf">ToList</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bu sınıfta constructor içerisinde DbContextFactory ile DbContext nesnelerini Repository içerisine taşıyorum. Parametre ile gönderilen DbContexti çalıştırıyorum. Bu yapılandırma için <code class="language-plaintext highlighter-rouge">AutoFac</code> IOC container’ını projeye ekliyorum.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Install-Package Autofac <span class="nt">-Version</span> 6.3.0
+Install-Package Autofac.Extensions.DependencyInjection <span class="nt">-Version</span> 7.2.0
+</code></pre></div></div>
+
+<p>Paketi indirdikten sonra hemen Program.cs içerisinde AutoFac yapılandırmasını yapıyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Host</span><span class="p">.</span><span class="nf">UseServiceProviderFactory</span><span class="p">(</span><span class="k">new</span> <span class="nf">AutofacServiceProviderFactory</span><span class="p">());</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Host</span><span class="p">.</span><span class="n">ConfigureContainer</span><span class="p">&lt;</span><span class="n">ContainerBuilder</span><span class="p">&gt;(</span><span class="n">b</span> <span class="p">=&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">RegisterModule</span><span class="p">(</span><span class="k">new</span> <span class="nf">AutoFacModule</span><span class="p">()));</span>
+</code></pre></div></div>
+
+<p>Burada registerModule ile kendi oluşturduğum AutoFacModule clasını tanımlıyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">AutoFacModule</span> <span class="p">:</span> <span class="n">Module</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Load</span><span class="p">(</span><span class="n">ContainerBuilder</span> <span class="n">builder</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">builder</span><span class="p">.</span><span class="n">RegisterType</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;().</span><span class="n">As</span><span class="p">&lt;</span><span class="n">BaseContext</span><span class="p">&gt;();</span>
+        <span class="n">builder</span><span class="p">.</span><span class="n">RegisterType</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;().</span><span class="n">As</span><span class="p">&lt;</span><span class="n">BaseContext</span><span class="p">&gt;();</span>
+        <span class="n">builder</span><span class="p">.</span><span class="nf">Register</span><span class="p">(</span><span class="n">ctx</span> <span class="p">=&gt;</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">allContext</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">BaseContext</span><span class="p">&gt;();</span>
+            <span class="n">allContext</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"DbOneContext"</span><span class="p">,</span> <span class="n">ctx</span><span class="p">.</span><span class="n">Resolve</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;());</span>
+            <span class="n">allContext</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"DbTwoContext"</span><span class="p">,</span> <span class="n">ctx</span><span class="p">.</span><span class="n">Resolve</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;());</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">DbContextFactory</span><span class="p">(</span><span class="n">allContext</span><span class="p">);</span>
+
+        <span class="p">});</span>
+        <span class="n">builder</span><span class="p">.</span><span class="n">RegisterType</span><span class="p">&lt;</span><span class="n">BookRepository</span><span class="p">&gt;().</span><span class="n">As</span><span class="p">&lt;</span><span class="n">IBookRepository</span><span class="p">&gt;();</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>AutoFac IOC yapılandırması sonrasında controllers klasörüne BookController isminde bir web api controller ekliyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Http</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Mvc</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Repository</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Controllers</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"api/[controller]"</span><span class="p">)]</span>
+    <span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">BookController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="n">IBookRepository</span> <span class="n">_bookRepository</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">BookController</span><span class="p">(</span><span class="n">IBookRepository</span> <span class="n">bookRepository</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_bookRepository</span> <span class="p">=</span> <span class="n">bookRepository</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+        <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"{contextName}"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">([</span><span class="n">FromRoute</span><span class="p">]</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">books</span> <span class="p">=</span> <span class="n">_bookRepository</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">books</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="n">HttpPost</span><span class="p">]</span>
+        <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"{contextName}"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">Post</span><span class="p">([</span><span class="n">FromRoute</span><span class="p">]</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">,[</span><span class="n">FromBody</span><span class="p">]</span> <span class="n">Book</span> <span class="n">book</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">try</span>
+            <span class="p">{</span>
+                <span class="n">_bookRepository</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="n">book</span><span class="p">,</span><span class="n">contextName</span><span class="p">);</span>
+                <span class="k">return</span> <span class="nf">Ok</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="nf">BadRequest</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="n">HttpPut</span><span class="p">]</span>
+        <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"{contextName}"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">Put</span><span class="p">([</span><span class="n">FromRoute</span><span class="p">]</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">,</span> <span class="p">[</span><span class="n">FromBody</span><span class="p">]</span> <span class="n">Book</span> <span class="n">book</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">try</span>
+            <span class="p">{</span>
+                <span class="n">_bookRepository</span><span class="p">.</span><span class="nf">Update</span><span class="p">(</span><span class="n">book</span><span class="p">,</span> <span class="n">contextName</span><span class="p">);</span>
+                <span class="k">return</span> <span class="nf">Ok</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="nf">BadRequest</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>BookController’da görüldüğü üzere contextName parametresi ile hangi dbContext’e bağlanacağımı alıyorum. Daha sonra BookRepository yardımıyla CRUD işlemlerini yapacağım. Controller yapısını oluşturduktan sonra Migration yardımıyla <code class="language-plaintext highlighter-rouge">DbOne</code> ve <code class="language-plaintext highlighter-rouge">DbTwo</code> veritabanlarını oluşturuyorum. Birden fazla DbContext dosyası olduğu için migration işlemi yaparken hangisini oluşturacağını belirtmek gerekiyor.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Add-Migration <span class="nt">-Context</span> DbOneContext
+Update-Database <span class="nt">-Context</span> DbOneContext
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Add-Migration <span class="nt">-Context</span> DbTwoContext
+Update-Database <span class="nt">-Context</span> DbTwoContext
+</code></pre></div></div>
+
+<p>Migration işlemleri sonrasında aşağıdaki gibi veritabanlarının oluşmuş olduğunu görebilirsiniz.</p>
+
+<p><img src="/assets/img/posts/MultipleContext.jpg" alt="MultipleContext" /></p>
+
+<p>Artık projeyi çalıştırıp Swagger yardımı ile CRUD işlemlerini yapmaya başlıyorum. DbOneContext için Post ve Get isteklerini yapıyorum.</p>
+
+<p><img src="/assets/img/posts/MultipleContextPost.jpg" alt="MultipleContextPost" />
+<em>DbOneContext-Post</em></p>
+
+<p><img src="/assets/img/posts/MultipleContextGet.jpg" alt="MultipleContextGet" />
+<em>DbOneContext-Get</em></p>
+
+<p>DbOneContext parametresi ile DbOne veritabanına Post ve Get aksiyonları ile CRUD işlemleri yaptım. Aynı Şeklide DbTwoContext parametresi ile DbTwo veritabanına CRUD işlemlerini yapıyorum.</p>
+
+<p><img src="/assets/img/posts/MultipleContextPost2.jpg" alt="DbTwoContext-Post" />
+<em>DbTwoContext-Post</em></p>
+
+<p><img src="/assets/img/posts/MultipleContextGet2.jpg" alt="DbTwoContext-Get" />
+<em>DbTwoContext-Get</em></p>
+
+<p><img src="/assets/img/posts/MultipleContextSQL.jpg" alt="Veritabanı Verileri" />
+<em>Veritabanı Verileri</em></p>
+
+<p>Bu şekilde birden fazla dbcontext yapısını nasıl çalıştırabileceğimiz ile ilgili bir örnek gerçekleştirdik. Proje dosyalarını <a href="https://github.com/muratsuzen/MultipleDbContext.git"><strong>buradan</strong></a> indirebilirsiniz. Bir sonraki makalede görüşmek üzere.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

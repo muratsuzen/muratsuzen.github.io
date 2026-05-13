@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Understanding Dependency Injection in .NET | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Understanding Dependency Injection in .NET" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Dependency Injection (DI) is a fundamental design pattern in modern .NET development. It allows you to write loosely coupled, maintainable, and testable code by providing dependencies to classes from an external source rather than having them create or manage those dependencies themselves." />
+<meta property="og:description" content="Dependency Injection (DI) is a fundamental design pattern in modern .NET development. It allows you to write loosely coupled, maintainable, and testable code by providing dependencies to classes from an external source rather than having them create or manage those dependencies themselves." />
+<link rel="canonical" href="http://localhost:4000/2025/understanding-dependency-injection-in-dotnet/" />
+<meta property="og:url" content="http://localhost:4000/2025/understanding-dependency-injection-in-dotnet/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-04-30T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Understanding Dependency Injection in .NET" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-04-30T12:00:00+03:00","datePublished":"2025-04-30T12:00:00+03:00","description":"Dependency Injection (DI) is a fundamental design pattern in modern .NET development. It allows you to write loosely coupled, maintainable, and testable code by providing dependencies to classes from an external source rather than having them create or manage those dependencies themselves.","headline":"Understanding Dependency Injection in .NET","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/understanding-dependency-injection-in-dotnet/"},"url":"http://localhost:4000/2025/understanding-dependency-injection-in-dotnet/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Dependency Injection (DI) is a fundamental design pattern in modern .NET development. It allows you to <strong>write loosely coupled, maintainable, and testable code</strong> by providing dependencies to classes from an external source rather than having them create or manage those dependencies themselves.</p>
+
+<p>In this article, we’ll explore <strong>what DI is</strong>, <strong>why it’s important</strong>, <strong>how it works in .NET</strong>, and walk through hands-on examples and best practices.</p>
+
+<hr />
+
+<h2 id="what-is-dependency-injection">What Is Dependency Injection?</h2>
+
+<p>Dependency Injection is a technique where a class receives the services or objects it depends on (its <em>dependencies</em>) from an external system, instead of instantiating them directly.</p>
+
+<p>For example, rather than doing this:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">OrderService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">PaymentService</span> <span class="n">_paymentService</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">PaymentService</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You do this:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">OrderService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">PaymentService</span> <span class="n">_paymentService</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">OrderService</span><span class="p">(</span><span class="n">PaymentService</span> <span class="n">paymentService</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_paymentService</span> <span class="p">=</span> <span class="n">paymentService</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now <code class="language-plaintext highlighter-rouge">OrderService</code> depends on an <em>injected</em> <code class="language-plaintext highlighter-rouge">PaymentService</code>.</p>
+
+<hr />
+
+<h2 id="why-use-di">Why Use DI?</h2>
+
+<p>✅ <strong>Loose coupling</strong> — classes are not tightly bound to specific implementations.<br />
+✅ <strong>Easier testing</strong> — inject mock or stub services in unit tests.<br />
+✅ <strong>Better maintainability</strong> — replace implementations without changing dependent code.<br />
+✅ <strong>Centralized configuration</strong> — control lifetimes and setups in one place.</p>
+
+<hr />
+
+<h2 id="di-in-net">DI in .NET</h2>
+
+<p>ASP.NET Core has built-in dependency injection support via the <strong>built-in IoC (Inversion of Control) container</strong>.</p>
+
+<p>You register services in <code class="language-plaintext highlighter-rouge">Program.cs</code>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTransient</span><span class="p">&lt;</span><span class="n">IMyService</span><span class="p">,</span> <span class="n">MyService</span><span class="p">&gt;();</span>
+</code></pre></div></div>
+
+<p>And inject them where needed:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">MyController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IMyService</span> <span class="n">_service</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">MyController</span><span class="p">(</span><span class="n">IMyService</span> <span class="n">service</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_service</span> <span class="p">=</span> <span class="n">service</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="service-lifetimes">Service Lifetimes</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Lifetime</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Transient</td>
+      <td>New instance every time requested</td>
+    </tr>
+    <tr>
+      <td>Scoped</td>
+      <td>One instance per request (for web apps)</td>
+    </tr>
+    <tr>
+      <td>Singleton</td>
+      <td>Single instance shared for the lifetime of the app</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="p">&lt;</span><span class="n">ISingletonService</span><span class="p">,</span> <span class="n">SingletonService</span><span class="p">&gt;();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddScoped</span><span class="p">&lt;</span><span class="n">IScopedService</span><span class="p">,</span> <span class="n">ScopedService</span><span class="p">&gt;();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTransient</span><span class="p">&lt;</span><span class="n">ITransientService</span><span class="p">,</span> <span class="n">TransientService</span><span class="p">&gt;();</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="hands-on-example">Hands-On Example</h2>
+
+<h3 id="step-1-define-an-interface">Step 1: Define an Interface</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">interface</span> <span class="nc">IMessageService</span>
+<span class="p">{</span>
+    <span class="kt">string</span> <span class="nf">GetMessage</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="step-2-implement-the-service">Step 2: Implement the Service</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">HelloWorldMessageService</span> <span class="p">:</span> <span class="n">IMessageService</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="nf">GetMessage</span><span class="p">()</span> <span class="p">=&gt;</span> <span class="s">"Hello, Dependency Injection!"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="step-3-register-and-inject">Step 3: Register and Inject</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddScoped</span><span class="p">&lt;</span><span class="n">IMessageService</span><span class="p">,</span> <span class="n">HelloWorldMessageService</span><span class="p">&gt;();</span>
+</code></pre></div></div>
+
+<p>In a controller or Razor Page:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">HomeController</span> <span class="p">:</span> <span class="n">Controller</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IMessageService</span> <span class="n">_messageService</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">HomeController</span><span class="p">(</span><span class="n">IMessageService</span> <span class="n">messageService</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_messageService</span> <span class="p">=</span> <span class="n">messageService</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">Index</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">ViewBag</span><span class="p">.</span><span class="n">Message</span> <span class="p">=</span> <span class="n">_messageService</span><span class="p">.</span><span class="nf">GetMessage</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nf">View</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="constructor-injection-vs-alternatives">Constructor Injection vs. Alternatives</h2>
+
+<p>✅ <strong>Constructor injection</strong> — most common and recommended.<br />
+✅ Property injection — for optional dependencies.<br />
+✅ Method injection — pass dependencies via method parameters.</p>
+
+<p>Example of property injection:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="n">IOptionalService</span> <span class="n">OptionalService</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="testing-with-dependency-injection">Testing with Dependency Injection</h2>
+
+<p>DI makes testing easier by allowing you to inject mocks.</p>
+
+<p>Example with Moq:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IMessageService</span><span class="p">&gt;();</span>
+<span class="n">mock</span><span class="p">.</span><span class="nf">Setup</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">s</span><span class="p">.</span><span class="nf">GetMessage</span><span class="p">()).</span><span class="nf">Returns</span><span class="p">(</span><span class="s">"Test Message"</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">controller</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">HomeController</span><span class="p">(</span><span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Now you can test without touching the real implementation.</p>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Always program against interfaces, not concrete classes.<br />
+✅ Keep services stateless unless they are singletons.<br />
+✅ Register services at the correct lifetime.<br />
+✅ Avoid service locator anti-pattern (i.e., avoid pulling services manually from IServiceProvider).<br />
+✅ Use DI even in non-ASP.NET Core apps by wiring up <code class="language-plaintext highlighter-rouge">IServiceCollection</code> manually.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>Dependency Injection is a cornerstone of modern .NET application design, promoting loose coupling, testability, and maintainability. By mastering DI, you set the foundation for building scalable and robust applications that are easy to evolve and maintain over time.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-dependency-injection">What Is Dependency Injection?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#why-use-di">Why Use DI?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#di-in-net">DI in .NET</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#service-lifetimes">Service Lifetimes</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#hands-on-example">Hands-On Example</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-define-an-interface">Step 1: Define an Interface</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-implement-the-service">Step 2: Implement the Service</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-3-register-and-inject">Step 3: Register and Inject</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#constructor-injection-vs-alternatives">Constructor Injection vs. Alternatives</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#testing-with-dependency-injection">Testing with Dependency Injection</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

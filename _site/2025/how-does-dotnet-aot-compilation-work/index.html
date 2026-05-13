@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How Does .NET Ahead-of-Time (AOT) Compilation Work? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="How Does .NET Ahead-of-Time (AOT) Compilation Work?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Ahead-of-Time (AOT) compilation is a powerful feature in .NET that allows you to compile your application into native machine code before it runs, improving startup time, reducing memory usage, and removing the need for Just-In-Time (JIT) compilation." />
+<meta property="og:description" content="Ahead-of-Time (AOT) compilation is a powerful feature in .NET that allows you to compile your application into native machine code before it runs, improving startup time, reducing memory usage, and removing the need for Just-In-Time (JIT) compilation." />
+<link rel="canonical" href="http://localhost:4000/2025/how-does-dotnet-aot-compilation-work/" />
+<meta property="og:url" content="http://localhost:4000/2025/how-does-dotnet-aot-compilation-work/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-01T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How Does .NET Ahead-of-Time (AOT) Compilation Work?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-01T12:00:00+03:00","datePublished":"2025-05-01T12:00:00+03:00","description":"Ahead-of-Time (AOT) compilation is a powerful feature in .NET that allows you to compile your application into native machine code before it runs, improving startup time, reducing memory usage, and removing the need for Just-In-Time (JIT) compilation.","headline":"How Does .NET Ahead-of-Time (AOT) Compilation Work?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/how-does-dotnet-aot-compilation-work/"},"url":"http://localhost:4000/2025/how-does-dotnet-aot-compilation-work/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Ahead-of-Time (AOT) compilation is a powerful feature in .NET that allows you to compile your application into native machine code <strong>before</strong> it runs, improving startup time, reducing memory usage, and removing the need for Just-In-Time (JIT) compilation.</p>
+
+<p>In this article, we’ll explore <strong>what AOT compilation is</strong>, <strong>how it works in .NET</strong>, <strong>when to use it</strong>, and provide real-world examples and best practices.</p>
+
+<hr />
+
+<h2 id="what-is-aot-compilation">What Is AOT Compilation?</h2>
+
+<p>In traditional .NET applications, your code is compiled to Intermediate Language (IL), which is then JIT-compiled to native machine code at runtime.</p>
+
+<p>With <strong>AOT compilation</strong>, the IL code is compiled directly to native binaries <strong>before</strong> deployment, so no JIT is needed at runtime.</p>
+
+<p>✅ Faster startup (no JIT at app launch)<br />
+✅ Smaller memory footprint (no JIT engine in memory)<br />
+✅ Reduced attack surface (fewer runtime components)<br />
+✅ Cross-platform native performance</p>
+
+<hr />
+
+<h2 id="how-does-it-work-in-net">How Does It Work in .NET?</h2>
+
+<p>Starting with .NET 7 and enhanced in .NET 8+, you can publish AOT-compiled apps using:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet publish -c Release -p:PublishAOT=true
+</code></pre></div></div>
+
+<p>This produces a native executable that includes your app, its dependencies, and the .NET runtime — all compiled ahead of time.</p>
+
+<hr />
+
+<h2 id="types-of-aot-in-net">Types of AOT in .NET</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ReadyToRun (R2R)</td>
+      <td>Partial AOT; IL + native mix, improves startup</td>
+    </tr>
+    <tr>
+      <td>Full Native AOT</td>
+      <td>Full AOT; no IL, pure native code, fastest startup</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Full Native AOT is available in .NET 7+ and is especially useful for microservices, serverless, and CLI tools.</p>
+
+<hr />
+
+<h2 id="when-should-you-use-aot">When Should You Use AOT?</h2>
+
+<p>✅ <strong>Microservices</strong> — maximize startup performance in Kubernetes.<br />
+✅ <strong>Serverless functions</strong> — where cold start time matters.<br />
+✅ <strong>Small CLI tools</strong> — fast execution, no JIT overhead.<br />
+✅ <strong>Security-sensitive apps</strong> — reduce attack surface by excluding JIT.</p>
+
+<hr />
+
+<h2 id="how-to-enable-aot">How to Enable AOT</h2>
+
+<h3 id="step-1-install-net-8">Step 1: Install .NET 8+</h3>
+
+<p>Check:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet --version
+</code></pre></div></div>
+
+<h3 id="step-2-update-project-file">Step 2: Update Project File</h3>
+
+<p>In your <code class="language-plaintext highlighter-rouge">.csproj</code>:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;PropertyGroup&gt;</span>
+    <span class="nt">&lt;PublishAOT&gt;</span>true<span class="nt">&lt;/PublishAOT&gt;</span>
+<span class="nt">&lt;/PropertyGroup&gt;</span>
+</code></pre></div></div>
+
+<h3 id="step-3-publish">Step 3: Publish</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet publish -c Release
+</code></pre></div></div>
+
+<p>This generates a native executable in <code class="language-plaintext highlighter-rouge">bin/Release/net8.0/{runtime}/publish</code>.</p>
+
+<hr />
+
+<h2 id="example-hello-world">Example: Hello World</h2>
+
+<p>Simple app:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Hello, AOT World!"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Publish with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet publish -c Release -r win-x64 -p:PublishAOT=true
+</code></pre></div></div>
+
+<p>You’ll get a <code class="language-plaintext highlighter-rouge">hello.exe</code> or equivalent binary that runs natively.</p>
+
+<hr />
+
+<h2 id="benefits-and-trade-offs">Benefits and Trade-offs</h2>
+
+<p>✅ Benefits:</p>
+
+<ul>
+  <li>Blazing-fast startup</li>
+  <li>Lower memory usage</li>
+  <li>No JIT-related runtime costs</li>
+</ul>
+
+<p>⚠ Trade-offs:</p>
+
+<ul>
+  <li>Larger binaries (everything is baked in)</li>
+  <li>Longer build times</li>
+  <li>Less runtime flexibility (no reflection or dynamic code generation)</li>
+</ul>
+
+<hr />
+
+<h2 id="limitations-of-aot">Limitations of AOT</h2>
+
+<p>Not all .NET features work seamlessly with AOT:</p>
+
+<p>❌ Dynamic code (e.g., <code class="language-plaintext highlighter-rouge">System.Reflection.Emit</code>)<br />
+❌ Dynamic serialization without trimming<br />
+❌ Plugins loaded dynamically at runtime</p>
+
+<p>You may need to refactor code or use <code class="language-plaintext highlighter-rouge">DynamicDependency</code> and <code class="language-plaintext highlighter-rouge">RequiresUnreferencedCode</code> attributes.</p>
+
+<hr />
+
+<h2 id="real-world-use-cases">Real-World Use Cases</h2>
+
+<ul>
+  <li><strong>Cloud microservices</strong> needing rapid scale-out</li>
+  <li><strong>Serverless APIs</strong> (AWS Lambda, Azure Functions) for minimal cold start</li>
+  <li><strong>Desktop or IoT apps</strong> where resources are limited</li>
+  <li><strong>CLI utilities</strong> for maximum portability and speed</li>
+</ul>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Analyze dependencies for AOT compatibility.<br />
+✅ Enable IL trimming to remove unused code.<br />
+✅ Use ReadyToRun if full native AOT isn’t feasible.<br />
+✅ Test thoroughly — AOT changes runtime behavior.<br />
+✅ Monitor binary size vs. performance improvements.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>.NET’s Ahead-of-Time (AOT) compilation lets you deliver native, high-performance apps with minimal runtime overhead. By mastering AOT, you can optimize startup, reduce resource usage, and build apps ready for modern cloud and edge environments.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-aot-compilation">What Is AOT Compilation?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#how-does-it-work-in-net">How Does It Work in .NET?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#types-of-aot-in-net">Types of AOT in .NET</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#when-should-you-use-aot">When Should You Use AOT?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#how-to-enable-aot">How to Enable AOT</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-install-net-8">Step 1: Install .NET 8+</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-update-project-file">Step 2: Update Project File</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-3-publish">Step 3: Publish</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#example-hello-world">Example: Hello World</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#benefits-and-trade-offs">Benefits and Trade-offs</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#limitations-of-aot">Limitations of AOT</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-use-cases">Real-World Use Cases</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

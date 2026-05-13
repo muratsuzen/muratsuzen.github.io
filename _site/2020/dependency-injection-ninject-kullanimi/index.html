@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Dependency Injection — Ninject Kullanımı | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Dependency Injection — Ninject Kullanımı" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar, yaygın olarak kullanılan kütüphanelerden bir tanesi Ninject’tir. İncelemek için bir önceki Dependency Injection örneğinin aynısı üzerinden gideceğiz. Yaptığımız örnekle çok benzer olduğunu söyleyebilirim. Hatta standart Dependency Injection kullanımına göre birazdaha fazla kod yazdığımızı görebilirsiniz. Fakat kurumsal projelerde yaygın kullanımının arkasında yatan sebep sadece standart kullanımlarından ziyade, projelerimizde birden fazla loosely coupled yani gevşek bağlı yapıları kullanma gerekinimindeki karmaşıklığı en az seviyieye indirmektedir. Birden fazla gevşek bağlı yapı durumuna örneğimizde deyineceğiz. Öncelikle Nuget paketinden Install-Package Ninject şeklinde Ninject paketini projemize indirip kuruyoruz. Daha sonrasında interface ve implemente yapılacak class larımızı oluşturuyoruz." />
+<meta property="og:description" content="Merhabalar, yaygın olarak kullanılan kütüphanelerden bir tanesi Ninject’tir. İncelemek için bir önceki Dependency Injection örneğinin aynısı üzerinden gideceğiz. Yaptığımız örnekle çok benzer olduğunu söyleyebilirim. Hatta standart Dependency Injection kullanımına göre birazdaha fazla kod yazdığımızı görebilirsiniz. Fakat kurumsal projelerde yaygın kullanımının arkasında yatan sebep sadece standart kullanımlarından ziyade, projelerimizde birden fazla loosely coupled yani gevşek bağlı yapıları kullanma gerekinimindeki karmaşıklığı en az seviyieye indirmektedir. Birden fazla gevşek bağlı yapı durumuna örneğimizde deyineceğiz. Öncelikle Nuget paketinden Install-Package Ninject şeklinde Ninject paketini projemize indirip kuruyoruz. Daha sonrasında interface ve implemente yapılacak class larımızı oluşturuyoruz." />
+<link rel="canonical" href="http://localhost:4000/2020/dependency-injection-ninject-kullanimi/" />
+<meta property="og:url" content="http://localhost:4000/2020/dependency-injection-ninject-kullanimi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-06-04T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Dependency Injection — Ninject Kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2020-06-04T19:33:00+03:00","datePublished":"2020-06-04T19:33:00+03:00","description":"Merhabalar, yaygın olarak kullanılan kütüphanelerden bir tanesi Ninject’tir. İncelemek için bir önceki Dependency Injection örneğinin aynısı üzerinden gideceğiz. Yaptığımız örnekle çok benzer olduğunu söyleyebilirim. Hatta standart Dependency Injection kullanımına göre birazdaha fazla kod yazdığımızı görebilirsiniz. Fakat kurumsal projelerde yaygın kullanımının arkasında yatan sebep sadece standart kullanımlarından ziyade, projelerimizde birden fazla loosely coupled yani gevşek bağlı yapıları kullanma gerekinimindeki karmaşıklığı en az seviyieye indirmektedir. Birden fazla gevşek bağlı yapı durumuna örneğimizde deyineceğiz. Öncelikle Nuget paketinden Install-Package Ninject şeklinde Ninject paketini projemize indirip kuruyoruz. Daha sonrasında interface ve implemente yapılacak class larımızı oluşturuyoruz.","headline":"Dependency Injection — Ninject Kullanımı","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/dependency-injection-ninject-kullanimi/"},"url":"http://localhost:4000/2020/dependency-injection-ninject-kullanimi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar, yaygın olarak kullanılan kütüphanelerden bir tanesi Ninject’tir. İncelemek için bir önceki Dependency Injection örneğinin aynısı üzerinden gideceğiz. Yaptığımız örnekle çok benzer olduğunu söyleyebilirim. Hatta standart Dependency Injection kullanımına göre birazdaha fazla kod yazdığımızı görebilirsiniz. Fakat kurumsal projelerde yaygın kullanımının arkasında yatan sebep sadece standart kullanımlarından ziyade, projelerimizde birden fazla <code class="language-plaintext highlighter-rouge">loosely coupled</code> yani <code class="language-plaintext highlighter-rouge">gevşek bağlı</code> yapıları kullanma gerekinimindeki karmaşıklığı en az seviyieye indirmektedir. Birden fazla gevşek bağlı yapı durumuna örneğimizde deyineceğiz. Öncelikle Nuget paketinden <code class="language-plaintext highlighter-rouge">Install-Package Ninject</code> şeklinde Ninject paketini projemize indirip kuruyoruz. Daha sonrasında interface ve implemente yapılacak class larımızı oluşturuyoruz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">interface</span> <span class="nc">ILogger</span>
+<span class="p">{</span>
+    <span class="k">void</span> <span class="nf">WriteLog</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">TextLogger</span> <span class="p">:</span> <span class="n">ILogger</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">WriteLog</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"TextLogger : {0}"</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">XmlLogger</span> <span class="p">:</span> <span class="n">ILogger</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">WriteLog</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"XmlLogger : {0}"</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">DatabaseLogger</span> <span class="p">:</span> <span class="n">ILogger</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">WriteLog</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"DatabaseLogger : {0}"</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bu aşamaya kadar bir önceki örneğimizin aynısını yapıyoruz. Daha sonra yine bir önceki örneğimizdeki gibi sınıfları yönetebilmemiz için <code class="language-plaintext highlighter-rouge">LogManager</code> yapısını oluşturuyoruz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">LogManager</span>
+    <span class="p">{</span>
+        <span class="k">readonly</span> <span class="n">ILogger</span> <span class="n">logger</span><span class="p">;</span>
+        <span class="p">[</span><span class="n">Inject</span><span class="p">]</span>
+        <span class="k">public</span> <span class="nf">LogManager</span><span class="p">(</span><span class="n">ILogger</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="n">logger</span> <span class="p">=</span> <span class="n">logger</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Handle</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="n">logger</span><span class="p">.</span><span class="nf">WriteLog</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bu sınıfımızdaki tek fark <code class="language-plaintext highlighter-rouge">[Inject]</code> tanımımlasıdır. LogManager yapısını kullanırken hangi sınıfı çağıracağımızı <code class="language-plaintext highlighter-rouge">Ninject.Modules.NinjectModule </code>sınıfınından ayarlayabilmekteyiz. Bu modül sınıfının en güzel yanı daha sonra ihtiyacımız olabilecek birden fazla <code class="language-plaintext highlighter-rouge">gevşek bağlı</code> yapılarımızın <code class="language-plaintext highlighter-rouge">Bind</code> işlemlerini yapabilmemizdir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Bindings</span> <span class="p">:</span> <span class="n">NinjectModule</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Load</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">Bind</span><span class="p">&lt;</span><span class="n">ILogger</span><span class="p">&gt;().</span><span class="n">To</span><span class="p">&lt;</span><span class="n">DatabaseLogger</span><span class="p">&gt;();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bu tanımlamanın anlamı <code class="language-plaintext highlighter-rouge">ILogger</code> tipindeki sınıf istendiğinde otomatik olarak <code class="language-plaintext highlighter-rouge">DatabaseLogger</code> sınıfını döndürecektir. Daha sonra Main sınıfımızın içerisinde ilgili kodları aşağıdaki gibi oluşturuyoruz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Program</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">IKernel</span> <span class="n">kernel</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">StandardKernel</span><span class="p">(</span><span class="k">new</span> <span class="nf">Bindings</span><span class="p">());</span>
+        <span class="n">LogManager</span> <span class="n">logManager</span> <span class="p">=</span> <span class="n">kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">LogManager</span><span class="p">&gt;();</span>
+        <span class="n">logManager</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">"İşlem Tamamlandı."</span><span class="p">);</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">ReadLine</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bu kod parçasındaki dikkat edilmesi gereken nokta new <code class="language-plaintext highlighter-rouge">StandartKernel</code> içerisinde load metoduna Bindings sınıfımızı göndermektir. Bu şekilde yapılandırma sınıfını Ninject’e set etmiş oluyoruz. Birden fazla “gevşek bağlı” bir yapıyı aşağıdaki gibi yine NinjectModules yapsısındaki Bindings sınıfımız ile yapılandırabiliriz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">interface</span> <span class="nc">IConnections</span>
+ <span class="p">{</span>
+     <span class="k">void</span> <span class="nf">GetConnectionString</span><span class="p">();</span>
+ <span class="p">}</span>
+
+ <span class="k">class</span> <span class="nc">MsSql</span> <span class="p">:</span> <span class="n">IConnections</span>
+ <span class="p">{</span>
+     <span class="k">public</span> <span class="k">void</span> <span class="nf">GetConnectionString</span><span class="p">()</span>
+     <span class="p">{</span>
+         <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Connection Type: MsSql"</span><span class="p">);</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+
+ <span class="k">class</span> <span class="nc">EntityFramework</span> <span class="p">:</span> <span class="n">IConnections</span>
+ <span class="p">{</span>
+     <span class="k">public</span> <span class="k">void</span> <span class="nf">GetConnectionString</span><span class="p">()</span>
+     <span class="p">{</span>
+         <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Connection Type: EntityFramework"</span><span class="p">);</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+
+ <span class="k">class</span> <span class="nc">MySql</span> <span class="p">:</span> <span class="n">IConnections</span>
+ <span class="p">{</span>
+     <span class="k">public</span> <span class="k">void</span> <span class="nf">GetConnectionString</span><span class="p">()</span>
+     <span class="p">{</span>
+         <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Connection Type: MySql"</span><span class="p">);</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+
+ <span class="k">class</span> <span class="nc">ConnectionManager</span>
+ <span class="p">{</span>
+     <span class="k">readonly</span> <span class="n">IConnections</span> <span class="n">connections</span><span class="p">;</span>
+
+     <span class="p">[</span><span class="n">Inject</span><span class="p">]</span>
+     <span class="k">public</span> <span class="nf">ConnectionManager</span><span class="p">(</span><span class="n">IConnections</span> <span class="n">connections</span><span class="p">)</span>
+     <span class="p">{</span>
+         <span class="k">this</span><span class="p">.</span><span class="n">connections</span> <span class="p">=</span> <span class="n">connections</span><span class="p">;</span>
+     <span class="p">}</span>
+
+     <span class="k">public</span> <span class="k">void</span> <span class="nf">GetConnectionStr</span><span class="p">()</span>
+     <span class="p">{</span>
+         <span class="k">this</span><span class="p">.</span><span class="n">connections</span><span class="p">.</span><span class="nf">GetConnectionString</span><span class="p">();</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bindings sınıfımız içerisine aynı şekilde diğer <code class="language-plaintext highlighter-rouge">Dependency Injection</code> yapısının tanımını yapabiliriz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Bindings</span> <span class="p">:</span> <span class="n">NinjectModule</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Load</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">Bind</span><span class="p">&lt;</span><span class="n">ILogger</span><span class="p">&gt;().</span><span class="n">To</span><span class="p">&lt;</span><span class="n">DatabaseLogger</span><span class="p">&gt;();</span>
+        <span class="n">Bind</span><span class="p">&lt;</span><span class="n">IConnections</span><span class="p">&gt;().</span><span class="n">To</span><span class="p">&lt;</span><span class="n">EntityFramework</span><span class="p">&gt;();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Main sınıfının içerisinde aynı şekilde yeni eklediğimiz <code class="language-plaintext highlighter-rouge">IConnection</code> yapımızı işleme alabiliriz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Program</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">IKernel</span> <span class="n">kernel</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">StandardKernel</span><span class="p">(</span><span class="k">new</span> <span class="nf">Bindings</span><span class="p">());</span>
+        <span class="n">LogManager</span> <span class="n">logManager</span> <span class="p">=</span> <span class="n">kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">LogManager</span><span class="p">&gt;();</span>
+        <span class="n">logManager</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">"İşlem Tamamlandı."</span><span class="p">);</span>
+        <span class="n">ConnectionManager</span> <span class="n">connectionManager</span> <span class="p">=</span> <span class="n">kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">ConnectionManager</span><span class="p">&gt;();</span>
+        <span class="n">connectionManager</span><span class="p">.</span><span class="nf">GetConnectionStr</span><span class="p">();</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">ReadLine</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bir sonraki makalede görüşmek üzere.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

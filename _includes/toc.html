@@ -1,0 +1,38 @@
+{% capture tocWorkspace %}
+    {% comment %}
+        Version 1.0.8
+        https://github.com/allejo/jekyll-toc
+    {% endcomment %}
+
+    {% capture my_toc %}{% endcapture %}
+    {% assign nodes = include.html | split: '<h' %}
+    {% assign firstHeader = true %}
+
+    {% for node in nodes %}
+        {% if firstHeader %}
+            {% assign firstHeader = false %}
+            {% continue %}
+        {% endif %}
+
+        {% assign headerLevel = node | truncate: 1, '' %}
+        {% assign headerData = node | split: '</h' | first %}
+        {% assign headerTag = headerData | split: '>' | first %}
+        {% assign headerTitle = headerData | split: '>' | last | strip_html %}
+        
+        {% capture anchor %}{{ headerTitle | slugify }}{% endcapture %}
+        
+        {% if headerLevel == '2' or headerLevel == '3' %}
+            {% capture my_toc %}{{ my_toc }}
+                <li class="toc-level-{{ headerLevel }}">
+                    <a href="#{{ anchor }}">{{ headerTitle }}</a>
+                </li>
+            {% endcapture %}
+        {% endif %}
+    {% endfor %}
+
+    {% if my_toc != "" %}
+        <ul class="toc-nav">
+            {{ my_toc }}
+        </ul>
+    {% endif %}
+{% endcapture %}{% assign tocWorkspace = '' %}{{ my_toc }}

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>JQuery Datatables Kütüphanesinin .NET Core ile Server Side Kullanımı | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="JQuery Datatables Kütüphanesinin .NET Core ile Server Side Kullanımı" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Web projelerinde en çok kullanılan Jquery veri tablo kütüphanelerinden biri olan Datatables kütüphanesinin .NET Core üzerinde sunucu taraflı kullanımını inceleyeceğim. Datatables herhangi bir HTML tablosuna arama, sayfa geçişleri ve sıralama işlemlerini içeren gelişmiş kontroller ekler. Bu kontroller sayesinde verilerin daha performanslı kullanılması sağlanır. Öncelikle aşağıdaki gibi bir ASP.NET Core Web App (Model-View-Controller) projesi oluşturacağız." />
+<meta property="og:description" content="Web projelerinde en çok kullanılan Jquery veri tablo kütüphanelerinden biri olan Datatables kütüphanesinin .NET Core üzerinde sunucu taraflı kullanımını inceleyeceğim. Datatables herhangi bir HTML tablosuna arama, sayfa geçişleri ve sıralama işlemlerini içeren gelişmiş kontroller ekler. Bu kontroller sayesinde verilerin daha performanslı kullanılması sağlanır. Öncelikle aşağıdaki gibi bir ASP.NET Core Web App (Model-View-Controller) projesi oluşturacağız." />
+<link rel="canonical" href="http://localhost:4000/2023/jquery-datatables-kutuphanesinin-net-core-ile-server-side-kullanimi/" />
+<meta property="og:url" content="http://localhost:4000/2023/jquery-datatables-kutuphanesinin-net-core-ile-server-side-kullanimi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:image" content="http://localhost:4000/assets/img/stocks/axp-photography.jpg" />
+<meta property="og:image:height" content="500" />
+<meta property="og:image:width" content="800" />
+<meta property="og:image:alt" content="Photo by AXP Photography on Unsplash" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-03-02T16:00:00+03:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="http://localhost:4000/assets/img/stocks/axp-photography.jpg" />
+<meta name="twitter:image:alt" content="Photo by AXP Photography on Unsplash" />
+<meta property="twitter:title" content="JQuery Datatables Kütüphanesinin .NET Core ile Server Side Kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2023-03-02T16:00:00+03:00","datePublished":"2023-03-02T16:00:00+03:00","description":"Web projelerinde en çok kullanılan Jquery veri tablo kütüphanelerinden biri olan Datatables kütüphanesinin .NET Core üzerinde sunucu taraflı kullanımını inceleyeceğim. Datatables herhangi bir HTML tablosuna arama, sayfa geçişleri ve sıralama işlemlerini içeren gelişmiş kontroller ekler. Bu kontroller sayesinde verilerin daha performanslı kullanılması sağlanır. Öncelikle aşağıdaki gibi bir ASP.NET Core Web App (Model-View-Controller) projesi oluşturacağız.","headline":"JQuery Datatables Kütüphanesinin .NET Core ile Server Side Kullanımı","image":{"width":800,"height":500,"alt":"Photo by AXP Photography on Unsplash","url":"http://localhost:4000/assets/img/stocks/axp-photography.jpg","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/jquery-datatables-kutuphanesinin-net-core-ile-server-side-kullanimi/"},"url":"http://localhost:4000/2023/jquery-datatables-kutuphanesinin-net-core-ile-server-side-kullanimi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Web projelerinde en çok kullanılan Jquery veri tablo kütüphanelerinden biri olan <a href="https://datatables.net/"><strong>Datatables</strong></a> kütüphanesinin .NET Core üzerinde sunucu taraflı kullanımını inceleyeceğim. Datatables herhangi bir HTML tablosuna arama, sayfa geçişleri ve sıralama işlemlerini içeren gelişmiş kontroller ekler. Bu kontroller sayesinde verilerin daha performanslı kullanılması sağlanır. Öncelikle aşağıdaki gibi bir ASP.NET Core Web App (Model-View-Controller) projesi oluşturacağız.</p>
+
+<p><img src="/assets/img/posts/jstables2.png" alt="Create MVC" />
+<em>Create MVC</em></p>
+
+<p>Veritabanı işlemlerini bu makalede yapmadan örneğe geçmek için EntityFrameworkCore.InMemory kütüphanesini kullanacağız.</p>
+
+<p><img src="/assets/img/posts/jstables3.png" alt="Nuget Package" />
+<em>Nuget Package</em></p>
+
+<p>EntityFramework.Core kütüphanelerini ekledikten sonra <code class="language-plaintext highlighter-rouge">ApplciationDbContext</code> isminde bir sınıf ekleyeceğiz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">JSDatatables.DataAccess.Entity</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">JSDatatables.DataAccess.Context</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">ApplicationDbContext</span> <span class="p">:</span> <span class="n">DbContext</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="nf">ApplicationDbContext</span><span class="p">(</span><span class="n">DbContextOptions</span> <span class="n">options</span><span class="p">):</span><span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="p">{</span>
+
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">DbSet</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="n">Products</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+        <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">ModelBuilder</span> <span class="n">modelBuilder</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">base</span><span class="p">.</span><span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">modelBuilder</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Daha sonra <code class="language-plaintext highlighter-rouge">Product</code> isminde bir entity sınıfı ekleyeceğiz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">JSDatatables.DataAccess.Entity</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Product</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Description</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">double</span> <span class="n">Price</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>EntityFramework ile ilgili son işlem olarak <code class="language-plaintext highlighter-rouge">Program.cs</code> dosyasında DbContext yapılandırmasını tamamlayacağız.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="p">&lt;</span><span class="n">ApplicationDbContext</span><span class="p">&gt;(</span><span class="n">options</span> <span class="p">=&gt;</span>
+<span class="n">options</span><span class="p">.</span><span class="nf">UseInMemoryDatabase</span><span class="p">(</span><span class="s">"memorydb"</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>HomeController içerisinde <code class="language-plaintext highlighter-rouge">ApplicationDbContext</code> sınıfımızı Constructor ile ekleyelim.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">public</span> <span class="k">class</span> <span class="nc">HomeController</span> <span class="p">:</span> <span class="n">Controller</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">ILogger</span><span class="p">&lt;</span><span class="n">HomeController</span><span class="p">&gt;</span> <span class="n">_logger</span><span class="p">;</span>
+        <span class="n">ApplicationDbContext</span> <span class="n">context</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">HomeController</span><span class="p">(</span><span class="n">ILogger</span><span class="p">&lt;</span><span class="n">HomeController</span><span class="p">&gt;</span> <span class="n">logger</span><span class="p">,</span> <span class="n">ApplicationDbContext</span> <span class="n">context</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_logger</span> <span class="p">=</span> <span class="n">logger</span><span class="p">;</span>
+            <span class="k">this</span><span class="p">.</span><span class="n">context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Bu işlemden sonra sahte bir veri elde etmek için for döngüsü ile Product ekleme işlemi yapacak olan bir metot oluşturup Index ismindeki Action da çağıracağız.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">Index</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nf">LoadTestData</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nf">View</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">void</span> <span class="nf">LoadTestData</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">number</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">Random</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">1</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;=</span> <span class="m">200</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+        <span class="p">{</span>
+            <span class="n">context</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="k">new</span> <span class="nf">Product</span><span class="p">()</span>
+            <span class="p">{</span>
+                <span class="n">Description</span> <span class="p">=</span> <span class="s">$"Product </span><span class="p">{</span><span class="n">Guid</span><span class="p">.</span><span class="nf">NewGuid</span><span class="p">().</span><span class="nf">ToString</span><span class="p">(</span><span class="s">"N"</span><span class="p">)}</span><span class="s">"</span><span class="p">,</span>
+                <span class="n">Price</span> <span class="p">=</span> <span class="n">number</span><span class="p">.</span><span class="nf">NextDouble</span><span class="p">(),</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+
+        <span class="n">context</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Verileri elde edecek metotu yazdıktan sonra Index ismindeki ActionResult için aynı isimle bir View ekleyeceğiz. Daha sonra <code class="language-plaintext highlighter-rouge">myTable</code> isminde bir table ekleyip (document).ready fonksiyonu ile Datatables kütüphanesini sayfaya ekleme işlemini yapacağız. Burada <code class="language-plaintext highlighter-rouge">processing: true,        serverSide: true</code> değerlerine dikkat etmemiz gerekmektedir. Bu şekilde sunucu taraflı işlemler için yapılandırmamızı tamamlayacağız.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@{ ViewData["Title"] = "Datatables"; }
+
+<span class="nt">&lt;link</span>
+  <span class="na">href=</span><span class="s">"//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"</span>
+  <span class="na">rel=</span><span class="s">"stylesheet"</span>
+<span class="nt">/&gt;</span>
+
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"table-responsive"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;table</span> <span class="na">id=</span><span class="s">"myTable"</span> <span class="na">class=</span><span class="s">"table table-bordered"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;thead&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+          <span class="nt">&lt;th&gt;</span>Id<span class="nt">&lt;/th&gt;</span>
+          <span class="nt">&lt;th&gt;</span>Description"<span class="nt">&lt;/th&gt;</span>
+          <span class="nt">&lt;th&gt;</span>Price"<span class="nt">&lt;/th&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+      <span class="nt">&lt;/thead&gt;</span>
+    <span class="nt">&lt;/table&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+
+@section Scripts{
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+  <span class="nf">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nf">ready</span><span class="p">(</span><span class="nf">function </span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#myTable</span><span class="dl">"</span><span class="p">).</span><span class="nc">DataTable</span><span class="p">({</span>
+      <span class="na">ajax</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Home/GetProducts</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span><span class="p">,</span>
+      <span class="p">},</span>
+      <span class="na">processing</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">serverSide</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">filter</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">columns</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="na">data</span><span class="p">:</span> <span class="dl">"</span><span class="s2">id</span><span class="dl">"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Id</span><span class="dl">"</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="na">data</span><span class="p">:</span> <span class="dl">"</span><span class="s2">description</span><span class="dl">"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Description</span><span class="dl">"</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="na">data</span><span class="p">:</span> <span class="dl">"</span><span class="s2">price</span><span class="dl">"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Price</span><span class="dl">"</span> <span class="p">},</span>
+      <span class="p">],</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span>
+
+}
+</code></pre></div></div>
+
+<p>Daha sonra Datatables için <code class="language-plaintext highlighter-rouge">GetProducts</code> isminde kayıt listeleyecek ve JsonResult tipinde Post metotu oluşturacağız.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">HttpPost</span><span class="p">]</span>
+<span class="k">public</span> <span class="n">JsonResult</span> <span class="nf">GetProducts</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">data</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Set</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;().</span><span class="nf">AsQueryable</span><span class="p">();</span>
+
+    <span class="kt">var</span> <span class="n">draw</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Form</span><span class="p">[</span><span class="s">"draw"</span><span class="p">].</span><span class="nf">FirstOrDefault</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">length</span> <span class="p">=</span> <span class="n">Convert</span><span class="p">.</span><span class="nf">ToInt32</span><span class="p">(</span><span class="n">Request</span><span class="p">.</span><span class="n">Form</span><span class="p">[</span><span class="s">"length"</span><span class="p">].</span><span class="nf">FirstOrDefault</span><span class="p">());</span>
+    <span class="kt">var</span> <span class="n">start</span> <span class="p">=</span> <span class="n">Convert</span><span class="p">.</span><span class="nf">ToInt32</span><span class="p">(</span><span class="n">Request</span><span class="p">.</span><span class="n">Form</span><span class="p">[</span><span class="s">"start"</span><span class="p">].</span><span class="nf">FirstOrDefault</span><span class="p">());</span>
+    <span class="kt">var</span> <span class="n">orderColumnIndex</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Form</span><span class="p">[</span><span class="s">"order[0][column]"</span><span class="p">].</span><span class="nf">FirstOrDefault</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">orderDir</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Form</span><span class="p">[</span><span class="s">"order[0][dir]"</span><span class="p">].</span><span class="nf">FirstOrDefault</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">orderColumnName</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Form</span><span class="p">[</span><span class="s">$"columns[</span><span class="p">{</span><span class="n">orderColumnIndex</span><span class="p">}</span><span class="s">][name]"</span><span class="p">].</span><span class="nf">FirstOrDefault</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">searchValue</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Form</span><span class="p">[</span><span class="s">"search[value]"</span><span class="p">].</span><span class="nf">FirstOrDefault</span><span class="p">();</span>
+    <span class="kt">int</span> <span class="n">recordTotal</span> <span class="p">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">Count</span><span class="p">();</span>
+    <span class="kt">int</span> <span class="n">recordsFiltered</span> <span class="p">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">Count</span><span class="p">();</span>
+
+    <span class="k">if</span> <span class="p">(!</span><span class="kt">string</span><span class="p">.</span><span class="nf">IsNullOrEmpty</span><span class="p">(</span><span class="n">searchValue</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">data</span> <span class="p">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Description</span><span class="p">.</span><span class="nf">ToLower</span><span class="p">().</span><span class="nf">Contains</span><span class="p">(</span><span class="n">searchValue</span><span class="p">.</span><span class="nf">ToLower</span><span class="p">()));</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(!</span><span class="kt">string</span><span class="p">.</span><span class="nf">IsNullOrEmpty</span><span class="p">(</span><span class="n">orderColumnName</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="p">!</span><span class="kt">string</span><span class="p">.</span><span class="nf">IsNullOrEmpty</span><span class="p">(</span><span class="n">orderDir</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">data</span> <span class="p">=</span> <span class="nf">OrderByField</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">orderColumnName</span><span class="p">,</span> <span class="n">orderDir</span> <span class="p">==</span> <span class="s">"asc"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">var</span> <span class="n">products</span> <span class="p">=</span> <span class="n">data</span><span class="p">.</span><span class="nf">Skip</span><span class="p">(</span><span class="n">start</span><span class="p">).</span><span class="nf">Take</span><span class="p">(</span><span class="n">length</span><span class="p">).</span><span class="nf">ToList</span><span class="p">();</span>
+
+    <span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="k">new</span>
+    <span class="p">{</span>
+        <span class="n">draw</span> <span class="p">=</span> <span class="n">draw</span><span class="p">,</span>
+        <span class="n">recordsTotal</span> <span class="p">=</span> <span class="n">recordTotal</span><span class="p">,</span>
+        <span class="n">recordsFiltered</span> <span class="p">=</span> <span class="n">recordsFiltered</span><span class="p">,</span>
+        <span class="n">data</span> <span class="p">=</span> <span class="n">products</span>
+    <span class="p">};</span>
+
+    <span class="k">return</span> <span class="nf">Json</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>GetProducts metotunu incelemeden önce <code class="language-plaintext highlighter-rouge">Request.Form</code> ile aldığımız değerlerin ne anlama geldiğine bakalım.</p>
+
+<p><img src="/assets/img/posts/jstables4.png" alt="Request.Form" class="left" />
+<img src="/assets/img/posts/jstables5.png" alt="Request.Form" /></p>
+
+<p>Projeyi çalıştırıp <code class="language-plaintext highlighter-rouge">GetProduct</code> metotuna breakpoint eklediğimizde debuging sırasında Request.Form içeriği resimlerde görüldüğü gibi gelmektedir. Datatables <a href="https://datatables.net/examples/data_sources/server_side"><strong>dökümanında</strong></a> yazıldığı üzere draw, recordsTotal, recordsFiltered, data alanlarını içeren bir Json nesnesi beklemektedir.</p>
+
+<blockquote>
+  <p>Not:Seçili olan sayfa numarasını almak için <code class="language-plaintext highlighter-rouge">start/length</code> işlemini kullanabiliriz.</p>
+</blockquote>
+
+<p>IQueryable türündeki entity üzerinde sıralama işlemi yapmak için <code class="language-plaintext highlighter-rouge">OrderByField</code> fonksiyonunu yazacağız.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="n">IQueryable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">OrderByField</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">IQueryable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">q</span><span class="p">,</span> <span class="kt">string</span> <span class="n">SortField</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">Ascending</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">param</span> <span class="p">=</span> <span class="n">Expression</span><span class="p">.</span><span class="nf">Parameter</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="s">"p"</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">prop</span> <span class="p">=</span> <span class="n">Expression</span><span class="p">.</span><span class="nf">Property</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">SortField</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">exp</span> <span class="p">=</span> <span class="n">Expression</span><span class="p">.</span><span class="nf">Lambda</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">param</span><span class="p">);</span>
+    <span class="kt">string</span> <span class="n">method</span> <span class="p">=</span> <span class="n">Ascending</span> <span class="p">?</span> <span class="s">"OrderBy"</span> <span class="p">:</span> <span class="s">"OrderByDescending"</span><span class="p">;</span>
+    <span class="n">Type</span><span class="p">[]</span> <span class="n">types</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Type</span><span class="p">[]</span> <span class="p">{</span> <span class="n">q</span><span class="p">.</span><span class="n">ElementType</span><span class="p">,</span> <span class="n">exp</span><span class="p">.</span><span class="n">Body</span><span class="p">.</span><span class="n">Type</span> <span class="p">};</span>
+    <span class="kt">var</span> <span class="n">mce</span> <span class="p">=</span> <span class="n">Expression</span><span class="p">.</span><span class="nf">Call</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">Queryable</span><span class="p">),</span> <span class="n">method</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">q</span><span class="p">.</span><span class="n">Expression</span><span class="p">,</span> <span class="n">exp</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">.</span><span class="n">Provider</span><span class="p">.</span><span class="n">CreateQuery</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">mce</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Uygulamayı çalıştırdığımızda Datatables ile verileri görüntüleyebiliriz. Örnek projeyi <a href="https://github.com/muratsuzen/dotnetcore-samples/tree/main/JSDatatables"><strong>buradan</strong></a> indirebilirsiniz.</p>
+
+<p><img src="/assets/img/posts/jstables6.png" alt="Datatables" /></p>
+
+<p>Referanslar :</p>
+
+<p><a href="https://ronniediaz.com/2011/05/24/orderby-string-in-linq-c-net-dynamic-sorting-of-anonymous-types/"><strong>https://ronniediaz.com/2011/05/24/orderby-string-in-linq-c-net-dynamic-sorting-of-anonymous-types/</strong></a>
+<a href="https://www.c-sharpcorner.com/article/server-side-rendering-of-datatables-js-in-asp-net-core/"><strong>https://www.c-sharpcorner.com/article/server-side-rendering-of-datatables-js-in-asp-net-core/</strong></a></p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

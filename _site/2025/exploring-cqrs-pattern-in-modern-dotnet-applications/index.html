@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Exploring CQRS Pattern in Modern .NET Applications | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Exploring CQRS Pattern in Modern .NET Applications" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Command Query Responsibility Segregation (CQRS) is a powerful architectural pattern that helps in separating read and write responsibilities in modern software applications. In .NET, CQRS is often used with MediatR, Entity Framework, and clean architecture to build scalable, maintainable systems." />
+<meta property="og:description" content="Command Query Responsibility Segregation (CQRS) is a powerful architectural pattern that helps in separating read and write responsibilities in modern software applications. In .NET, CQRS is often used with MediatR, Entity Framework, and clean architecture to build scalable, maintainable systems." />
+<link rel="canonical" href="http://localhost:4000/2025/exploring-cqrs-pattern-in-modern-dotnet-applications/" />
+<meta property="og:url" content="http://localhost:4000/2025/exploring-cqrs-pattern-in-modern-dotnet-applications/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-22T21:49:23+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Exploring CQRS Pattern in Modern .NET Applications" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-22T21:49:23+03:00","datePublished":"2025-05-22T21:49:23+03:00","description":"Command Query Responsibility Segregation (CQRS) is a powerful architectural pattern that helps in separating read and write responsibilities in modern software applications. In .NET, CQRS is often used with MediatR, Entity Framework, and clean architecture to build scalable, maintainable systems.","headline":"Exploring CQRS Pattern in Modern .NET Applications","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/exploring-cqrs-pattern-in-modern-dotnet-applications/"},"url":"http://localhost:4000/2025/exploring-cqrs-pattern-in-modern-dotnet-applications/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Command Query Responsibility Segregation (CQRS) is a powerful architectural pattern that helps in separating read and write responsibilities in modern software applications. In .NET, CQRS is often used with MediatR, Entity Framework, and clean architecture to build scalable, maintainable systems.</p>
+
+<h2 id="-what-is-cqrs">🔍 What is CQRS?</h2>
+
+<p>CQRS splits application logic into two parts:</p>
+
+<ul>
+  <li><strong>Commands</strong> – for write operations (Create, Update, Delete)</li>
+  <li><strong>Queries</strong> – for read operations (Get, List)</li>
+</ul>
+
+<p>This separation improves scalability, optimizes performance, and simplifies code.</p>
+
+<h2 id="-sample-use-case">📦 Sample Use Case</h2>
+
+<p>Imagine a system where users can register and admins can list all users. With CQRS:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">RegisterUserCommand</code> handles user creation</li>
+  <li><code class="language-plaintext highlighter-rouge">GetAllUsersQuery</code> handles data retrieval</li>
+</ul>
+
+<h3 id="command-example">Command Example</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">record</span> <span class="nc">RegisterUserCommand</span><span class="p">(</span><span class="kt">string</span> <span class="n">Name</span><span class="p">,</span> <span class="kt">string</span> <span class="n">Email</span><span class="p">)</span> <span class="p">:</span> <span class="n">IRequest</span><span class="p">&lt;</span><span class="n">Guid</span><span class="p">&gt;;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">RegisterUserHandler</span> <span class="p">:</span> <span class="n">IRequestHandler</span><span class="p">&lt;</span><span class="n">RegisterUserCommand</span><span class="p">,</span> <span class="n">Guid</span><span class="p">&gt;</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">AppDbContext</span> <span class="n">_context</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">RegisterUserHandler</span><span class="p">(</span><span class="n">AppDbContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">Guid</span><span class="p">&gt;</span> <span class="nf">Handle</span><span class="p">(</span><span class="n">RegisterUserCommand</span> <span class="n">request</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="k">new</span> <span class="n">User</span> <span class="p">{</span> <span class="n">Name</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">Email</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="n">Email</span> <span class="p">};</span>
+        <span class="n">_context</span><span class="p">.</span><span class="n">Users</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+        <span class="k">await</span> <span class="n">_context</span><span class="p">.</span><span class="nf">SaveChangesAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">user</span><span class="p">.</span><span class="n">Id</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="query-example">Query Example</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">record</span> <span class="nc">GetAllUsersQuery</span><span class="p">()</span> <span class="p">:</span> <span class="n">IRequest</span><span class="p">&lt;</span><span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;&gt;;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">GetAllUsersHandler</span> <span class="p">:</span> <span class="n">IRequestHandler</span><span class="p">&lt;</span><span class="n">GetAllUsersQuery</span><span class="p">,</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;&gt;</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">AppDbContext</span> <span class="n">_context</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">GetAllUsersHandler</span><span class="p">(</span><span class="n">AppDbContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;&gt;</span> <span class="nf">Handle</span><span class="p">(</span><span class="n">GetAllUsersQuery</span> <span class="n">request</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">_context</span><span class="p">.</span><span class="n">Users</span><span class="p">.</span><span class="nf">ToListAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="-benefits-of-cqrs">🧠 Benefits of CQRS</h2>
+
+<ul>
+  <li>Better separation of concerns</li>
+  <li>Easier to maintain and test</li>
+  <li>Read and write models optimized independently</li>
+</ul>
+
+<h2 id="️-when-not-to-use-cqrs">⚠️ When Not to Use CQRS</h2>
+
+<ul>
+  <li>Overkill for small apps</li>
+  <li>Adds complexity if read/write difference is minimal</li>
+</ul>
+
+<h2 id="-conclusion">✅ Conclusion</h2>
+
+<p>CQRS empowers developers to write clean, focused logic for different operations. In complex .NET systems, applying CQRS with MediatR and EF Core can significantly improve structure and scalability.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-cqrs">🔍 What is CQRS?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#sample-use-case">📦 Sample Use Case</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#command-example">Command Example</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#query-example">Query Example</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#benefits-of-cqrs">🧠 Benefits of CQRS</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#️-when-not-to-use-cqrs">⚠️ When Not to Use CQRS</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#conclusion">✅ Conclusion</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>ASP.NET Core Middleware Nedir? Nasıl Kullanılır? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="ASP.NET Core Middleware Nedir? Nasıl Kullanılır?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar, bu makalede ASP.NET Core’da ara katman (Middleware) yapısını inceleceğiz. ASP.NET Core’da ara katman (Middleware) yapısı, uygulama çalıştığında bir istemciden (Client) gelen taleplerin (Request) istemciye geri döndürülmesi (Response) sürecindeki işlemleri gerçekleştirmek ve sürece yön vermek için kullanılmaktadır." />
+<meta property="og:description" content="Merhabalar, bu makalede ASP.NET Core’da ara katman (Middleware) yapısını inceleceğiz. ASP.NET Core’da ara katman (Middleware) yapısı, uygulama çalıştığında bir istemciden (Client) gelen taleplerin (Request) istemciye geri döndürülmesi (Response) sürecindeki işlemleri gerçekleştirmek ve sürece yön vermek için kullanılmaktadır." />
+<link rel="canonical" href="http://localhost:4000/2022/aspnet-core-middleware-nedir-nasil-kullanilir/" />
+<meta property="og:url" content="http://localhost:4000/2022/aspnet-core-middleware-nedir-nasil-kullanilir/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-05T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ASP.NET Core Middleware Nedir? Nasıl Kullanılır?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2022-06-05T19:33:00+03:00","datePublished":"2022-06-05T19:33:00+03:00","description":"Merhabalar, bu makalede ASP.NET Core’da ara katman (Middleware) yapısını inceleceğiz. ASP.NET Core’da ara katman (Middleware) yapısı, uygulama çalıştığında bir istemciden (Client) gelen taleplerin (Request) istemciye geri döndürülmesi (Response) sürecindeki işlemleri gerçekleştirmek ve sürece yön vermek için kullanılmaktadır.","headline":"ASP.NET Core Middleware Nedir? Nasıl Kullanılır?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/aspnet-core-middleware-nedir-nasil-kullanilir/"},"url":"http://localhost:4000/2022/aspnet-core-middleware-nedir-nasil-kullanilir/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar, bu makalede ASP.NET Core’da ara katman (Middleware) yapısını inceleceğiz. ASP.NET Core’da ara katman (Middleware) yapısı, uygulama çalıştığında bir istemciden (Client) gelen taleplerin (Request) istemciye geri döndürülmesi (Response) sürecindeki işlemleri gerçekleştirmek ve sürece yön vermek için kullanılmaktadır.</p>
+
+<p><img src="/assets/img/posts/request-delegate-pipeline.png" alt="Request Delegate Pipeline" class="shadow" width="800" height="400" />
+<em>Request Delegate Pipeline</em></p>
+
+<p>Yukarıdaki resimde görüldüğü üzere, istemciden (Client) gelen bir istek üzerine (Request) Middleware 1 işlemleri yapılmaktadır. Middleware 1 next() metodu bir sonraki katman olan Middleware 2 çalıştırmaktadır. Middleware 2 de işlemlerini tamamlayıp next() metodu ile Middleware 3 çalıştırılmaktadır. Middleware 3 işlemlerini tamamladığında çalıştıracak bir başka Middleware olmadığı için işlem sonucunu Middleware 2 katmanına, Middleware 2 de Middleware 1 katmanına döndürmektedir. Middleware 1 ara katmanı da tüm gelen sonuçlara göre istemciye istek sonucunu (Response) döndürmektedir.</p>
+
+<p>Burada dikkat edilecek olan kısım her ara katman (Middleware) işlemini tamamladığında next() metodu ile sonraki katmanı çağırırken kendi işlemini bitirmeyip bir sonraki katmandan cevap beklemesidir. İşte bu sarmal yapıya boru hattı <code class="language-plaintext highlighter-rouge">(Pipeline)</code> denilmektedir. Tüm pipeline tamamlanana kadar ara katmanlar işlemlerini bitirip geriye bir istek (Response) döndürmelidir. Bu nedenle kullanacağımız yada müdahale edeceğimiz ara katmanlarda çalışma sıralamasına dikkat etmeliyiz.</p>
+
+<p><img src="/assets/img/posts/middleware-pipeline.png" alt="Middleware Pipeline" class="shadow" width="800" height="400" />
+<em>Middleware Pipeline</em></p>
+
+<p>Middleware konusunu örnek bir ASP.NET Core Web API (.NET 6) projesi oluşturarak inceleyelim.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet new webapi <span class="nt">-o</span> SampleMW
+</code></pre></div></div>
+
+<p>Projeyi oluşturduğumuzda Program.cs içerisinde bazı servis ve ara katmanlar (Middleware) standart olarak eklenmiştir. Bu kodları incelediğimizde WebApplication tipinde eklenen app değişkeni ile çalışma zamanına eklenebilecek ara katmanları görebiliriz.</p>
+
+<p><img src="/assets/img/posts/app-use-middlewares.jpg" alt="app-use-middlewares" /></p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="c1">// Add services to the container.</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddControllers</span><span class="p">();</span>
+<span class="c1">// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddEndpointsApiExplorer</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddSwaggerGen</span><span class="p">();</span>
+
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="c1">// Configure the HTTP request pipeline.</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="nf">IsDevelopment</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwagger</span><span class="p">();</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwaggerUI</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseHttpsRedirection</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseAuthorization</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapControllers</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Hazır ara katmanları bu şekilde ekleyebiliriz. Ayrıca çalışma zamanında devreye girebilecek kendi ara katmanlarımızı da yazabiliriz. Bu şekilde ekleyebileceğimiz ara katmanları çalıştırabilmemiz için eklenmiş metodlar bulunmaktadır.</p>
+
+<h2 id="usemiddleware-metodu">UseMiddleware Metodu</h2>
+
+<hr />
+
+<p>Öncelikle projede CustomMiddleware isminde bir sınıf oluşturalım. Bu sınıfta Constructor içerisinde inject yaptığımız RequestDelegate tipinde <code class="language-plaintext highlighter-rouge">_next</code> nesnesi tetiklendikten sonra ilgili işlemler tamamlandığında Invoke metodu ile sıradaki ara katman çağrılmaktadır.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">SampleMW</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">CustomMiddleware</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">RequestDelegate</span> <span class="n">_next</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">CustomMiddleware</span><span class="p">(</span><span class="n">RequestDelegate</span> <span class="n">next</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_next</span> <span class="p">=</span> <span class="n">next</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">Invoke</span><span class="p">(</span><span class="n">HttpContext</span> <span class="n">context</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">//logic</span>
+
+            <span class="k">await</span> <span class="n">_next</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Kendi yazdığımız ara katmanı UseMiddleware metodu ile kullanabiliriz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="n">UseMiddleware</span><span class="p">&lt;</span><span class="n">CustomMiddleware</span><span class="p">&gt;();</span>
+</code></pre></div></div>
+
+<h2 id="use-metodu">Use Metodu</h2>
+
+<hr />
+
+<p>Devreye girdikten sonra işlemleri tamamlandığında sıradaki ara katmanı çağırmaktadır. Sıradaki ara katmanın işlemleri bittiğinde geriye dönüp işleme devam edebilmektedir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE|"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">next</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">();</span>
+    <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE-RETURN|"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE-NEXT|"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">next</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/app-use-middlewares-result.jpg" alt="app-use-middlewares-result" />
+<em>Use Result</em></p>
+
+<h2 id="run-metodu">Run Metodu</h2>
+
+<hr />
+
+<p>Kendisinden sonra gelen ara katmanın çalışmasını engellemektedir. Bu durumda pipeline sonlanmış olacaktır. Bu şekilde kesilme işlemine kısa devre <code class="language-plaintext highlighter-rouge">(Short Circuit)</code> denilmektedir. Yukarıdaki kod bloğuna Run metodunu ekleyip çalıştıralım.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE|"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">next</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">();</span>
+    <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE-RETURN|"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="k">async</span> <span class="n">c</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">c</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|RUN|"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE-NEXT|"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">next</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/app-use-run-middlewares-result.jpg" alt="app-use-run-middlewares-result" />
+<em>Run Result</em></p>
+
+<p>Görüldüğü gibi Use-Next yazısını içeren Use metodu çalıştırılmadan geri dönüş yapılmış.</p>
+
+<h2 id="map-metodu">Map Metodu</h2>
+
+<hr />
+
+<p>İstemciden gelen isteğin (Request) path’e göre bir filtreleme yaparak farklı ara katmanlar çalıştırmak istediğimizde kullanırız.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Map</span><span class="p">(</span><span class="s">"/weatherforecast"</span><span class="p">,</span> <span class="n">builder</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">builder</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="k">async</span> <span class="n">x</span><span class="p">=&gt;</span> <span class="k">await</span> <span class="n">x</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|RUN MAP - WEATHERFORECAST|"</span><span class="p">));</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Map</span><span class="p">(</span><span class="s">"/home"</span><span class="p">,</span> <span class="n">builder</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">builder</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+    <span class="p">{</span>
+        <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE MAP - HOME|"</span><span class="p">);</span>
+        <span class="k">await</span> <span class="n">next</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">();</span>
+        <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|USE MAP RETURN - HOME|"</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/app-map-middlewares-1.jpg" alt="app-map-middlewares-result" />
+<em>Get /weatherforecast</em></p>
+
+<p><img src="/assets/img/posts/app-map-middlewares-2.jpg" alt="app-map-middlewares-result" />
+<em>Get /home</em></p>
+
+<h2 id="mapwhen-metodu">MapWhen Metodu</h2>
+
+<hr />
+
+<p>Map metodu istemciden gelen isteğin path’i ile bir yönlendirme yapıyorduk. MapWhen metoduyla ise istemciden gelen isteğin (Request) herhangi bir özelliğine göre filtreleme yapılabilmektedir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">MapWhen</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Path</span><span class="p">.</span><span class="nf">Equals</span><span class="p">(</span><span class="s">"/home"</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="n">x</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Method</span><span class="p">.</span><span class="nf">Equals</span><span class="p">(</span><span class="s">"GET"</span><span class="p">),</span> <span class="n">builder</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">builder</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="k">async</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="k">await</span> <span class="n">x</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"|RUN MAPWHEN - HOME|"</span><span class="p">));</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/app-mapwhen-middlewares.jpg" alt="Get /home" />
+<em>Get /home</em></p>
+
+<p>Bir sonraki makalede görüşmek üzere.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#usemiddleware-metodu">UseMiddleware Metodu</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#use-metodu">Use Metodu</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#run-metodu">Run Metodu</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#map-metodu">Map Metodu</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#mapwhen-metodu">MapWhen Metodu</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Dependency Injection and Lifecycle in .NET 8 | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Dependency Injection and Lifecycle in .NET 8" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Hello, in this article I will examine the Dependency Injection (DI) technique, which is a software design pattern that provides Inversion of Control (IoC) between classes and dependencies in .NET 8. First, let’s examine what Inversion of Control (IoC) is." />
+<meta property="og:description" content="Hello, in this article I will examine the Dependency Injection (DI) technique, which is a software design pattern that provides Inversion of Control (IoC) between classes and dependencies in .NET 8. First, let’s examine what Inversion of Control (IoC) is." />
+<link rel="canonical" href="http://localhost:4000/2024/dependency-injection-and-lifecycle-in-dotnet-8/" />
+<meta property="og:url" content="http://localhost:4000/2024/dependency-injection-and-lifecycle-in-dotnet-8/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:image" content="http://localhost:4000/assets/img/stocks/dependency-injection-and-lifecycle-in-dotnet-8.jpg" />
+<meta property="og:image:height" content="500" />
+<meta property="og:image:width" content="800" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-02-07T08:33:00+03:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="http://localhost:4000/assets/img/stocks/dependency-injection-and-lifecycle-in-dotnet-8.jpg" />
+<meta property="twitter:title" content="Dependency Injection and Lifecycle in .NET 8" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2024-02-07T08:33:00+03:00","datePublished":"2024-02-07T08:33:00+03:00","description":"Hello, in this article I will examine the Dependency Injection (DI) technique, which is a software design pattern that provides Inversion of Control (IoC) between classes and dependencies in .NET 8. First, let’s examine what Inversion of Control (IoC) is.","headline":"Dependency Injection and Lifecycle in .NET 8","image":{"width":800,"height":500,"alt":null,"url":"http://localhost:4000/assets/img/stocks/dependency-injection-and-lifecycle-in-dotnet-8.jpg","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/dependency-injection-and-lifecycle-in-dotnet-8/"},"url":"http://localhost:4000/2024/dependency-injection-and-lifecycle-in-dotnet-8/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Hello, in this article I will examine the Dependency Injection (DI) technique, which is a software design pattern that provides Inversion of Control (IoC) between classes and dependencies in .NET 8. First, let’s examine what Inversion of Control (IoC) is.</p>
+
+<h2 id="what-is-inversion-of-control-ioc">What is Inversion of Control (IoC)?</h2>
+
+<p>IoC is a software design principle. This principle aims to make the code more flexible, manageable and easier to maintain by regulating the configuration and operation of a software application.
+With IoC, the management and dependencies of objects within the application are done by the framework. IoC application method Dependency Injection (DI) is the most important part of .NET 8.</p>
+
+<p>.NET 8 offers many features for the Dependency Injection (DI) mechanism. Let’s examine these features by adding new classes.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">DependencyExample</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">interface</span> <span class="nc">IMyService</span>
+    <span class="p">{</span>
+        <span class="k">void</span> <span class="nf">Run</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyService</span> <span class="p">:</span> <span class="n">IMyService</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Run</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"MyService ......"</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">OtherMyService</span> <span class="p">:</span> <span class="n">IMyService</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Run</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"OtherMyService ......"</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="what-is-the-difference-between-the-getrequiredservice-and-getservice-methods">What is the difference between the GetRequiredService<T> and GetService<T> methods?</T></T></h2>
+
+<p>The IServiceProvider interface has GetRequiredService<T> and GetService<T> methods. The most important difference between these two methods is that the GetRequriedService method throws an error when the service is not found, but the GetService method returns null value.</T></T></p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//builder.Services.AddSingleton&lt;IMyService, MyService&gt;();</span>
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/dependency-injection-and-lifecycle-in-dotnet-8_1.png" alt="" /></p>
+
+<h2 id="what-is-the-difference-between-the-getkeyedservice-and-getrequiredkeyedservice-methods">What is the difference between the GetKeyedService<T> and GetRequiredKeyedService<T> methods?</T></T></h2>
+
+<p>GetKeyedService and GetRequiredKeyedService are two methods added to the IServiceProvider interface to use the keyed service feature, which is a new feature that comes with .NET 8. These methods allow you to define and resolve services not only by service type, but also by a key. The key to be defined can be of string or enum type. However, we can also define any object as a key. Thanks to the key definitions, we can distinguish different services with the same service type according to their keys and get the service we want. The GetKeyedService method returns null value if the keyed service is not found. The GetRequiredKeyedService method gives an InvalidOperationException error if the keyed service is not found.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddKeyedSingleton</span><span class="p">&lt;</span><span class="n">IMyService</span><span class="p">,</span> <span class="n">MyService</span><span class="p">&gt;(</span><span class="s">"GETKEY"</span><span class="p">);</span>
+<span class="c1">//builder.Services.AddKeyedSingleton&lt;IMyService, OtherMyService&gt;("GETREQKEY");</span>
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/dependency-injection-and-lifecycle-in-dotnet-8_2.png" alt="" /></p>
+
+<h2 id="what-is-dependency-injection-di">What is Dependency Injection (DI)?</h2>
+
+<p>Dependency injection (DI) is a software design pattern that is used to access configured services. This pattern delegates the creation and management of a class’s dependencies to an external entity, known as an IoC (Inversion of Control) container. This way, loose coupling is achieved between classes and the code becomes more modular, easy to maintain and testable.</p>
+
+<p>It uses an interface or a base class to abstract the dependency implementation.
+It registers the dependency in a service container. .NET 8 provides a service container named IServiceProvider. Services are usually added to the IServiceCollection at the start of the application.
+It injects the dependency into the constructor of the class that uses it. The framework takes the responsibility of creating and disposing of an instance of the dependency when it is no longer needed.</p>
+
+<h2 id="advantages-of-dependency-injection">Advantages of dependency injection</h2>
+
+<ul>
+  <li>Classes do not need to know how their dependencies are created or configured.</li>
+  <li>Classes are not dependent on the concrete implementations of their dependencies, which increases testability and flexibility.</li>
+  <li>Classes require minimal code changes to change or reuse their dependencies.</li>
+  <li>Dependencies are managed in a single place throughout the application’s lifetime and are disposed of when needed.</li>
+</ul>
+
+<h2 id="what-are-di-life-cycles">What are DI life cycles?</h2>
+
+<ul>
+  <li>Transient: It creates a new service instance for each request. This ensures that the service is different for each user or each operation. Transient services are registered with the AddTransient method.</li>
+  <li>Scoped: It creates a new service instance for each scope. A scope is usually a web request or a unit of work. Scoped services share the same instance when they are requested repeatedly in the same scope. Scoped services are registered with the AddScoped method.</li>
+  <li>Singleton: It creates a single service instance throughout the application and uses it everywhere. Singleton services are created when the application starts or on the first request. Singleton services are registered with the AddSingleton method.</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTransient</span><span class="p">&lt;</span><span class="n">TransientService</span><span class="p">&gt;();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddScoped</span><span class="p">&lt;</span><span class="n">ScopedService</span><span class="p">&gt;();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="p">&lt;</span><span class="n">SingletonService</span><span class="p">&gt;();</span>
+</code></pre></div></div>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Mvc</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.Extensions.DependencyInjection</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">DependencyExample.Controllers</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"[controller]"</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">WeatherForecastController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">IMyService</span> <span class="n">_transientService</span><span class="p">;</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">IMyService</span> <span class="n">_scopedService</span><span class="p">;</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">IMyService</span> <span class="n">_singletonService</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">WeatherForecastController</span><span class="p">(</span><span class="n">IServiceProvider</span> <span class="n">serviceProvider</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_transientService</span> <span class="p">=</span> <span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="p">&lt;</span><span class="n">TransientService</span><span class="p">&gt;();</span>
+            <span class="n">_scopedService</span> <span class="p">=</span> <span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="p">&lt;</span><span class="n">ScopedService</span><span class="p">&gt;();</span>
+            <span class="n">_singletonService</span> <span class="p">=</span> <span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="p">&lt;</span><span class="n">SingletonService</span><span class="p">&gt;();</span>
+        <span class="p">}</span>
+        <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+        <span class="k">public</span> <span class="n">ActionResult</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;&gt;</span> <span class="nf">Get</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="c1">// Servislerin ID'lerini döndür</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span>
+                <span class="s">$"Transient: </span><span class="p">{</span><span class="n">_transientService</span><span class="p">.</span><span class="n">Id</span><span class="p">}</span><span class="s">"</span><span class="p">,</span>
+                <span class="s">$"Scoped: </span><span class="p">{</span><span class="n">_scopedService</span><span class="p">.</span><span class="n">Id</span><span class="p">}</span><span class="s">"</span><span class="p">,</span>
+                <span class="s">$"Singleton: </span><span class="p">{</span><span class="n">_singletonService</span><span class="p">.</span><span class="n">Id</span><span class="p">}</span><span class="s">"</span>
+            <span class="p">};</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/dependency-injection-and-lifecycle-in-dotnet-8_3.png" alt="" />
+<img src="/assets/img/posts/dependency-injection-and-lifecycle-in-dotnet-8_4.png" alt="" /></p>
+
+<p>As we can see when we test it on Swagger, Transient service creates a new instance for each request. Therefore, it has a different ID value for each page refresh. Scoped service creates a new instance for each scope. A scope is usually a web request or a unit of work. Scoped services share the same ID value for the requests in the same scope. Therefore, it has the same ID value for the same page refresh. Singleton service creates a single instance throughout the application and uses it everywhere. Therefore, it has the same ID value for each page refresh.
+See you in the next article.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-inversion-of-control-ioc">What is Inversion of Control (IoC)?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#t"></T</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#t"></T</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#what-is-dependency-injection-di">What is Dependency Injection (DI)?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#advantages-of-dependency-injection">Advantages of dependency injection</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#what-are-di-life-cycles">What are DI life cycles?</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

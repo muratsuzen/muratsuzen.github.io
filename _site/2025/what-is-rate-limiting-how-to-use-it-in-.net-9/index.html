@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What is Rate Limiting? How to Use It in .NET 9? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What is Rate Limiting? How to Use It in .NET 9?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Rate limiting is a critical technique in modern web development used to control how many requests a client can make to a server over a specific period. This prevents abuse, protects system resources, and ensures fair access across all users." />
+<meta property="og:description" content="Rate limiting is a critical technique in modern web development used to control how many requests a client can make to a server over a specific period. This prevents abuse, protects system resources, and ensures fair access across all users." />
+<link rel="canonical" href="http://localhost:4000/2025/what-is-rate-limiting-how-to-use-it-in-.net-9/" />
+<meta property="og:url" content="http://localhost:4000/2025/what-is-rate-limiting-how-to-use-it-in-.net-9/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-09T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What is Rate Limiting? How to Use It in .NET 9?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-09T12:00:00+03:00","datePublished":"2025-05-09T12:00:00+03:00","description":"Rate limiting is a critical technique in modern web development used to control how many requests a client can make to a server over a specific period. This prevents abuse, protects system resources, and ensures fair access across all users.","headline":"What is Rate Limiting? How to Use It in .NET 9?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/what-is-rate-limiting-how-to-use-it-in-.net-9/"},"url":"http://localhost:4000/2025/what-is-rate-limiting-how-to-use-it-in-.net-9/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Rate limiting is a critical technique in modern web development used to <strong>control how many requests a client can make to a server over a specific period</strong>. This prevents abuse, protects system resources, and ensures fair access across all users.</p>
+
+<p>In .NET 9, rate limiting has been enhanced with built-in middleware that can be easily configured and customized.</p>
+
+<h2 id="why-use-rate-limiting">Why Use Rate Limiting?</h2>
+
+<p>Without rate limiting, your API could be flooded by excessive requests from:</p>
+
+<ul>
+  <li>Malicious attackers (DDoS attacks)</li>
+  <li>Misconfigured client apps making too many calls</li>
+  <li>Heavy users consuming disproportionate system resources</li>
+</ul>
+
+<p>Benefits:</p>
+
+<ul>
+  <li>Improves <strong>system stability</strong> under heavy load</li>
+  <li>Enhances <strong>security</strong> by stopping brute-force attacks</li>
+  <li>Guarantees <strong>fairness</strong> for all users</li>
+</ul>
+
+<h2 id="how-does-it-work">How Does It Work?</h2>
+
+<p>The server tracks requests from each client, usually by IP or token. If the client exceeds the allowed limit, the server rejects further requests (often with an HTTP 429 Too Many Requests error) until the window resets.</p>
+
+<h2 id="example-in-net-9">Example in .NET 9</h2>
+
+<h3 id="step-1-install-middleware-if-needed">Step 1: Install Middleware (if needed)</h3>
+
+<p>.NET 9 includes built-in middleware for rate limiting.</p>
+
+<h3 id="step-2-configure-in-programcs">Step 2: Configure in <code class="language-plaintext highlighter-rouge">Program.cs</code></h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.RateLimiting</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading.RateLimiting</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddRateLimiter</span><span class="p">(</span><span class="n">options</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">AddFixedWindowLimiter</span><span class="p">(</span><span class="s">"fixed"</span><span class="p">,</span> <span class="n">opt</span> <span class="p">=&gt;</span>
+    <span class="p">{</span>
+        <span class="n">opt</span><span class="p">.</span><span class="n">PermitLimit</span> <span class="p">=</span> <span class="m">5</span><span class="p">;</span>
+        <span class="n">opt</span><span class="p">.</span><span class="n">Window</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromSeconds</span><span class="p">(</span><span class="m">10</span><span class="p">);</span>
+        <span class="n">opt</span><span class="p">.</span><span class="n">QueueProcessingOrder</span> <span class="p">=</span> <span class="n">QueueProcessingOrder</span><span class="p">.</span><span class="n">OldestFirst</span><span class="p">;</span>
+        <span class="n">opt</span><span class="p">.</span><span class="n">QueueLimit</span> <span class="p">=</span> <span class="m">2</span><span class="p">;</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseRateLimiter</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="s">"Hello, world!"</span><span class="p">).</span><span class="nf">RequireRateLimiting</span><span class="p">(</span><span class="s">"fixed"</span><span class="p">);</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>This setup allows each client <strong>5 requests every 10 seconds</strong>. Excess requests get queued (up to 2) or rejected.</p>
+
+<h2 id="advanced-patterns">Advanced Patterns</h2>
+
+<p>You can use:</p>
+
+<ul>
+  <li>Sliding window or token bucket algorithms for smoother control</li>
+  <li>Per-endpoint or per-user limits</li>
+  <li>Distributed rate limiting with Redis or cloud services</li>
+</ul>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<ul>
+  <li>Always test limits under load</li>
+  <li>Combine with authentication to apply limits per user, not per IP</li>
+  <li>Use meaningful error responses to guide client-side handling</li>
+</ul>
+
+<p>By implementing rate limiting, your .NET 9 applications stay robust, fair, and secure.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#why-use-rate-limiting">Why Use Rate Limiting?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#how-does-it-work">How Does It Work?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#example-in-net-9">Example in .NET 9</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-install-middleware-if-needed">Step 1: Install Middleware (if needed)</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#program-cs-code">Program.cs</code</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#advanced-patterns">Advanced Patterns</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

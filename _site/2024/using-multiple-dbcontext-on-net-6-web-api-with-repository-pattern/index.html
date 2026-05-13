@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Using Multiple DbContext on .NET 6 Web API With Repository Pattern | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Using Multiple DbContext on .NET 6 Web API With Repository Pattern" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Hello, I this article, I will show how to use of multiple DbContext in an ASP.NET Web API (.NET 6.0) project. We will connect to 2 different databases by changing the DbContext. Now let’s create ASP.NET Web API (.NET 6) project. Secondly, we will install the EntityFramework packages." />
+<meta property="og:description" content="Hello, I this article, I will show how to use of multiple DbContext in an ASP.NET Web API (.NET 6.0) project. We will connect to 2 different databases by changing the DbContext. Now let’s create ASP.NET Web API (.NET 6) project. Secondly, we will install the EntityFramework packages." />
+<link rel="canonical" href="http://localhost:4000/2024/using-multiple-dbcontext-on-net-6-web-api-with-repository-pattern/" />
+<meta property="og:url" content="http://localhost:4000/2024/using-multiple-dbcontext-on-net-6-web-api-with-repository-pattern/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-01-07T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Using Multiple DbContext on .NET 6 Web API With Repository Pattern" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2024-01-07T19:33:00+03:00","datePublished":"2024-01-07T19:33:00+03:00","description":"Hello, I this article, I will show how to use of multiple DbContext in an ASP.NET Web API (.NET 6.0) project. We will connect to 2 different databases by changing the DbContext. Now let’s create ASP.NET Web API (.NET 6) project. Secondly, we will install the EntityFramework packages.","headline":"Using Multiple DbContext on .NET 6 Web API With Repository Pattern","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/using-multiple-dbcontext-on-net-6-web-api-with-repository-pattern/"},"url":"http://localhost:4000/2024/using-multiple-dbcontext-on-net-6-web-api-with-repository-pattern/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Hello, I this article, I will show how to use of multiple DbContext in an ASP.NET Web API (.NET 6.0) project. We will connect to 2 different databases by changing the DbContext. Now let’s create ASP.NET Web API (.NET 6) project. Secondly, we will install the EntityFramework packages.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Install-Package Microsoft.EntityFrameworkCore <span class="nt">-Version</span> 6.0.4
+Install-Package Microsoft.EntityFrameworkCore.SqlServer <span class="nt">-Version</span> 6.0.4
+Install-Package Microsoft.EntityFrameworkCore.Tools <span class="nt">-Version</span> 6.0.4
+</code></pre></div></div>
+
+<p>We will create the DbContext classes when the package installation is complete. Create three classes are named DbOneContext, DbTwoContext and BaseContext to the Data folder.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">BaseContext</span> <span class="p">:</span> <span class="n">DbContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">BaseContext</span><span class="p">(</span><span class="n">DbContextOptions</span> <span class="n">options</span><span class="p">):</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We will update DbOneContext and DbTwoContext concrete classes which inherits BaseContext.</p>
+
+<p>DbOneContext:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">DbOneContext</span> <span class="p">:</span> <span class="n">BaseContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">DbOneContext</span><span class="p">(</span><span class="n">DbContextOptions</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;</span> <span class="n">options</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>DbTwoContext:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">DbTwoContext</span> <span class="p">:</span> <span class="n">BaseContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">DbTwoContext</span><span class="p">(</span><span class="n">DbContextOptions</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;</span> <span class="n">options</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>After creating the DbContext classes, we will add DbOneContext and DbTwoContext are connectionstrings to the appsettings.json file.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"Logging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"LogLevel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"Default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Information"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Microsoft.AspNetCore"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Warning"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"AllowedHosts"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ConnectionStrings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"DbOneContext"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Data Source=.;Initial Catalog=DBONE;User ID=sa;Password=Pw123456"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"DbTwoContext"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Data Source=.;Initial Catalog=DBTWO;User ID=sa;Password=Pw123456"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>We will add DbContext classes info to Program.cs file.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;(</span><span class="n">options</span> <span class="p">=&gt;</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="nf">GetConnectionString</span><span class="p">(</span><span class="s">"DbOneContext"</span><span class="p">)));</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;(</span><span class="n">options</span> <span class="p">=&gt;</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="nf">GetConnectionString</span><span class="p">(</span><span class="s">"DbTwoContext"</span><span class="p">)));</span>
+</code></pre></div></div>
+
+<p>Create a Models named folder and add a Book class.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">MultipleDbContext.Models</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Book</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Anchor</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Then we will add the Book entity class in BaseContext.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">BaseContext</span> <span class="p">:</span> <span class="n">DbContext</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">BaseContext</span><span class="p">(</span><span class="n">DbContextOptions</span> <span class="n">options</span><span class="p">):</span> <span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="n">DbSett</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="n">Books</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We will create a class called DbContextFactory in the Data folder. In this class we will return the BaseContext object with the contextName value inside an IDictionary. In this way, we will have made a development in accordance with SOLID principles.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">MultipleDbContext.Data</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">DbContextFactory</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">IDictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">BaseContext</span><span class="p">&gt;</span> <span class="n">_context</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">DbContextFactory</span><span class="p">(</span><span class="n">IDictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">BaseContext</span><span class="p">&gt;</span> <span class="n">context</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">BaseContext</span> <span class="nf">GetContext</span><span class="p">(</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">_context</span><span class="p">[</span><span class="n">contextName</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now we can create the Repository structure. Create IBookRepository interface under the Repository folder.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Repository</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">interface</span> <span class="nc">IBookRepository</span>
+<span class="p">{</span>
+    <span class="k">void</span> <span class="nf">Add</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">);</span>
+    <span class="k">void</span> <span class="nf">Update</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">);</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">(</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We will select DbContext with the ContextName parameter.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Data</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Repository</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">BookRepository</span> <span class="p">:</span> <span class="n">IBookRepository</span>
+    <span class="p">{</span>
+        <span class="n">DbContextFactory</span> <span class="n">_contexts</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">BookRepository</span><span class="p">(</span><span class="n">DbContextFactory</span> <span class="n">contexts</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_contexts</span> <span class="p">=</span> <span class="n">contexts</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Add</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="n">_contexts</span><span class="p">.</span><span class="nf">GetContext</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="kt">var</span> <span class="n">addedEntity</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="nf">Attach</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+            <span class="n">addedEntity</span><span class="p">.</span><span class="n">State</span> <span class="p">=</span> <span class="n">EntityState</span><span class="p">.</span><span class="n">Added</span><span class="p">;</span>
+            <span class="n">context</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Update</span><span class="p">(</span><span class="n">Book</span> <span class="n">entity</span><span class="p">,</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="n">_contexts</span><span class="p">.</span><span class="nf">GetContext</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="kt">var</span> <span class="n">updatedEntity</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="nf">Entry</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+            <span class="n">updatedEntity</span><span class="p">.</span><span class="n">State</span> <span class="p">=</span> <span class="n">EntityState</span><span class="p">.</span><span class="n">Modified</span><span class="p">;</span>
+            <span class="n">context</span><span class="p">.</span><span class="nf">SaveChanges</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">(</span><span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="n">_contexts</span><span class="p">.</span><span class="nf">GetContext</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">context</span><span class="p">.</span><span class="n">Books</span><span class="p">.</span><span class="nf">ToList</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In this class, we will move the DbContextFactory and DbContext objects into the Repository in the constructor. We can access the DbContext sent with the parameter. We will add the AutoFac IOC container to the project.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Install-Package Autofac <span class="nt">-Version</span> 6.3.0
+Install-Package Autofac.Extensions.DependencyInjection <span class="nt">-Version</span> 7.2.0
+</code></pre></div></div>
+
+<p>After downloading the package, we will immediately configure AutoFac in Program.cs.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Host</span><span class="p">.</span><span class="nf">UseServiceProviderFactory</span><span class="p">(</span><span class="k">new</span> <span class="nf">AutofacServiceProviderFactory</span><span class="p">());</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Host</span><span class="p">.</span><span class="n">ConfigureContainer</span><span class="p">&lt;</span><span class="n">ContainerBuilder</span><span class="p">&gt;(</span><span class="n">b</span> <span class="p">=&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">RegisterModule</span><span class="p">(</span><span class="k">new</span> <span class="nf">AutoFacModule</span><span class="p">()));</span>
+</code></pre></div></div>
+
+<p>We will add the AutoFacModule class.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">AutoFacModule</span> <span class="p">:</span> <span class="n">Module</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">Load</span><span class="p">(</span><span class="n">ContainerBuilder</span> <span class="n">builder</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">builder</span><span class="p">.</span><span class="n">RegisterType</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;().</span><span class="n">As</span><span class="p">&lt;</span><span class="n">BaseContext</span><span class="p">&gt;();</span>
+        <span class="n">builder</span><span class="p">.</span><span class="n">RegisterType</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;().</span><span class="n">As</span><span class="p">&lt;</span><span class="n">BaseContext</span><span class="p">&gt;();</span>
+        <span class="n">builder</span><span class="p">.</span><span class="nf">Register</span><span class="p">(</span><span class="n">ctx</span> <span class="p">=&gt;</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">allContext</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">BaseContext</span><span class="p">&gt;();</span>
+            <span class="n">allContext</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"DbOneContext"</span><span class="p">,</span> <span class="n">ctx</span><span class="p">.</span><span class="n">Resolve</span><span class="p">&lt;</span><span class="n">DbOneContext</span><span class="p">&gt;());</span>
+            <span class="n">allContext</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"DbTwoContext"</span><span class="p">,</span> <span class="n">ctx</span><span class="p">.</span><span class="n">Resolve</span><span class="p">&lt;</span><span class="n">DbTwoContext</span><span class="p">&gt;());</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">DbContextFactory</span><span class="p">(</span><span class="n">allContext</span><span class="p">);</span>
+
+        <span class="p">});</span>
+        <span class="n">builder</span><span class="p">.</span><span class="n">RegisterType</span><span class="p">&lt;</span><span class="n">BookRepository</span><span class="p">&gt;().</span><span class="n">As</span><span class="p">&lt;</span><span class="n">IBookRepository</span><span class="p">&gt;();</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>After AutoFac IOC configuration, we will add a Web API controller named BookController to the controllers folder.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Http</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Mvc</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Models</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">MultipleDbContext.Repository</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultipleDbContext.Controllers</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"api/[controller]"</span><span class="p">)]</span>
+    <span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">BookController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="n">IBookRepository</span> <span class="n">_bookRepository</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">BookController</span><span class="p">(</span><span class="n">IBookRepository</span> <span class="n">bookRepository</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_bookRepository</span> <span class="p">=</span> <span class="n">bookRepository</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+        <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"{contextName}"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Book</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">([</span><span class="n">FromRoute</span><span class="p">]</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">books</span> <span class="p">=</span> <span class="n">_bookRepository</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="n">contextName</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">books</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="n">HttpPost</span><span class="p">]</span>
+        <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"{contextName}"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">Post</span><span class="p">([</span><span class="n">FromRoute</span><span class="p">]</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">,[</span><span class="n">FromBody</span><span class="p">]</span> <span class="n">Book</span> <span class="n">book</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">try</span>
+            <span class="p">{</span>
+                <span class="n">_bookRepository</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="n">book</span><span class="p">,</span><span class="n">contextName</span><span class="p">);</span>
+                <span class="k">return</span> <span class="nf">Ok</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="nf">BadRequest</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="n">HttpPut</span><span class="p">]</span>
+        <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"{contextName}"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">Put</span><span class="p">([</span><span class="n">FromRoute</span><span class="p">]</span> <span class="kt">string</span> <span class="n">contextName</span><span class="p">,</span> <span class="p">[</span><span class="n">FromBody</span><span class="p">]</span> <span class="n">Book</span> <span class="n">book</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">try</span>
+            <span class="p">{</span>
+                <span class="n">_bookRepository</span><span class="p">.</span><span class="nf">Update</span><span class="p">(</span><span class="n">book</span><span class="p">,</span> <span class="n">contextName</span><span class="p">);</span>
+                <span class="k">return</span> <span class="nf">Ok</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="nf">BadRequest</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We select the dbContext with the contextName parameter. We will do CRUD operations with BookRepository. After creating the controller, we will create the DbOne and DbTwo databases with Migration. Since there are multiple DbContext files, it is necessary to specify which one to create in the migration process.</p>
+
+<p>DbOneContext — Migration:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Add-Migration <span class="nt">-Context</span> DbOneContext
+Update-Database <span class="nt">-Context</span> DbOneContext
+</code></pre></div></div>
+
+<p>DbTwoContext — Migration:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Add-Migration <span class="nt">-Context</span> DbTwoContext
+Update-Database <span class="nt">-Context</span> DbTwoContext
+</code></pre></div></div>
+
+<p>After the migration;</p>
+
+<p><img src="/assets/img/posts/multiple_dbcontext_1.png" alt="AfterMigration" />
+<em>After Migration</em></p>
+
+<p>We will do CRUD operations with Swagger. We will do Post and Get requests for DbOneContext.</p>
+
+<p><img src="/assets/img/posts/multiple_dbcontext_2.png" alt="Test Postman" />
+<em>Test Postman</em>
+<img src="/assets/img/posts/multiple_dbcontext_3.png" alt="Test Postman" />
+<em>Test Postman</em></p>
+
+<p>We will perform CRUD operations on the DbTwo database with the DbTwoContext parameter.</p>
+
+<p><img src="/assets/img/posts/multiple_dbcontext_4.png" alt="Test Postman" />
+<em>Test Postman</em>
+<img src="/assets/img/posts/multiple_dbcontext_5.png" alt="Test Postman" />
+<em>Test Postman</em></p>
+
+<p><img src="/assets/img/posts/multiple_dbcontext_6.png" alt="Test Postman" /></p>
+
+<p>You can <a href="https://github.com/muratsuzen/MultipleDbContext.git"><strong>download</strong></a> the project here. Please let me know if there are typos in my post.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

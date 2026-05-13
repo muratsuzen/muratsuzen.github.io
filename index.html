@@ -1,0 +1,92 @@
+---
+layout: home
+title: Welcome
+---
+
+<div class="hero-section">
+    <h1 class="hero-title">Murat Süzen</h1>
+    <h2 class="hero-subtitle">Technical Lead & Software Engineer</h2>
+    <p class="hero-description">
+        <strong>Technical Lead</strong> specializing in <strong>.Net Core</strong>, <strong>Angular</strong>, <strong>Flutter</strong>, and <strong>IoT</strong>. I build scalable software architectures and bridge the gap between high-level web technologies and hardware integration.
+    </p>
+    <div class="hero-actions">
+        <a href="{{ '/blog/' | relative_url }}" class="hero-btn primary">Explore Blog</a>
+        <a href="{{ '/contact/' | relative_url }}" class="hero-btn secondary">Contact Me</a>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    max-width: 800px;
+    animation: fadeIn 1s ease-out;
+}
+
+.hero-title {
+    font-size: 4.5rem;
+    color: #343C4B;
+    margin-bottom: 0.75rem;
+    font-weight: 800;
+}
+
+.hero-subtitle {
+    font-size: 1.75rem;
+    color: #86807C;
+    margin-bottom: 2rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.hero-description {
+    font-size: 1.3rem;
+    color: #4a5568;
+    margin-bottom: 3rem;
+    line-height: 1.7;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.hero-btn {
+    padding: 1.1rem 3rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.hero-btn.primary {
+    background-color: #343C4B;
+    color: white;
+}
+
+.hero-btn.primary:hover {
+    background-color: rgb(61, 54, 49);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.hero-btn.secondary {
+    border: 2px solid #343C4B;
+    color: #343C4B;
+}
+
+.hero-btn.secondary:hover {
+    background-color: #343C4B;
+    color: white;
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .hero-title { font-size: 3rem; }
+    .hero-subtitle { font-size: 1.4rem; }
+    .hero-actions { flex-direction: column; }
+}
+</style>

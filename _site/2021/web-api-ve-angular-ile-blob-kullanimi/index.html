@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Web API ve Angular 8 ile Blob Veri Tipi Kullanımı | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Web API ve Angular 8 ile Blob Veri Tipi Kullanımı" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Yaptığım bir Angular projesinde Web API ile FTP server dan dosya indirme işlem yapmam gerekiyordu. Haliyle blob veri tipleriyle ilgilenmem gerekti. FTP den dosyaları indirme işlemi çok zamanımı almadı fakat öngöremediğim bir MIME type tanımı epey uğraştırdı. Tüm tarayıcılardan indirme işlemini yapabilirken CriOS (IOS Chrome) tarayıcısında indirme işlemi başarısız oluyordu. Web API den her dosya formatına application/octet-stream MediaTypeHeaderValue tipini gönderiyordum. CriOS hariç tüm tarayıcılar gönderilen byte[] tipini olması gereken dosya formatına çevirip indiriyordu. Çözmem gereken CriOS tarayıcısı olduğu için bu konuya yöneldim. Araştırmalar sonucunda Apple’ın mobil Chrome tarayıcısında bir blob tipinde bir dosya indirme işlemini yeni sekmede açılarak yapılması gerektiğini öğrendim." />
+<meta property="og:description" content="Yaptığım bir Angular projesinde Web API ile FTP server dan dosya indirme işlem yapmam gerekiyordu. Haliyle blob veri tipleriyle ilgilenmem gerekti. FTP den dosyaları indirme işlemi çok zamanımı almadı fakat öngöremediğim bir MIME type tanımı epey uğraştırdı. Tüm tarayıcılardan indirme işlemini yapabilirken CriOS (IOS Chrome) tarayıcısında indirme işlemi başarısız oluyordu. Web API den her dosya formatına application/octet-stream MediaTypeHeaderValue tipini gönderiyordum. CriOS hariç tüm tarayıcılar gönderilen byte[] tipini olması gereken dosya formatına çevirip indiriyordu. Çözmem gereken CriOS tarayıcısı olduğu için bu konuya yöneldim. Araştırmalar sonucunda Apple’ın mobil Chrome tarayıcısında bir blob tipinde bir dosya indirme işlemini yeni sekmede açılarak yapılması gerektiğini öğrendim." />
+<link rel="canonical" href="http://localhost:4000/2021/web-api-ve-angular-ile-blob-kullanimi/" />
+<meta property="og:url" content="http://localhost:4000/2021/web-api-ve-angular-ile-blob-kullanimi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-10T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Web API ve Angular 8 ile Blob Veri Tipi Kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2021-01-10T19:33:00+03:00","datePublished":"2021-01-10T19:33:00+03:00","description":"Yaptığım bir Angular projesinde Web API ile FTP server dan dosya indirme işlem yapmam gerekiyordu. Haliyle blob veri tipleriyle ilgilenmem gerekti. FTP den dosyaları indirme işlemi çok zamanımı almadı fakat öngöremediğim bir MIME type tanımı epey uğraştırdı. Tüm tarayıcılardan indirme işlemini yapabilirken CriOS (IOS Chrome) tarayıcısında indirme işlemi başarısız oluyordu. Web API den her dosya formatına application/octet-stream MediaTypeHeaderValue tipini gönderiyordum. CriOS hariç tüm tarayıcılar gönderilen byte[] tipini olması gereken dosya formatına çevirip indiriyordu. Çözmem gereken CriOS tarayıcısı olduğu için bu konuya yöneldim. Araştırmalar sonucunda Apple’ın mobil Chrome tarayıcısında bir blob tipinde bir dosya indirme işlemini yeni sekmede açılarak yapılması gerektiğini öğrendim.","headline":"Web API ve Angular 8 ile Blob Veri Tipi Kullanımı","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/web-api-ve-angular-ile-blob-kullanimi/"},"url":"http://localhost:4000/2021/web-api-ve-angular-ile-blob-kullanimi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Yaptığım bir Angular projesinde Web API ile FTP server dan dosya indirme işlem yapmam gerekiyordu. Haliyle blob veri tipleriyle ilgilenmem gerekti. FTP den dosyaları indirme işlemi çok zamanımı almadı fakat öngöremediğim bir MIME type tanımı epey uğraştırdı. Tüm tarayıcılardan indirme işlemini yapabilirken CriOS (IOS Chrome) tarayıcısında indirme işlemi başarısız oluyordu. Web API den her dosya formatına <code class="language-plaintext highlighter-rouge">application/octet-stream</code> MediaTypeHeaderValue tipini gönderiyordum. CriOS hariç tüm tarayıcılar gönderilen byte[] tipini olması gereken dosya formatına çevirip indiriyordu. Çözmem gereken CriOS tarayıcısı olduğu için bu konuya yöneldim. Araştırmalar sonucunda Apple’ın mobil Chrome tarayıcısında bir <code class="language-plaintext highlighter-rouge">blob</code> tipinde bir dosya indirme işlemini yeni sekmede açılarak yapılması gerektiğini öğrendim.</p>
+
+<p>Bu arada Angular için Angular File Saver paketini kullanıyordum. MediaTypeHeaderValue tipini <code class="language-plaintext highlighter-rouge">application/octet-stream</code> olarak sabit gönderdiğimden Angular File Saver CriOS tarayıcısında hata veriyordu. Bende sorunun paket ile alakalı olabileceği düşüncesiyle dosya indirme işlemini bir a elementi oluşturup click eventi ile indirme işlemi yapıyorum. Siz MediaTypeHeaderValue tipini güncelleyerek Angular File Saver kullanabilirsiniz.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">httpClient</span>
+  <span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span> <span class="na">headers</span><span class="p">:</span> <span class="nx">headers</span><span class="p">,</span> <span class="na">responseType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">blob</span><span class="dl">"</span> <span class="p">})</span>
+  <span class="p">.</span><span class="nf">subscribe</span><span class="p">((</span><span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">file</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Blob</span><span class="p">([</span><span class="nx">data</span><span class="p">],</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nx">data</span><span class="p">.</span><span class="kd">type</span> <span class="p">});</span>
+    <span class="kd">const</span> <span class="nx">fileURL</span> <span class="o">=</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">URL</span> <span class="o">||</span> <span class="nb">window</span><span class="p">[</span><span class="dl">"</span><span class="s2">webkitURL</span><span class="dl">"</span><span class="p">]).</span><span class="nf">createObjectURL</span><span class="p">(</span><span class="nx">file</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">downloadLink</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">fileURL</span><span class="p">;</span>
+    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">download</span> <span class="o">=</span> <span class="nx">fileName</span><span class="p">;</span>
+    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">target</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">_blank</span><span class="dl">"</span><span class="p">;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nf">appendChild</span><span class="p">(</span><span class="nx">downloadLink</span><span class="p">);</span>
+    <span class="nx">downloadLink</span><span class="p">.</span><span class="nf">click</span><span class="p">();</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nf">removeChild</span><span class="p">(</span><span class="nx">downloadLink</span><span class="p">);</span>
+  <span class="p">});</span>
+</code></pre></div></div>
+
+<p>Wep API tararfındaki kod bloğunda MIME tipini indirilecek dosya formatına göre gönderdiğimde sorun çözüldü.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">HttpGet</span><span class="p">][</span><span class="nf">Route</span><span class="p">(</span><span class="s">"FileDownload/{id:int}"</span><span class="p">)]</span> <span class="k">public</span> <span class="n">HttpResponseMessage</span> <span class="nf">FileDownload</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">var</span> <span class="n">ftpUser</span> <span class="p">=</span> <span class="n">_ftpSettingsService</span><span class="p">.</span><span class="nf">Get</span><span class="p">().</span><span class="nf">FirstOrDefault</span><span class="p">();</span>
+  <span class="kt">var</span> <span class="n">fileInfo</span> <span class="p">=</span> <span class="n">_ftpFilesService</span><span class="p">.</span><span class="nf">GetById</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+  <span class="kt">string</span> <span class="n">fileAddr</span> <span class="p">=</span> <span class="s">$ "</span><span class="p">{</span><span class="n">ftpUser</span><span class="p">.</span><span class="n">Address</span><span class="p">}{</span><span class="n">fileInfo</span><span class="p">.</span><span class="n">FilePath</span><span class="p">}</span><span class="s">"</span><span class="p">;</span>
+  <span class="n">WebClient</span> <span class="n">request</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">WebClient</span><span class="p">();</span>
+  <span class="n">request</span><span class="p">.</span><span class="n">Credentials</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">NetworkCredential</span><span class="p">(</span><span class="n">ftpUser</span><span class="p">.</span><span class="n">UserName</span><span class="p">,</span> <span class="n">ftpUser</span><span class="p">.</span><span class="n">Password</span><span class="p">);</span>
+  <span class="kt">byte</span><span class="p">[]</span> <span class="n">newFileData</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">DownloadData</span><span class="p">(</span><span class="n">fileAddr</span><span class="p">);</span>
+  <span class="n">MemoryStream</span> <span class="n">memoryStream</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">MemoryStream</span><span class="p">(</span><span class="n">newFileData</span><span class="p">);</span>
+  <span class="kt">string</span> <span class="n">newFileName</span> <span class="p">=</span> <span class="n">fileInfo</span><span class="p">.</span><span class="n">NewFileName</span><span class="p">;</span>
+  <span class="kt">string</span> <span class="n">content</span> <span class="p">=</span> <span class="n">MimeExtensions</span><span class="p">.</span><span class="nf">GetMimeType</span><span class="p">(</span><span class="n">fileInfo</span><span class="p">.</span><span class="n">FileType</span><span class="p">);</span>
+  <span class="n">HttpResponseMessage</span> <span class="n">httpResponseMessage</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="nf">CreateResponse</span><span class="p">(</span><span class="n">HttpStatusCode</span><span class="p">.</span><span class="n">OK</span><span class="p">);</span>
+  <span class="n">httpResponseMessage</span><span class="p">.</span><span class="n">Content</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">StreamContent</span><span class="p">(</span><span class="n">memoryStream</span><span class="p">);</span>
+  <span class="n">httpResponseMessage</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="n">ContentDisposition</span> <span class="p">=</span> <span class="k">new</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">ContentDispositionHeaderValue</span><span class="p">(</span><span class="s">"attachment"</span><span class="p">);</span>
+  <span class="n">httpResponseMessage</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="n">ContentDisposition</span><span class="p">.</span><span class="n">FileName</span> <span class="p">=</span> <span class="n">newFileName</span><span class="p">;</span>
+  <span class="n">httpResponseMessage</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="n">ContentType</span> <span class="p">=</span> <span class="k">new</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">MediaTypeHeaderValue</span><span class="p">(</span><span class="n">content</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">httpResponseMessage</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

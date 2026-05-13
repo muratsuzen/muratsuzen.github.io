@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What is Top-Level Program in C# 9 and Later? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What is Top-Level Program in C# 9 and Later?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Starting with C# 9, Microsoft introduced top-level programs — a new syntax feature that simplifies writing simple applications by eliminating the need for boilerplate code like Main methods and class declarations." />
+<meta property="og:description" content="Starting with C# 9, Microsoft introduced top-level programs — a new syntax feature that simplifies writing simple applications by eliminating the need for boilerplate code like Main methods and class declarations." />
+<link rel="canonical" href="http://localhost:4000/2025/what-is-top-level-program-in-csharp-9-and-later/" />
+<meta property="og:url" content="http://localhost:4000/2025/what-is-top-level-program-in-csharp-9-and-later/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-09T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What is Top-Level Program in C# 9 and Later?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-09T12:00:00+03:00","datePublished":"2025-05-09T12:00:00+03:00","description":"Starting with C# 9, Microsoft introduced top-level programs — a new syntax feature that simplifies writing simple applications by eliminating the need for boilerplate code like Main methods and class declarations.","headline":"What is Top-Level Program in C# 9 and Later?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/what-is-top-level-program-in-csharp-9-and-later/"},"url":"http://localhost:4000/2025/what-is-top-level-program-in-csharp-9-and-later/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Starting with C# 9, Microsoft introduced <strong>top-level programs</strong> — a new syntax feature that simplifies writing simple applications by eliminating the need for boilerplate code like <code class="language-plaintext highlighter-rouge">Main</code> methods and class declarations.</p>
+
+<p>This article explains what top-level programs are, why they were introduced, and how you can use them to write cleaner, faster-to-read code.</p>
+
+<h2 id="what-is-a-top-level-program">What Is a Top-Level Program?</h2>
+
+<p>In C# versions prior to 9, every program required at least the following structure:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MyApp</span>
+<span class="p">{</span>
+    <span class="k">class</span> <span class="nc">Program</span>
+    <span class="p">{</span>
+        <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Starting with C# 9, you can skip all that boilerplate and write:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This is called a <strong>top-level program</strong> — the compiler automatically wraps your code in a class and generates the <code class="language-plaintext highlighter-rouge">Main</code> method for you.</p>
+
+<h2 id="why-was-it-introduced">Why Was It Introduced?</h2>
+
+<p>Top-level programs were added to make C# simpler for:</p>
+
+<ul>
+  <li>Beginners who want to write short programs without extra ceremony</li>
+  <li>Scripts and small utilities where you don’t need a full project structure</li>
+  <li>Tutorials and documentation where concise examples are clearer</li>
+</ul>
+
+<p>It reduces visual noise and makes small programs more approachable.</p>
+
+<h2 id="how-does-it-work">How Does It Work?</h2>
+
+<p>When you write a top-level program:</p>
+
+<p>✅ Only one file in the project can have top-level statements.<br />
+✅ The compiler generates an implicit <code class="language-plaintext highlighter-rouge">Main</code> method that wraps your code.<br />
+✅ You can still access command-line arguments using the <code class="language-plaintext highlighter-rouge">args</code> variable.</p>
+
+<p>Example with arguments:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">$"Number of args: </span><span class="p">{</span><span class="n">args</span><span class="p">.</span><span class="n">Length</span><span class="p">}</span><span class="s">"</span><span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">arg</span> <span class="k">in</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="n">arg</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<ul>
+  <li>Use top-level programs for <strong>small console apps</strong>, <strong>samples</strong>, or <strong>quick tests</strong>.</li>
+  <li>For larger or production apps, stick to the classic explicit <code class="language-plaintext highlighter-rouge">Main</code> structure for clarity and flexibility.</li>
+  <li>You can combine top-level statements with functions or methods declared in the same file.</li>
+</ul>
+
+<h2 id="example-mixing-functions">Example: Mixing Functions</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">SayHello</span><span class="p">();</span>
+
+<span class="k">void</span> <span class="nf">SayHello</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Hello from a local function!"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="advanced-usage">Advanced Usage</h2>
+
+<p>You can also work with:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">async</code> code: mark the top-level context as <code class="language-plaintext highlighter-rouge">async</code>.</li>
+  <li>Dependency injection: wire up services as usual if using minimal APIs in ASP.NET Core.</li>
+</ul>
+
+<p>Example with async:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">System.Net.Http</span><span class="p">;</span>
+
+<span class="k">using</span> <span class="nn">var</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">HttpClient</span><span class="p">();</span>
+<span class="kt">var</span> <span class="n">content</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="s">"https://example.com"</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="n">content</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="summary">Summary</h2>
+
+<p>Top-level programs in C# 9+ are a powerful simplification, especially for quick scripts, demos, and educational materials. By removing unnecessary scaffolding, they let you focus on the <strong>core logic</strong>.</p>
+
+<p>In tomorrow’s article, we’ll dive into <strong>async and await</strong> in C# — how to write efficient asynchronous code that doesn’t block your application.</p>
+
+<p>Stay tuned!</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-a-top-level-program">What Is a Top-Level Program?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#why-was-it-introduced">Why Was It Introduced?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#how-does-it-work">How Does It Work?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#example-mixing-functions">Example: Mixing Functions</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#advanced-usage">Advanced Usage</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

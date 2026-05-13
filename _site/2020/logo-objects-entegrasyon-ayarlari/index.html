@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Logo Objects Entegrasyon Ayarları | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Logo Objects Entegrasyon Ayarları" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar bu makalede Logo Yazılım firmasının ERP (Tiger vb.) ürünlerine dışarıdan veri gönderip / almabilmek için geliştiridiği, entegrasyon aracının (UnityObject, Logo.dll, Lobject.dll) nasıl kullanılması gerektiği ile ilgili hem kendime hemde sizlere notlar yazmak istedim. Normal şartlarda bu ürün ile ilgili geliştirmelerin çözüm ortağı serfitikasına sahip yetkin kişilerce yapılması gerekmektedir. Şimdi LOBJECTS.exe uygulamasının register ve web kullanımı için IIS yetkilendirmesini inceleyelim." />
+<meta property="og:description" content="Merhabalar bu makalede Logo Yazılım firmasının ERP (Tiger vb.) ürünlerine dışarıdan veri gönderip / almabilmek için geliştiridiği, entegrasyon aracının (UnityObject, Logo.dll, Lobject.dll) nasıl kullanılması gerektiği ile ilgili hem kendime hemde sizlere notlar yazmak istedim. Normal şartlarda bu ürün ile ilgili geliştirmelerin çözüm ortağı serfitikasına sahip yetkin kişilerce yapılması gerekmektedir. Şimdi LOBJECTS.exe uygulamasının register ve web kullanımı için IIS yetkilendirmesini inceleyelim." />
+<link rel="canonical" href="http://localhost:4000/2020/logo-objects-entegrasyon-ayarlari/" />
+<meta property="og:url" content="http://localhost:4000/2020/logo-objects-entegrasyon-ayarlari/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-14T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Logo Objects Entegrasyon Ayarları" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2020-03-14T19:33:00+03:00","datePublished":"2020-03-14T19:33:00+03:00","description":"Merhabalar bu makalede Logo Yazılım firmasının ERP (Tiger vb.) ürünlerine dışarıdan veri gönderip / almabilmek için geliştiridiği, entegrasyon aracının (UnityObject, Logo.dll, Lobject.dll) nasıl kullanılması gerektiği ile ilgili hem kendime hemde sizlere notlar yazmak istedim. Normal şartlarda bu ürün ile ilgili geliştirmelerin çözüm ortağı serfitikasına sahip yetkin kişilerce yapılması gerekmektedir. Şimdi LOBJECTS.exe uygulamasının register ve web kullanımı için IIS yetkilendirmesini inceleyelim.","headline":"Logo Objects Entegrasyon Ayarları","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/logo-objects-entegrasyon-ayarlari/"},"url":"http://localhost:4000/2020/logo-objects-entegrasyon-ayarlari/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar bu makalede Logo Yazılım firmasının ERP (Tiger vb.) ürünlerine dışarıdan veri gönderip / almabilmek için geliştiridiği, entegrasyon aracının (UnityObject, Logo.dll, Lobject.dll) nasıl kullanılması gerektiği ile ilgili hem kendime hemde sizlere notlar yazmak istedim. Normal şartlarda bu ürün ile ilgili geliştirmelerin çözüm ortağı serfitikasına sahip yetkin kişilerce yapılması gerekmektedir. Şimdi LOBJECTS.exe uygulamasının register ve web kullanımı için IIS yetkilendirmesini inceleyelim.</p>
+
+<h2 id="lobjectsexe-register-nasıl-yapılır">LOBJECTS.exe Register Nasıl Yapılır?</h2>
+
+<p>Logo ürününün kurulu olduğu dizinde REGISTER.bat dosyası ile ERP uygulamasının kullanımı için gerekli olan dll dosyalarını hazır DOS komutları ile sisteme register yapılmasını sağlıyoruz. Dosyayı sağ tuş – Yönetici olarak çalıştırıp tüm register işlemlerinin yapılmasını bekliyoruz. Eğer manual olarak register işlemi yapmak isterseniz aşağıdaki yöntemleri deneyebilirsiniz.</p>
+
+<ul>
+  <li>başlat-&gt; çalıştır -&gt; cmd yazıp konsole ekranına geçiyoruz</li>
+  <li>REGISTER-DLL : regsvr32 erpPath\LOBJECTS.dll</li>
+  <li>UNREGISTER-DLL : regsvr32 -u erpPath\LOBJECTS.dll</li>
+  <li>REGISTER-EXE : erpPath\LOBJECTS.exe -REGSERVER</li>
+  <li>UNREGISTER-EXE : erpPath\LOBJECTS.exe -UNREGSERVER</li>
+</ul>
+
+<blockquote>
+  <p>Not: Eğer ERP ürün Active Directory üzerinde bir sunucuda ise resgister yapmak istediğiniz makineyi ve kullanıcıyı Active Directory yapısına eklemeniz gerekmektedir. Yönetici izinleri olmadan yada Active Directory yapısında olmayan bir kullanıcı/makine ile register işlemleri COM hataları almanıza sebep olacaktır.</p>
+</blockquote>
+
+<p>REGISTER.bat dosyasındaki tüm register işlemlerinin başarıyla tamamlanması sonrasında LOBJECTS.exe kullanıma uygun hale gelecektir.</p>
+
+<h2 id="uygulamalarda-lobjects-ürünü-referance-eklemesi-nasıl-yapılır">Uygulamalarda LOBJECTS Ürünü Referance Eklemesi Nasıl Yapılır?</h2>
+
+<p>Projenize Lobjects ürününü referans olarak eklemek istediğinizde hemen hemen birçok kişinin yaptığı bir hatayı paylaşayım. Projenin referance ekleme bölümüne girip Browse üzerinden Logo ürününün bulunduğu dosya yolundaki LOBJECTS.dll dosyasını referance olarak ekleniyor. Bu Logo tarafından asla önerilmeyen bir yöntemdir. Biz zaten LOBJECTS.exe dosyasını REGISTER.bat ile sisteme register yaptık. Bu referans bilgisine artık <code class="language-plaintext highlighter-rouge">COM</code> kaynaklarından erişebilmekteyiz.</p>
+
+<p><img src="/assets/img/posts/logo-obejct-1.jpg" alt="COM kayıtları" />
+<em>COM kayıtları</em></p>
+
+<h2 id="windows-service-uygulamalarında-lobjects-ürünü-yetkilendirmesi-nasıl-yapılır">Windows Service Uygulamalarında LOBJECTS Ürünü Yetkilendirmesi Nasıl Yapılır?</h2>
+
+<p>Windows Service uygulamlarımızda ERP entegrasyon aracını kullanmak istersek servisi sistemimize kurduğumuzda belirli yetkilendirme ayarları yapmamız gerekmektedir. Servisin ayarlarına girdiğimizde <code class="language-plaintext highlighter-rouge">LOG On</code> sekmesinde servisin başlatma kullanıcısını, sunucu eğer bir Active Directory yapısında değilse sunucunun Administrator hesabı ile, eğer bir Active Directory yapısında ise Active Directory Adminisitrator hesabı ile çalışmasını sağlamalıyız.</p>
+
+<h2 id="web-projelerinde-kullanabilmek-için-iis-yetkilendirmesi-nasıl-yapılır">Web Projelerinde Kullanabilmek için IIS Yetkilendirmesi Nasıl Yapılır?</h2>
+
+<p>Lobject.exe ürününü web projelerinde kullanabilmek IIS üzerinde ve DOM portlarında birkaç yetkilendirme ayarı yapmamız gerekmektedir. Öncelikle web projemizi IIS sistemine yükledikten sonra Application-Pool ayarlarını yapalım.</p>
+
+<blockquote>
+  <p>Not:Logo Web uyuglamalarında LOBJETS.dll dosyası yerine LOBJECTS.exe dosyasının kullanılması gerektiğini söylemektedir.</p>
+</blockquote>
+
+<p><img src="/assets/img/posts/logo-objects-2.jpg" alt="logo-objects-2.jpg" /></p>
+
+<p>Resimde görüldüğü gibi ilk olarak <code class="language-plaintext highlighter-rouge">Enable 32-Bit Applications</code> değerini <code class="language-plaintext highlighter-rouge">True</code> olarak değiştiriyorum. Daha sonra <code class="language-plaintext highlighter-rouge">Identity</code> bölümünde <code class="language-plaintext highlighter-rouge">NetworkService</code> kullanıcısı ile yetkilendiriyorum. Ayrıca <code class="language-plaintext highlighter-rouge">.Net Framework Version</code> değerini <code class="language-plaintext highlighter-rouge">v4.0</code> olarak değiştiriniz. IIS üzerindeki ayarların yapılmasından sonra şimdi <code class="language-plaintext highlighter-rouge">DOM</code> anahtarlarında nasıl bir yetkilendirme işlemi yapacağımza bakalım. Öncelikle run/çalıştır yardımıyla <code class="language-plaintext highlighter-rouge">comexp.msc /32</code> Component Servicesleri açalım. Burada <code class="language-plaintext highlighter-rouge">Component Services =&gt; Computers =&gt; My Computer =&gt; DCOM Config</code> yolunu izleyerek DCOM uygulama anahtarlarına erişiyorum. Register yaptığım LOBJECTS.exe anahtarını listeden buluyorum ve Properties bölümünü açıyorum.</p>
+
+<p><img src="/assets/img/posts/logo-obejct-1.jpg" alt="COM kayıtları" />
+<em>COM kayıtları</em></p>
+
+<p>General bölümünde Authentication Level alaını None olarak değiştiriyorum . Daha sonra Identity sekmesini açıyorum,</p>
+
+<p><img src="/assets/img/posts/logo-objects-3.jpg" alt="COM kayıtları" /></p>
+
+<p>Identity sekmesinde regsiter yaptığımız exe’nin hangi kullanıcı ile çalıştırılacağını ayarlamamız gerekiyor. <code class="language-plaintext highlighter-rouge">This User</code> seçeneğinden server Administrator kullanıcısını yada server Active Directory altında ise Active Directory Administrator hesabını girip onaylıyorum.</p>
+
+<p><img src="/assets/img/posts/logo-objects-4.jpg" alt="COM kayıtları" /></p>
+
+<p>Bu şekilde LOBJECT.exe ürününü nasıl register ve yetkilendirme yapabileceğimiz konusundaki makalemizi tamamlamış oluyoruz. Aklınıza takılan sorular yada karşılaştığınız problemleri yorum olarak yada iletişim sayfasından gönderebilirsiniz. Bir sonraki makalede görüşmek üzere.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#lobjects-exe-register-nasıl-yapılır">LOBJECTS.exe Register Nasıl Yapılır?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#uygulamalarda-lobjects-ürünü-referance-eklemesi-nasıl-yapılır">Uygulamalarda LOBJECTS Ürünü Referance Eklemesi Nasıl Yapılır?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#windows-service-uygulamalarında-lobjects-ürünü-yetkilendirmesi-nasıl-yapılır">Windows Service Uygulamalarında LOBJECTS Ürünü Yetkilendirmesi Nasıl Yapılır?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#web-projelerinde-kullanabilmek-için-iis-yetkilendirmesi-nasıl-yapılır">Web Projelerinde Kullanabilmek için IIS Yetkilendirmesi Nasıl Yapılır?</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

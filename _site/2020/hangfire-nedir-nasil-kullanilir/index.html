@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Asp.NET Core Web API - Hangfire Kullanımı | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Asp.NET Core Web API - Hangfire Kullanımı" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Hangfire Nedir?" />
+<meta property="og:description" content="Hangfire Nedir?" />
+<link rel="canonical" href="http://localhost:4000/2020/hangfire-nedir-nasil-kullanilir/" />
+<meta property="og:url" content="http://localhost:4000/2020/hangfire-nedir-nasil-kullanilir/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-10-10T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Asp.NET Core Web API - Hangfire Kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2020-10-10T19:33:00+03:00","datePublished":"2020-10-10T19:33:00+03:00","description":"Hangfire Nedir?","headline":"Asp.NET Core Web API - Hangfire Kullanımı","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/hangfire-nedir-nasil-kullanilir/"},"url":"http://localhost:4000/2020/hangfire-nedir-nasil-kullanilir/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <h2 id="hangfire-nedir">Hangfire Nedir?</h2>
+
+<p>Hangfire, uygulamalarımızda arka planda çalıştırmak istediğimiz işleri ( background jobs) yönetebildiğimiz açık kaynaklı bir kütüphanedir. Peki neden böyle bir kütüphaneye gereksinim duyuyoruz. Bunu bir örnek ile açıklayayım. Örnek olarak bir tedarik firmasında ürünlerinizin fiyatlarının yeni ayda değiştiğini düşünelim. Bu değişikliği sizden ürün tedarik eden yüzlerce müşterinize mail göndererek bildirmeniz gerekiyor. Mail gönderim ekranında tüm müşterilerinizi seçip mail göndermeyi başlattığınızda bu yüzlerce mail gönderim işleminin bitmesini beklemek zorunda kalacaksınız. İşte bu ve buna benzer bir iş parçacığının tek bir thread üzerinde yapmak yerine Hangfire ile farklı threat larda ve istediğimiz zamanlarda gönderimini sağlayabiliriz.</p>
+
+<p>ASP.NET Core uygulamalarını yerel olarak geliştirmek ve çalıştırmak için aşağıdakileri indirip yükleyin:</p>
+
+<ul>
+  <li><a href="https://code.visualstudio.com/">Visual Studio Code</a> adresinden Windows, Mac ve Linux işletim sistemlerinde çalışabilen Microsoft tarafından geliştirilip açık kaynak olarak sunulan kod editörünü indiriniz.</li>
+  <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp">C# extension</a> adresinden yada VS Code içersinideki eklentiler bölümünden .NET Core uygulamaları geliştirirken kolaylıklar getiren eklentiyi indiriniz.</li>
+  <li><a href="https://www.microsoft.com/net/download/core">.NET Core SDK</a> adresinden .NET Core 3.1 runtime SDK dosyasını indirip kurmalısınız.</li>
+</ul>
+
+<h2 id="projeye-hangfire-paketlerinin-eklenmesi">Projeye Hangfire Paketlerinin Eklenmesi</h2>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;ItemGroup&gt;</span>
+  <span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Microsoft.AspNetCore.App"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Microsoft.AspNetCore.Razor.Design"</span> <span class="na">Version=</span><span class="s">"2.2.0"</span> <span class="na">PrivateAssets=</span><span class="s">"All"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Hangfire.Core"</span> <span class="na">Version=</span><span class="s">"1.7.*"</span><span class="nt">&gt;&lt;/PackageReference&gt;</span>
+  <span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Hangfire.SqlServer"</span> <span class="na">Version=</span><span class="s">"1.7.*"</span><span class="nt">&gt;&lt;/PackageReference&gt;</span>
+  <span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Hangfire.AspNetCore"</span> <span class="na">Version=</span><span class="s">"1.7.*"</span><span class="nt">&gt;&lt;/PackageReference&gt;</span>
+<span class="nt">&lt;/ItemGroup&gt;</span>
+</code></pre></div></div>
+
+<p>Yazının detayına girmeden önce .Net Core ile ilgili en son yazdığım ASP.NET Core 3.1 Web API – Swagger Kullanımı yazımı okuyabilirsiniz. Hangfire kütüphanesini nuget paket yönetiminden aşağıdaki gibi yükleyebiliriz.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet add package Hangfire.AspNetCore <span class="nt">--version</span> 1.7.12
+</code></pre></div></div>
+
+<h2 id="hangfire-için-veritabanı-oluşturma">Hangfire için Veritabanı Oluşturma</h2>
+
+<p>Hangfire yapısı veri ve ayarları saklamak için Redis yada SQL veritabanına ihtiyaç duymaktadır. Bu makalede SQL veritabanı oluşturarak Hangfire kullanımına değineceğim. Öncelikle Hangfire için bir veritabanı oluşturalım.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="p">[</span><span class="n">Hangfire</span><span class="p">]</span><span class="k">GO</span>
+</code></pre></div></div>
+
+<h2 id="hangfire-veritabanı-yapılandırılması">Hangfire Veritabanı Yapılandırılması</h2>
+
+<p>Oluşturduğumuz veritabanı için bir bağlantı bilgisi eklememiz gerekmektedir. Bu bağlantı bilgisini appsettings.json içerisinde aşağıdaki şekilde ekliyorum.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"ConnectionStrings"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"HangfireConnection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Server=.</span><span class="se">\\</span><span class="s2">sqlexpress;Database=Hangfire;Integrated Security=SSPI;"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Hangfire uyarı mesajlarını farklı bir türde göstermek için aşağıdaki şekilde Logging alanını düzenleyebilirsiniz.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"Logging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"LogLevel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"Default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Warning"</span><span class="p">,</span><span class="w"> </span><span class="nl">"Hangfire"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Information"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="hangfire-yapılandırılması">Hangfire Yapılandırılması</h2>
+
+<p>Projemizde Hangfire yapılandırma kodlarını yazacağımız <code class="language-plaintext highlighter-rouge">Startup.cs</code> dosyasında aşağıdaki ayarlamaları yapmamız gerekmektedir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">void</span> <span class="nf">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+ <span class="p">{</span>
+     <span class="n">services</span><span class="p">.</span><span class="nf">AddHangfire</span><span class="p">(</span><span class="n">hf</span> <span class="p">=&gt;</span> <span class="n">hf</span><span class="p">.</span><span class="nf">UseSqlServerStorage</span><span class="p">(</span><span class="n">Configuration</span><span class="p">.</span><span class="nf">GetConnectionString</span><span class="p">(</span><span class="s">"HangfireConnection"</span><span class="p">)));</span>
+     <span class="n">services</span><span class="p">.</span><span class="nf">AddHangfireServer</span><span class="p">();</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Hangfire dashboard kullanımı için ApplicationBuilder ayarlarında UseHangfireDashboard() tanımını yapmalıyız.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">void</span> <span class="nf">Configure</span><span class="p">(</span><span class="n">IApplicationBuilder</span> <span class="n">app</span><span class="p">,</span> <span class="n">IHostingEnvironment</span> <span class="n">env</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseHangfireDashboard</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Yapılandırma sonrasında projemizi çalıştırdığımızda <a href="http://localhost:57992/hangfire/">http://localhost:57992/hangfire/</a> yolundan Hangfire Dashboard sayfasına erişebiliriz.</p>
+
+<h2 id="hangfire-background-job-tipleri">Hangfire Background Job Tipleri</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Fire and forget jobs :</code> Yapılacak işin belirli bir zamana programlanmadan hemen yapılması ve tekrar etmeden tek bir defa çalıştırılmasını sağlayan background job tipidir.</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BackgroundJob</span><span class="p">.</span><span class="nf">Enqueue</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Hello, world!"</span><span class="p">));</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Delayed jobs :</code> Yapılacak işin belirli bir zaman bitiminde ve bir defa çalışmasını sağlayan background job tipidir.</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">jobId</span> <span class="p">=</span> <span class="n">BackgroundJob</span><span class="p">.</span><span class="nf">Schedule</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Delayed!"</span><span class="p">),</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromDays</span><span class="p">(</span><span class="m">7</span><span class="p">));</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Recurring jobs :</code> Yapılacak işin bir zaman programına uygun olarak bir çok kez yapılmasını sağlayan background job tipidir. Bu zamanlama işlemlerini CRON sürecinde (saatlik,günlük,haftalık,aylık, yıllık yada CRON expression vb.) tanımlayabiliriz.</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">RecurringJob</span><span class="p">.</span><span class="nf">AddOrUpdate</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Recurring!"</span><span class="p">),</span>    <span class="n">Cron</span><span class="p">.</span><span class="n">Daily</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Continuations job:</code> Daha önceden tanımlanan bir işin tamamlanmasından sonra çalışan background job tipidir. Örnekte görüldüğü üzere jobId tamanlanması gereken öncelikli iş tanımıdır. Bu ana iş tamamlandıktan sonra <code class="language-plaintext highlighter-rouge">Console.WriteLine(“Continuation!”)</code> işi yerine getirilecektir.</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BackgroundJob</span><span class="p">.</span><span class="nf">ContinueJobWith</span><span class="p">(</span><span class="n">jobId</span><span class="p">,()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Continuation!"</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>Hangfire kütüphanesinin ücretli bölümünde bulunan <code class="language-plaintext highlighter-rouge">Batch (PRO)</code> ve <code class="language-plaintext highlighter-rouge">Batch Continuations (PRO)</code> job türlerini inceleyelim.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Batch (PRO) :</code> Tanımlanan birden fazla işi tek bir grup şeklinde çalıştıran background job türüdür.</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">batchId</span> <span class="p">=</span> <span class="n">BatchJob</span><span class="p">.</span><span class="nf">StartNew</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="n">x</span><span class="p">.</span><span class="nf">Enqueue</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Job 1"</span><span class="p">));</span>
+    <span class="n">x</span><span class="p">.</span><span class="nf">Enqueue</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Job 2"</span><span class="p">));</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Batch Continuations (PRO) :</code> Grup halinde tanımlanan Batch iş tanımlarının tamamlanmasından sonra çalışacak olan background job türüdür.</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BatchJob</span><span class="p">.</span><span class="nf">ContinueBatchWith</span><span class="p">(</span><span class="n">batchId</span><span class="p">,</span> <span class="n">x</span> <span class="p">=&gt;{</span><span class="n">x</span><span class="p">.</span><span class="nf">Enqueue</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Last Job"</span><span class="p">));});</span>
+</code></pre></div></div>
+
+<p>Detaylı döküman bilgisine <a href="https://docs.hangfire.io/en/latest/">buradan</a> ulaşabilirsiniz.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#hangfire-nedir">Hangfire Nedir?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#projeye-hangfire-paketlerinin-eklenmesi">Projeye Hangfire Paketlerinin Eklenmesi</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#hangfire-için-veritabanı-oluşturma">Hangfire için Veritabanı Oluşturma</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#hangfire-veritabanı-yapılandırılması">Hangfire Veritabanı Yapılandırılması</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#hangfire-yapılandırılması">Hangfire Yapılandırılması</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#hangfire-background-job-tipleri">Hangfire Background Job Tipleri</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

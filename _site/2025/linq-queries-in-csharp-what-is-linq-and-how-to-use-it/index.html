@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>LINQ Queries in C# What Is LINQ and How to Use It | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="LINQ Queries in C# What Is LINQ and How to Use It" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Language Integrated Query (LINQ) is one of the most powerful features in C#. It allows you to query, transform, and filter data directly in your C# code using a consistent, expressive syntax." />
+<meta property="og:description" content="Language Integrated Query (LINQ) is one of the most powerful features in C#. It allows you to query, transform, and filter data directly in your C# code using a consistent, expressive syntax." />
+<link rel="canonical" href="http://localhost:4000/2025/linq-queries-in-csharp-what-is-linq-and-how-to-use-it/" />
+<meta property="og:url" content="http://localhost:4000/2025/linq-queries-in-csharp-what-is-linq-and-how-to-use-it/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-06T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="LINQ Queries in C# What Is LINQ and How to Use It" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-06T12:00:00+03:00","datePublished":"2025-05-06T12:00:00+03:00","description":"Language Integrated Query (LINQ) is one of the most powerful features in C#. It allows you to query, transform, and filter data directly in your C# code using a consistent, expressive syntax.","headline":"LINQ Queries in C# What Is LINQ and How to Use It","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/linq-queries-in-csharp-what-is-linq-and-how-to-use-it/"},"url":"http://localhost:4000/2025/linq-queries-in-csharp-what-is-linq-and-how-to-use-it/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Language Integrated Query (LINQ) is one of the most powerful features in C#. It allows you to <strong>query, transform, and filter data</strong> directly in your C# code using a consistent, expressive syntax.</p>
+
+<p>In this guide, we’ll cover <strong>what LINQ is</strong>, <strong>why it’s useful</strong>, <strong>how to use it</strong>, and provide plenty of practical examples for working with collections, databases, and beyond.</p>
+
+<hr />
+
+<h2 id="what-is-linq">What Is LINQ?</h2>
+
+<p>LINQ stands for <strong>Language Integrated Query</strong>. It brings SQL-like querying capabilities into C# and .NET languages, allowing you to work with in-memory collections, databases, XML, and more.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">numbers</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span> <span class="p">};</span>
+<span class="kt">var</span> <span class="n">evenNumbers</span> <span class="p">=</span> <span class="n">numbers</span><span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">n</span> <span class="p">=&gt;</span> <span class="n">n</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>You can write concise, readable queries over data — no matter where that data comes from.</p>
+
+<hr />
+
+<h2 id="why-use-linq">Why Use LINQ?</h2>
+
+<p>✅ <strong>Unified querying</strong>: Whether you work with arrays, lists, databases, or XML, the syntax stays the same.<br />
+✅ <strong>Type safety</strong>: Compile-time checking helps avoid mistakes.<br />
+✅ <strong>Readable code</strong>: More expressive and concise compared to loops or manual filtering.<br />
+✅ <strong>Composable</strong>: You can chain multiple queries together smoothly.</p>
+
+<hr />
+
+<h2 id="linq-syntax-forms">LINQ Syntax Forms</h2>
+
+<p>There are two ways to write LINQ queries:</p>
+
+<h3 id="query-syntax-sql-like">Query Syntax (SQL-like)</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="k">from</span> <span class="n">n</span> <span class="k">in</span> <span class="n">numbers</span>
+             <span class="k">where</span> <span class="n">n</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span>
+             <span class="n">select</span> <span class="n">n</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="method-syntax-fluent">Method Syntax (Fluent)</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">numbers</span><span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">n</span> <span class="p">=&gt;</span> <span class="n">n</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Both are valid and can be mixed.</p>
+
+<hr />
+
+<h2 id="common-linq-operations">Common LINQ Operations</h2>
+
+<h3 id="filtering-with-where">Filtering with <code class="language-plaintext highlighter-rouge">Where</code></h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">adults</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Age</span> <span class="p">&gt;=</span> <span class="m">18</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="projection-with-select">Projection with <code class="language-plaintext highlighter-rouge">Select</code></h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">names</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="ordering-with-orderby">Ordering with <code class="language-plaintext highlighter-rouge">OrderBy</code></h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">sorted</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">OrderBy</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">LastName</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="aggregation">Aggregation</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">totalAge</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">Sum</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Age</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">averageAge</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">Average</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Age</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">count</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">Count</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="grouping">Grouping</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">grouped</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">GroupBy</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">City</span><span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="k">group</span> <span class="k">in</span> <span class="n">grouped</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">$"City: </span><span class="p">{</span><span class="k">group</span><span class="p">.</span><span class="n">Key</span><span class="p">}</span><span class="s">, Count: </span><span class="p">{</span><span class="k">group</span><span class="p">.</span><span class="nf">Count</span><span class="p">()}</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="linq-with-collections">LINQ with Collections</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">numbers</span> <span class="p">=</span> <span class="k">new</span><span class="p">()</span> <span class="p">{</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">6</span> <span class="p">};</span>
+
+<span class="kt">var</span> <span class="n">squaredEvens</span> <span class="p">=</span> <span class="n">numbers</span>
+    <span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">n</span> <span class="p">=&gt;</span> <span class="n">n</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">n</span> <span class="p">=&gt;</span> <span class="n">n</span> <span class="p">*</span> <span class="n">n</span><span class="p">);</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">num</span> <span class="k">in</span> <span class="n">squaredEvens</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="n">num</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="linq-with-entity-framework-core">LINQ with Entity Framework Core</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">expensiveProducts</span> <span class="p">=</span> <span class="n">dbContext</span><span class="p">.</span><span class="n">Products</span>
+    <span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Price</span> <span class="p">&gt;</span> <span class="m">1000</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">OrderBy</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Name</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">ToList</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="important">Important</h3>
+
+<ul>
+  <li>LINQ-to-Entities queries are translated to SQL and run on the database.</li>
+  <li>Always test performance and understand generated queries.</li>
+</ul>
+
+<hr />
+
+<h2 id="linq-with-anonymous-types">LINQ with Anonymous Types</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">projected</span> <span class="p">=</span> <span class="n">people</span><span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="p">{</span> <span class="n">p</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">Age</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<p>You can project only the fields you need, which is efficient and reduces memory usage.</p>
+
+<hr />
+
+<h2 id="combining-multiple-queries">Combining Multiple Queries</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">query</span> <span class="p">=</span> <span class="n">products</span>
+    <span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">InStock</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">OrderByDescending</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Rating</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">Take</span><span class="p">(</span><span class="m">10</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>You can chain multiple operations for complex querying.</p>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Use method syntax for flexibility.<br />
+✅ Avoid materializing queries too early (use <code class="language-plaintext highlighter-rouge">ToList()</code> only when needed).<br />
+✅ Be aware of deferred execution: queries don’t run until you enumerate them.<br />
+✅ Watch out for performance when querying large datasets.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>LINQ is a cornerstone of modern C# development, providing a consistent, expressive way to work with data. By mastering LINQ, you gain the ability to write cleaner, more maintainable, and efficient code for a wide range of data sources.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-linq">What Is LINQ?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#why-use-linq">Why Use LINQ?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#linq-syntax-forms">LINQ Syntax Forms</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#query-syntax-sql-like">Query Syntax (SQL-like)</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#method-syntax-fluent">Method Syntax (Fluent)</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#common-linq-operations">Common LINQ Operations</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#where-code">Where</code</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#select-code">Select</code</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#orderby-code">OrderBy</code</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#aggregation">Aggregation</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#grouping">Grouping</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#linq-with-collections">LINQ with Collections</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#linq-with-entity-framework-core">LINQ with Entity Framework Core</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#important">Important</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#linq-with-anonymous-types">LINQ with Anonymous Types</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#combining-multiple-queries">Combining Multiple Queries</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

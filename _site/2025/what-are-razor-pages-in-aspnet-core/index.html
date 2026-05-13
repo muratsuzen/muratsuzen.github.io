@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What Are Razor Pages in ASP.NET Core? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What Are Razor Pages in ASP.NET Core?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Razor Pages is a simplified, page-based programming model for building dynamic web applications in ASP.NET Core. It offers a clean separation of concerns and is ideal for scenarios where you need lightweight, fast-to-develop web pages." />
+<meta property="og:description" content="Razor Pages is a simplified, page-based programming model for building dynamic web applications in ASP.NET Core. It offers a clean separation of concerns and is ideal for scenarios where you need lightweight, fast-to-develop web pages." />
+<link rel="canonical" href="http://localhost:4000/2025/what-are-razor-pages-in-aspnet-core/" />
+<meta property="og:url" content="http://localhost:4000/2025/what-are-razor-pages-in-aspnet-core/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-05T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What Are Razor Pages in ASP.NET Core?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-05T12:00:00+03:00","datePublished":"2025-05-05T12:00:00+03:00","description":"Razor Pages is a simplified, page-based programming model for building dynamic web applications in ASP.NET Core. It offers a clean separation of concerns and is ideal for scenarios where you need lightweight, fast-to-develop web pages.","headline":"What Are Razor Pages in ASP.NET Core?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/what-are-razor-pages-in-aspnet-core/"},"url":"http://localhost:4000/2025/what-are-razor-pages-in-aspnet-core/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Razor Pages is a simplified, page-based programming model for building dynamic web applications in ASP.NET Core. It offers a clean separation of concerns and is ideal for scenarios where you need lightweight, fast-to-develop web pages.</p>
+
+<p>In this article, we’ll explore <strong>what Razor Pages are</strong>, <strong>why they’re useful</strong>, <strong>how to set them up</strong>, and walk through real examples and best practices.</p>
+
+<hr />
+
+<h2 id="what-are-razor-pages">What Are Razor Pages?</h2>
+
+<p>Razor Pages is part of ASP.NET Core and is designed for building <strong>page-centric web apps</strong>. Unlike MVC (Model-View-Controller), where controllers manage logic separately from views, Razor Pages places the logic and page markup in one unit.</p>
+
+<p>A typical Razor Page has:</p>
+
+<p>✅ A <code class="language-plaintext highlighter-rouge">.cshtml</code> file for HTML + Razor markup<br />
+✅ A <code class="language-plaintext highlighter-rouge">.cshtml.cs</code> file (PageModel) for C# code</p>
+
+<p>Example structure:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/Pages
+    Index.cshtml
+    Index.cshtml.cs
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="why-use-razor-pages">Why Use Razor Pages?</h2>
+
+<p>✅ <strong>Simpler</strong>: Less overhead compared to MVC, great for small-to-medium applications.<br />
+✅ <strong>Separation of concerns</strong>: Keeps markup and code-behind neatly organized.<br />
+✅ <strong>Productive</strong>: Easy to scaffold CRUD operations with built-in tools.<br />
+✅ <strong>Flexible</strong>: Still supports dependency injection, filters, and routing like MVC.</p>
+
+<hr />
+
+<h2 id="setting-up-razor-pages">Setting Up Razor Pages</h2>
+
+<h3 id="step-1-create-a-project">Step 1: Create a Project</h3>
+
+<p>Run:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet new webapp -o RazorPagesApp
+</code></pre></div></div>
+
+<p>This scaffolds a basic Razor Pages app.</p>
+
+<h3 id="step-2-explore-the-structure">Step 2: Explore the Structure</h3>
+
+<p>Check the <code class="language-plaintext highlighter-rouge">/Pages</code> folder. You’ll find:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Index.cshtml</code> — the homepage markup</li>
+  <li><code class="language-plaintext highlighter-rouge">Index.cshtml.cs</code> — the associated PageModel class</li>
+</ul>
+
+<h3 id="step-3-run-the-app">Step 3: Run the App</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet run
+</code></pre></div></div>
+
+<p>Visit <code class="language-plaintext highlighter-rouge">https://localhost:5001</code> to see the app.</p>
+
+<hr />
+
+<h2 id="anatomy-of-a-razor-page">Anatomy of a Razor Page</h2>
+
+<h3 id="indexcshtml">Index.cshtml</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@page
+@model IndexModel
+
+<span class="nt">&lt;h1&gt;</span>Welcome, @Model.Message<span class="nt">&lt;/h1&gt;</span>
+</code></pre></div></div>
+
+<h3 id="indexcshtmlcs">Index.cshtml.cs</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">IndexModel</span> <span class="p">:</span> <span class="n">PageModel</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Message</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">OnGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">Message</span> <span class="p">=</span> <span class="s">"Hello from Razor Pages!"</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">OnGet()</code> method handles GET requests.</p>
+
+<hr />
+
+<h2 id="handling-post-requests">Handling POST Requests</h2>
+
+<h3 id="html-form-indexcshtml">HTML Form (Index.cshtml)</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"UserInput"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>Submit<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>You submitted: @Model.Result<span class="nt">&lt;/p&gt;</span>
+</code></pre></div></div>
+
+<h3 id="pagemodel-indexcshtmlcs">PageModel (Index.cshtml.cs)</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="kt">string</span> <span class="n">Result</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="k">void</span> <span class="nf">OnPost</span><span class="p">(</span><span class="kt">string</span> <span class="n">userInput</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Result</span> <span class="p">=</span> <span class="n">userInput</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>When the form is submitted, the <code class="language-plaintext highlighter-rouge">OnPost()</code> method handles the request.</p>
+
+<hr />
+
+<h2 id="using-dependency-injection">Using Dependency Injection</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">IndexModel</span> <span class="p">:</span> <span class="n">PageModel</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">ILogger</span><span class="p">&lt;</span><span class="n">IndexModel</span><span class="p">&gt;</span> <span class="n">_logger</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">IndexModel</span><span class="p">(</span><span class="n">ILogger</span><span class="p">&lt;</span><span class="n">IndexModel</span><span class="p">&gt;</span> <span class="n">logger</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_logger</span> <span class="p">=</span> <span class="n">logger</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">OnGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">_logger</span><span class="p">.</span><span class="nf">LogInformation</span><span class="p">(</span><span class="s">"Page loaded."</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="routing-in-razor-pages">Routing in Razor Pages</h2>
+
+<p>By default, the URL <code class="language-plaintext highlighter-rouge">/Index</code> maps to <code class="language-plaintext highlighter-rouge">Index.cshtml</code>. You can customize routing with attributes:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">BindProperties</span><span class="p">]</span>
+<span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"custom-route"</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">CustomModel</span> <span class="p">:</span> <span class="n">PageModel</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">OnGet</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Keep page logic in the PageModel, not in the view.<br />
+✅ Use partial views or components for reusable markup.<br />
+✅ Validate user input with model binding and data annotations.<br />
+✅ Apply filters (like <code class="language-plaintext highlighter-rouge">Authorize</code>) to protect pages.<br />
+✅ Organize complex pages with areas or folders.</p>
+
+<hr />
+
+<h2 id="real-world-example-crud-operations">Real-World Example: CRUD Operations</h2>
+
+<p>Razor Pages work great for CRUD apps.</p>
+
+<h3 id="scaffolding-example">Scaffolding Example</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet aspnet-codegenerator razorpage Product -m Product -dc AppDbContext -udl -outDir Pages/Products
+</code></pre></div></div>
+
+<p>This generates Razor Pages for listing, creating, editing, and deleting products.</p>
+
+<h3 id="using-ef-core">Using EF Core</h3>
+
+<p>In your PageModel:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">ProductsModel</span> <span class="p">:</span> <span class="n">PageModel</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">AppDbContext</span> <span class="n">_context</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">ProductsModel</span><span class="p">(</span><span class="n">AppDbContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="n">IList</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="n">ProductList</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">OnGetAsync</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">ProductList</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_context</span><span class="p">.</span><span class="n">Products</span><span class="p">.</span><span class="nf">ToListAsync</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>Razor Pages offer a streamlined, productive approach to building web applications with ASP.NET Core. By mastering Razor Pages, you can develop fast, maintainable, and scalable web solutions with less complexity compared to traditional MVC setups.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-are-razor-pages">What Are Razor Pages?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#why-use-razor-pages">Why Use Razor Pages?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#setting-up-razor-pages">Setting Up Razor Pages</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-create-a-project">Step 1: Create a Project</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-explore-the-structure">Step 2: Explore the Structure</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-3-run-the-app">Step 3: Run the App</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#anatomy-of-a-razor-page">Anatomy of a Razor Page</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#index-cshtml">Index.cshtml</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#index-cshtml-cs">Index.cshtml.cs</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#handling-post-requests">Handling POST Requests</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#html-form-index-cshtml">HTML Form (Index.cshtml)</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#pagemodel-index-cshtml-cs">PageModel (Index.cshtml.cs)</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#using-dependency-injection">Using Dependency Injection</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#routing-in-razor-pages">Routing in Razor Pages</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-example-crud-operations">Real-World Example: CRUD Operations</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#scaffolding-example">Scaffolding Example</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#using-ef-core">Using EF Core</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

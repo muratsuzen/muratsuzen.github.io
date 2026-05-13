@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>ASP.NET Core Http Security Header | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="ASP.NET Core Http Security Header" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Let’s examine how the Http Security Header structure is used on .NET Core in a sample ASP.NET Core project. First we will create a blank web project." />
+<meta property="og:description" content="Let’s examine how the Http Security Header structure is used on .NET Core in a sample ASP.NET Core project. First we will create a blank web project." />
+<link rel="canonical" href="http://localhost:4000/2024/asp-net-core-http-security-header/" />
+<meta property="og:url" content="http://localhost:4000/2024/asp-net-core-http-security-header/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-01-09T13:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ASP.NET Core Http Security Header" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2024-01-09T13:33:00+03:00","datePublished":"2024-01-09T13:33:00+03:00","description":"Let’s examine how the Http Security Header structure is used on .NET Core in a sample ASP.NET Core project. First we will create a blank web project.","headline":"ASP.NET Core Http Security Header","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/asp-net-core-http-security-header/"},"url":"http://localhost:4000/2024/asp-net-core-http-security-header/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Let’s examine how the Http Security Header structure is used on .NET Core in a sample ASP.NET Core project. First we will create a blank web project.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet new web <span class="nt">-o</span> httpsecurityheader
+</code></pre></div></div>
+
+<p>After creating the project, let’s examine the security headers.</p>
+
+<h2 id="x-frame-options">X-Frame-Options</h2>
+
+<p>The X-Frame-Options header option is used to call your web page, called Clickjacking, on another web page with the iframe method and prevent any action.</p>
+
+<p><strong>DENY:</strong> It completely prevents the page from being called in an iframe.</p>
+
+<p><strong>SAMEORIGIN:</strong> It prevents the page from being called in an iframe outside of its domain.</p>
+
+<p><strong>ALLOW-FROM uri :</strong> Allows calling from a specific url in an iframe.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Frame-Options"</span><span class="p">,</span> <span class="s">"DENY"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><strong>Note:</strong> According to the information here, X-Frame-Options header information is created as SAMEORIGIN by default.
+To remove the X-Frame-Options header information, the AddAntiforgery method should be done as follows.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddAntiforgery</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">SuppressXFrameOptionsHeader</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="strict-transport-security">Strict-Transport-Security</h2>
+
+<p>It is used to prevent man-in-the-middle (MITM) attacks and automatically convert HTTP requests made by the client to HTTPS. It is used with the UseHsts middleware structure in .NET Core projects.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">UseHsts</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>The use of HSTS is not recommended in development environments due to browser caching.</p>
+
+<p>We can use the AddHSTS method for HSTS configuration.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddHsts</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">Preload</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">IncludeSubDomains</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">MaxAge</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromDays</span><span class="p">(</span><span class="m">60</span><span class="p">);</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">ExcludedHosts</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"example.com"</span><span class="p">);</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">ExcludedHosts</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"www.example.com"</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><strong>Preload:</strong> The default value should be set to “true” in order to inform the browser that a secure connection will be established with the loading of the list of websites containing HSTS in the first connection of the website.
+IncludeSubDomains: Used to specify whether or not to be valid for subdomains.
+MaxAge: Sets how long the HSTS header is valid.
+ExcludedHosts: Addresses that will invalidate headers are added.</p>
+
+<p>UseHttpsRedirection middleware is used for mandatory redirection of all HTTP requests from clients to the HTTPS address. When using this middleware, attention should be paid to HTTPS configuration.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">UseHttpsRedirection</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>We can use AddHttpsRedirection method to configure HttpsRedirection.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddHttpsRedirection</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">HttpsPort</span> <span class="p">=</span> <span class="m">7047</span><span class="p">;</span>
+    <span class="n">x</span><span class="p">.</span><span class="n">RedirectStatusCode</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">HttpStatusCode</span><span class="p">.</span><span class="n">TemporaryRedirect</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="x-permitted-cross-domain-policies">X-Permitted-Cross-Domain-Policies</h2>
+
+<p>If you are using Flash on your website, you can prevent clients from making cross-site requests by using the X-Permission-Cross-Domain-Policies header.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Permitted-Cross-Domain-Policies"</span><span class="p">,</span><span class="s">"none"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="x-xss-protection">X-XSS-Protection</h2>
+
+<p>The X-XSS-Protection header causes browsers to stop loading the web page when they detect a cross-site scripting attack.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Xss-Protection"</span><span class="p">,</span> <span class="s">"1; mode=block"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="x-content-type-options">X-Content-Type-Options</h2>
+
+<p>It is used to prevent browsers from determining the MIME type sent with the Content Type header in requests sent from the client.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Content-Type-Options"</span><span class="p">,</span> <span class="s">"nosniff"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="referrer-policy">Referrer-Policy</h2>
+
+<p>When a site accesses a different site, it sends its own address with a referrer. In some cases, the Referrer-Policy header is used when it is not desired to send the source address explicitly.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"Referrer-Policy"</span><span class="p">,</span> <span class="s">"no-referrer"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="feature-policy">Feature-Policy</h2>
+
+<p>The app’s camera, microphone, usb etc. It is the title that we determine whether or not it will need such requirements.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"Permissions-Policy"</span><span class="p">,</span> <span class="s">"camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=()"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="content-security-policy">Content-Security-Policy</h2>
+
+<p>Content-Security-Policy is a security policy used to control data injection attacks that may occur due to a web page’s style and script files.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">app</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">ctx</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"Content-Security-Policy"</span><span class="p">,</span>
+        <span class="s">"default-src 'self'"</span><span class="p">);</span>
+    <span class="k">await</span> <span class="nf">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>I have prepared a sample middleware containing all these headers.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">httpsecurityheader</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">CustomSecurityHeader</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">RequestDelegate</span> <span class="n">_next</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">CustomSecurityHeader</span><span class="p">(</span><span class="n">RequestDelegate</span> <span class="n">next</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_next</span> <span class="p">=</span> <span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">Invoke</span><span class="p">(</span><span class="n">HttpContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Frame-Options"</span><span class="p">,</span> <span class="s">"DENY"</span><span class="p">);</span>
+
+        <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Permitted-Cross-Domain-Policies"</span><span class="p">,</span> <span class="s">"none"</span><span class="p">);</span>
+
+        <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Xss-Protection"</span><span class="p">,</span> <span class="s">"1; mode=block"</span><span class="p">);</span>
+
+        <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"X-Content-Type-Options"</span><span class="p">,</span> <span class="s">"nosniff"</span><span class="p">);</span>
+
+        <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"Referrer-Policy"</span><span class="p">,</span> <span class="s">"no-referrer"</span><span class="p">);</span>
+
+        <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"Permissions-Policy"</span><span class="p">,</span> <span class="s">"camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=()"</span><span class="p">);</span>
+
+        <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">"Content-Security-Policy"</span><span class="p">,</span>
+            <span class="s">"default-src 'self'"</span><span class="p">);</span>
+
+        <span class="k">await</span> <span class="n">_next</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can <a href="https://github.com/muratsuzen/HttpSecurityHeader"><strong>download</strong></a> the project here. Please let me know if there are typos in my post.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#x-frame-options">X-Frame-Options</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#strict-transport-security">Strict-Transport-Security</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#x-permitted-cross-domain-policies">X-Permitted-Cross-Domain-Policies</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#x-xss-protection">X-XSS-Protection</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#x-content-type-options">X-Content-Type-Options</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#referrer-policy">Referrer-Policy</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#feature-policy">Feature-Policy</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#content-security-policy">Content-Security-Policy</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

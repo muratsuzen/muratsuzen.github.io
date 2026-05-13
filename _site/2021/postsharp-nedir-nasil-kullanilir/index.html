@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>PostSharp Nedir? Nasıl Kullanılır? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="PostSharp Nedir? Nasıl Kullanılır?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar, sizlere bu makalede benimde projelerimde kullandığım PostSharp Framework içerisindeki Aspect yapısını örneklerle anlatmaya çalışacağım. Bu yapı sayesinde bir metot yada sınıfa attribute ekleyerek işlem aşamalarında yada alınabilecek hata durumlarında farklı aksiyonlar alabiliriz. Ben kendi projemde Logging ve Authorization yapıları için kullanıyorum." />
+<meta property="og:description" content="Merhabalar, sizlere bu makalede benimde projelerimde kullandığım PostSharp Framework içerisindeki Aspect yapısını örneklerle anlatmaya çalışacağım. Bu yapı sayesinde bir metot yada sınıfa attribute ekleyerek işlem aşamalarında yada alınabilecek hata durumlarında farklı aksiyonlar alabiliriz. Ben kendi projemde Logging ve Authorization yapıları için kullanıyorum." />
+<link rel="canonical" href="http://localhost:4000/2021/postsharp-nedir-nasil-kullanilir/" />
+<meta property="og:url" content="http://localhost:4000/2021/postsharp-nedir-nasil-kullanilir/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-02-01T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="PostSharp Nedir? Nasıl Kullanılır?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2021-02-01T19:33:00+03:00","datePublished":"2021-02-01T19:33:00+03:00","description":"Merhabalar, sizlere bu makalede benimde projelerimde kullandığım PostSharp Framework içerisindeki Aspect yapısını örneklerle anlatmaya çalışacağım. Bu yapı sayesinde bir metot yada sınıfa attribute ekleyerek işlem aşamalarında yada alınabilecek hata durumlarında farklı aksiyonlar alabiliriz. Ben kendi projemde Logging ve Authorization yapıları için kullanıyorum.","headline":"PostSharp Nedir? Nasıl Kullanılır?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/postsharp-nedir-nasil-kullanilir/"},"url":"http://localhost:4000/2021/postsharp-nedir-nasil-kullanilir/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar, sizlere bu makalede benimde projelerimde kullandığım PostSharp Framework içerisindeki Aspect yapısını örneklerle anlatmaya çalışacağım. Bu yapı sayesinde bir metot yada sınıfa attribute ekleyerek işlem aşamalarında yada alınabilecek hata durumlarında farklı aksiyonlar alabiliriz. Ben kendi projemde Logging ve Authorization yapıları için kullanıyorum.</p>
+
+<h2 id="postsharp-kurulumu">PostSharp Kurulumu</h2>
+
+<p>Nuget üzerinden aşağıdaki kod bloğu ile kurulumu yapıyorum.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Install-Package PostSharp <span class="nt">-Version</span> 6.7.10
+</code></pre></div></div>
+
+<p>Paket kurulumundan sonra Visual Studio eklentisini kurmalıyız. Buradaki adresten eklentiyi indirip kurulumunu yaptığımızda lisans bilgilerini girmem gerekiyor. PostSharp ücretli bir kütüphanedir. Ancak 1000 satırlık kod limiti ile yada öğrenci, öğretmen, freelancer, MVP gibi ayrıcalıklı olarak ücretsiz kullanabilirsiniz.</p>
+
+<h2 id="onmethodboundaryaspect">OnMethodBoundaryAspect</h2>
+
+<p>Attribute olarak tanımladığımız bir metodun işlem adımlarını takip edebileceğimiz sınıftır. Aşağıda görüldüğü gibi OnEntry, OnSuccess, OnExit, OnException override metodları ile istediğimiz metodun özelliklerine erişebilmekteyiz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">PSerializable</span><span class="p">]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">LoggingAspect</span> <span class="p">:</span> <span class="n">OnMethodBoundaryAspect</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnEntry</span><span class="p">(</span><span class="n">MethodExecutionArgs</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"{0} : OnEntry"</span><span class="p">,</span> <span class="n">args</span><span class="p">.</span><span class="n">Method</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnSuccess</span><span class="p">(</span><span class="n">MethodExecutionArgs</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"{0} OnSuccess"</span><span class="p">,</span> <span class="n">args</span><span class="p">.</span><span class="n">Method</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnExit</span><span class="p">(</span><span class="n">MethodExecutionArgs</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"{0} OnExit"</span><span class="p">,</span> <span class="n">args</span><span class="p">.</span><span class="n">Method</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnException</span><span class="p">(</span><span class="n">MethodExecutionArgs</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"{0} OnException"</span><span class="p">,</span> <span class="n">args</span><span class="p">.</span><span class="n">Method</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnResume</span><span class="p">(</span><span class="n">MethodExecutionArgs</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"{0} OnResume"</span><span class="p">,</span> <span class="n">args</span><span class="p">.</span><span class="n">Method</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Program</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">LoggingAspect</span><span class="p">]</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Hello World!"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Yukarıdaki <code class="language-plaintext highlighter-rouge">OnMethodBoundaryAspect</code> sınıfına ilişkin kendi projelerimde kullanmış olduğum SecuredOperation örneğini inceleyelim. <em>Not: Kullanmış olduğum versiyon : v4.2.17.0</em></p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">Serializable</span><span class="p">]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">SecuredOperation</span> <span class="p">:</span> <span class="n">OnMethodBoundaryAspect</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Roles</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnEntry</span><span class="p">(</span><span class="n">MethodExecutionArgs</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">string</span><span class="p">[]</span> <span class="n">roles</span> <span class="p">=</span> <span class="n">Roles</span><span class="p">.</span><span class="nf">Split</span><span class="p">(</span><span class="sc">','</span><span class="p">);</span>
+        <span class="kt">bool</span> <span class="n">isAuthorized</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">roles</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">.</span><span class="n">CurrentPrincipal</span><span class="p">.</span><span class="nf">IsInRole</span><span class="p">(</span><span class="n">roles</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="p">{</span>
+                <span class="n">isAuthorized</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(!</span><span class="n">isAuthorized</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">SecurityException</span><span class="p">(</span><span class="s">"You aren't authorized!"</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>UserManager sınıında aşağıdaki gibi tanımlamış olduğum sınıflardaki metodlara OnEntry ile girip CurrentPrincipal içerisinde belirli rollerin tanımlı olup olmadığını kontrol ediyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">UserManager</span> <span class="p">:</span> <span class="n">IUserService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IUserDal</span> <span class="n">_userDal</span><span class="p">;</span>
+
+    <span class="p">[</span><span class="nf">SecuredOperation</span><span class="p">(</span><span class="n">Roles</span> <span class="p">=</span> <span class="s">"Admin,User"</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="nf">GetAll</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">users</span> <span class="p">=</span> <span class="n">_mapper</span><span class="p">.</span><span class="n">Map</span><span class="p">&lt;</span><span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;&gt;(</span><span class="n">_userDal</span><span class="p">.</span><span class="nf">GetAll</span><span class="p">());</span>
+        <span class="k">return</span> <span class="n">users</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Metod bazında yapıldığı gibi ayrıca sınıfın geneli için de tanımlama yapılabilir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nf">SecuredOperation</span><span class="p">(</span><span class="n">Roles</span> <span class="p">=</span> <span class="s">"Admin,User"</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">UserManager</span> <span class="p">:</span> <span class="n">IUserService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IUserDal</span> <span class="n">_userDal</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="nf">GetAll</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">users</span> <span class="p">=</span> <span class="n">_mapper</span><span class="p">.</span><span class="n">Map</span><span class="p">&lt;</span><span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;&gt;(</span><span class="n">_userDal</span><span class="p">.</span><span class="nf">GetAll</span><span class="p">());</span>
+        <span class="k">return</span> <span class="n">users</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Principal tanımlamasını aşağıdaki şekilde yapabiliriz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">IPrincipal</span> <span class="n">principal</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">GenericPrincipal</span><span class="p">(</span><span class="k">new</span> <span class="nf">GenericIdentity</span><span class="p">(</span><span class="s">"Admin"</span><span class="p">),</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"Admin"</span> <span class="p">});</span>
+<span class="n">Thread</span><span class="p">.</span><span class="n">CurrentPrincipal</span> <span class="p">=</span> <span class="n">principal</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Bir sonraki makalede görüşmek üzere.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#postsharp-kurulumu">PostSharp Kurulumu</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#onmethodboundaryaspect">OnMethodBoundaryAspect</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

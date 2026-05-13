@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>ASP.NET Core Web API - JWT Authentication Kullanımı | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="ASP.NET Core Web API - JWT Authentication Kullanımı" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar bu makalede .Net Core 3.1 versiyonu ile bir Web API örnek projede JWT (JSON Web Token) kimlik doğrulama yapısını inceleyeceğim. Daha önceki Web API makalelerine buradan ulaşabilirsiniz. Uygulama dosyalarını aspnetcore-3-1-web-api-jwt Github adresinde bulabilirsiniz." />
+<meta property="og:description" content="Merhabalar bu makalede .Net Core 3.1 versiyonu ile bir Web API örnek projede JWT (JSON Web Token) kimlik doğrulama yapısını inceleyeceğim. Daha önceki Web API makalelerine buradan ulaşabilirsiniz. Uygulama dosyalarını aspnetcore-3-1-web-api-jwt Github adresinde bulabilirsiniz." />
+<link rel="canonical" href="http://localhost:4000/2021/asp-net-core-web-api-jwt-authentication-kullanimi/" />
+<meta property="og:url" content="http://localhost:4000/2021/asp-net-core-web-api-jwt-authentication-kullanimi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-10T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ASP.NET Core Web API - JWT Authentication Kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2021-01-10T19:33:00+03:00","datePublished":"2021-01-10T19:33:00+03:00","description":"Merhabalar bu makalede .Net Core 3.1 versiyonu ile bir Web API örnek projede JWT (JSON Web Token) kimlik doğrulama yapısını inceleyeceğim. Daha önceki Web API makalelerine buradan ulaşabilirsiniz. Uygulama dosyalarını aspnetcore-3-1-web-api-jwt Github adresinde bulabilirsiniz.","headline":"ASP.NET Core Web API - JWT Authentication Kullanımı","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/asp-net-core-web-api-jwt-authentication-kullanimi/"},"url":"http://localhost:4000/2021/asp-net-core-web-api-jwt-authentication-kullanimi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar bu makalede .Net Core 3.1 versiyonu ile bir Web API örnek projede JWT (JSON Web Token) kimlik doğrulama yapısını inceleyeceğim. Daha önceki Web API makalelerine buradan ulaşabilirsiniz. Uygulama dosyalarını aspnetcore-3-1-web-api-jwt Github adresinde bulabilirsiniz.</p>
+
+<h2 id="aspnet-core-web-api--user-entity">ASP.NET Core Web API – User Entity</h2>
+
+<p>Kullanıcı bilgilerini taşıdığımız user sınıfını oluşturuyorum. Entity yapıları uygulamanın farklı bölümlerinde veri iletimi için kullanılır. Ayrıca controller yardımıyla http yanıtlarını döndürmek içinde kullanılabilmektedir. Bu sınıfı veritabanındaki User tablosu olarak düşünebilirsiniz. Entities sınfıları Entityframework ile Code First yaklaşımında veritabanı tablolarını oluşturmak için kullandığımız sınıflarıdır. Not: Entities yapılarında kısıtlı veri döndürmek istendiğinde Models klasöründe ihtiyaca yönelik sınıflar kullanılmalıdır.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">WebApi.Entities</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">User</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">UserName</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Password</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">FirstName</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">LastName</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Token</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--item-entity">ASP.NET Core Web API – Item Entity</h2>
+
+<p>Ürün bilgilerini tuttuğumuz Item sınıfını veritabanında Item tablosu olarak düşünebilirsiniz.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">WebApi.Entities</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Item</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Code</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">float</span> <span class="n">Price</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">Amount</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--authmodel">ASP.NET Core Web API – AuthModel</h2>
+
+<p><code class="language-plaintext highlighter-rouge">AuthModel</code> token bilgisi almak için istemcinin göndermiş olduğu istekte User sınıfının sadece username ve password bilgisini parametre olarak göndermesi için kısıtlı bir sınıftır.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">AuthModel</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">UserName</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Password</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--startup">ASP.NET Core Web API – Startup</h2>
+
+<p>Startup ​​sınıfı, uygulamanın tüm isteklerin nasıl işleneceğini yapılandırdığımız sınıftır.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">void</span> <span class="nf">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">services</span><span class="p">.</span><span class="nf">AddControllers</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">appSettingSection</span> <span class="p">=</span> <span class="n">Configuration</span><span class="p">.</span><span class="nf">GetSection</span><span class="p">(</span><span class="s">"AppSettings"</span><span class="p">);</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">Configure</span><span class="p">&lt;</span><span class="n">AppSettings</span><span class="p">&gt;(</span><span class="n">appSettingSection</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">appSettings</span> <span class="p">=</span> <span class="n">appSettingSection</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">AppSettings</span><span class="p">&gt;();</span>
+    <span class="kt">var</span> <span class="n">key</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">ASCII</span><span class="p">.</span><span class="nf">GetBytes</span><span class="p">(</span><span class="n">appSettings</span><span class="p">.</span><span class="n">Secret</span><span class="p">);</span>
+    <span class="n">services</span><span class="p">.</span><span class="nf">AddAuthentication</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+    <span class="p">{</span>
+        <span class="n">x</span><span class="p">.</span><span class="n">DefaultAuthenticateScheme</span> <span class="p">=</span> <span class="n">JwtBearerDefaults</span><span class="p">.</span><span class="n">AuthenticationScheme</span><span class="p">;</span>
+        <span class="n">x</span><span class="p">.</span><span class="n">DefaultChallengeScheme</span> <span class="p">=</span> <span class="n">JwtBearerDefaults</span><span class="p">.</span><span class="n">AuthenticationScheme</span><span class="p">;</span>
+    <span class="p">}).</span><span class="nf">AddJwtBearer</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+    <span class="p">{</span>
+        <span class="n">x</span><span class="p">.</span><span class="n">RequireHttpsMetadata</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+        <span class="n">x</span><span class="p">.</span><span class="n">SaveToken</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+        <span class="n">x</span><span class="p">.</span><span class="n">TokenValidationParameters</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">TokenValidationParameters</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">ValidateIssuerSigningKey</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="n">IssuerSigningKey</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SymmetricSecurityKey</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">ValidateIssuer</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span>
+            <span class="n">ValidateAudience</span> <span class="p">=</span> <span class="k">false</span>
+        <span class="p">};</span>
+    <span class="p">});</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">AddScoped</span><span class="p">&lt;</span><span class="n">IUserService</span><span class="p">,</span> <span class="n">UserService</span><span class="p">&gt;();</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">AddScoped</span><span class="p">&lt;</span><span class="n">IItemService</span><span class="p">,</span> <span class="n">ItemService</span><span class="p">&gt;();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">void</span> <span class="nf">Configure</span><span class="p">(</span><span class="n">IApplicationBuilder</span> <span class="n">app</span><span class="p">,</span> <span class="n">IWebHostEnvironment</span> <span class="n">env</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseAuthentication</span><span class="p">();</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseAuthorization</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--userservice">ASP.NET Core Web API – UserService</h2>
+
+<p>UserService sınıfında IUserService interface dosyasından implement ettikten sonra statik olarak bir User listesi dolduruyorum. Bu User verisi ile Authenticate metodunda UserName ve Password kontrolü ile user nesnesi geriye döndürüyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">WebApi.Services</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">interface</span> <span class="nc">IUserService</span>
+    <span class="p">{</span>
+        <span class="n">User</span> <span class="nf">Authenticate</span><span class="p">(</span><span class="kt">string</span> <span class="n">userName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">password</span><span class="p">);</span>
+        <span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="nf">GetAll</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">UserService</span> <span class="p">:</span> <span class="n">IUserService</span>
+    <span class="p">{</span>
+        <span class="k">readonly</span> <span class="n">AppSettings</span> <span class="n">_appSettings</span><span class="p">;</span>
+
+        <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="n">_users</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span>
+            <span class="p">{</span><span class="k">new</span> <span class="n">User</span> <span class="p">{</span><span class="n">Id</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">FirstName</span> <span class="p">=</span> <span class="s">"Murat"</span><span class="p">,</span> <span class="n">LastName</span> <span class="p">=</span> <span class="s">"Suzen"</span><span class="p">,</span> <span class="n">UserName</span> <span class="p">=</span> <span class="s">"murat"</span><span class="p">,</span> <span class="n">Password</span> <span class="p">=</span> <span class="s">"1234"</span><span class="p">}};</span>
+
+        <span class="k">public</span> <span class="nf">UserService</span><span class="p">(</span><span class="n">IOptions</span><span class="p">&lt;</span><span class="n">AppSettings</span><span class="p">&gt;</span> <span class="n">appSettings</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_appSettings</span> <span class="p">=</span> <span class="n">appSettings</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">User</span> <span class="nf">Authenticate</span><span class="p">(</span><span class="kt">string</span> <span class="n">userName</span><span class="p">,</span> <span class="kt">string</span> <span class="n">password</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="n">_users</span><span class="p">.</span><span class="nf">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">UserName</span> <span class="p">==</span> <span class="n">userName</span> <span class="p">&amp;&amp;</span> <span class="n">x</span><span class="p">.</span><span class="n">Password</span> <span class="p">==</span> <span class="n">password</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">user</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
+            <span class="kt">var</span> <span class="n">tokenHandler</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">JwtSecurityTokenHandler</span><span class="p">();</span>
+            <span class="kt">var</span> <span class="n">key</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="nf">GetBytes</span><span class="p">(</span><span class="n">_appSettings</span><span class="p">.</span><span class="n">Secret</span><span class="p">);</span>
+            <span class="kt">var</span> <span class="n">tokenDescriptor</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SecurityTokenDescriptor</span>
+            <span class="p">{</span>
+                <span class="n">Subject</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">ClaimsIdentity</span><span class="p">(</span><span class="k">new</span> <span class="n">Claim</span><span class="p">[]</span> <span class="p">{</span><span class="k">new</span> <span class="nf">Claim</span><span class="p">(</span><span class="n">ClaimTypes</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">Id</span><span class="p">.</span><span class="nf">ToString</span><span class="p">())}),</span>
+                <span class="n">Expires</span> <span class="p">=</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="nf">AddDays</span><span class="p">(</span><span class="m">7</span><span class="p">),</span>
+                <span class="n">SigningCredentials</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">SigningCredentials</span><span class="p">(</span><span class="k">new</span> <span class="nf">SymmetricSecurityKey</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
+                    <span class="n">SecurityAlgorithms</span><span class="p">.</span><span class="n">HmacSha256Signature</span><span class="p">)</span>
+            <span class="p">};</span>
+            <span class="kt">var</span> <span class="n">token</span> <span class="p">=</span> <span class="n">tokenHandler</span><span class="p">.</span><span class="nf">CreateToken</span><span class="p">(</span><span class="n">tokenDescriptor</span><span class="p">);</span>
+            <span class="n">user</span><span class="p">.</span><span class="n">Token</span> <span class="p">=</span> <span class="n">tokenHandler</span><span class="p">.</span><span class="nf">WriteToken</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+            <span class="n">user</span><span class="p">.</span><span class="n">Password</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
+            <span class="k">return</span> <span class="n">user</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="nf">GetAll</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">_users</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--itemservice">ASP.NET Core Web API – ItemService</h2>
+
+<p>ItemService sınıfınıd IItemService interface dosyasından implemente ediyorum. Bu sınıfta ürünler listesini geri döndüreceğimiz metodu yazalım.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">WebApi.Services</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">interface</span> <span class="nc">IItemService</span>
+    <span class="p">{</span>
+        <span class="n">List</span><span class="p">&lt;</span><span class="n">Item</span><span class="p">&gt;</span> <span class="nf">GetAll</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">ItemService</span> <span class="p">:</span> <span class="n">IItemService</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Item</span><span class="p">&gt;</span> <span class="n">_items</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Item</span><span class="p">&gt;</span>
+        <span class="p">{</span>
+            <span class="k">new</span> <span class="n">Item</span> <span class="p">{</span><span class="n">Id</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">Code</span> <span class="p">=</span> <span class="s">"0001"</span><span class="p">,</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"Notebook"</span><span class="p">,</span> <span class="n">Amount</span> <span class="p">=</span> <span class="m">22</span><span class="p">,</span> <span class="n">Price</span> <span class="p">=</span> <span class="m">6300</span><span class="p">},</span>
+            <span class="k">new</span> <span class="n">Item</span> <span class="p">{</span><span class="n">Id</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">Code</span> <span class="p">=</span> <span class="s">"0002"</span><span class="p">,</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"Keyboard"</span><span class="p">,</span> <span class="n">Amount</span> <span class="p">=</span> <span class="m">15</span><span class="p">,</span> <span class="n">Price</span> <span class="p">=</span> <span class="m">230</span><span class="p">},</span>
+            <span class="k">new</span> <span class="n">Item</span> <span class="p">{</span><span class="n">Id</span> <span class="p">=</span> <span class="m">3</span><span class="p">,</span> <span class="n">Code</span> <span class="p">=</span> <span class="s">"0003"</span><span class="p">,</span> <span class="n">Name</span> <span class="p">=</span> <span class="s">"Mouse"</span><span class="p">,</span> <span class="n">Amount</span> <span class="p">=</span> <span class="m">9</span><span class="p">,</span> <span class="n">Price</span> <span class="p">=</span> <span class="m">150</span><span class="p">},</span>
+        <span class="p">};</span>
+
+        <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Item</span><span class="p">&gt;</span> <span class="nf">GetAll</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">_items</span><span class="p">.</span><span class="nf">ToList</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>##ASP.NET Core Web API – ItemController</p>
+
+<p>ItemController sınıfı <code class="language-plaintext highlighter-rouge">[Authorize]</code> attribute ile yetkilendirildiği için UserName ve Password gönderilerek işlem yapılabilir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">WebApi.Controllers</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">Authorize</span><span class="p">]</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"[controller]"</span><span class="p">)]</span>
+    <span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">ItemController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="n">IItemService</span> <span class="n">_itemService</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">ItemController</span><span class="p">(</span><span class="n">IItemService</span> <span class="n">itemService</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_itemService</span> <span class="p">=</span> <span class="n">itemService</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+        <span class="k">public</span> <span class="n">ActionResult</span> <span class="nf">GetAll</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">users</span> <span class="p">=</span> <span class="n">_itemService</span><span class="p">.</span><span class="nf">GetAll</span><span class="p">();</span>
+            <span class="k">return</span> <span class="nf">Ok</span><span class="p">(</span><span class="n">users</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--usercontroller">ASP.NET Core Web API – UserController</h2>
+
+<p>Not: Tüm controller sınıfının <code class="language-plaintext highlighter-rouge">[Authorize]</code> attribute ile yetkilendirilmesi yanlızca <code class="language-plaintext highlighter-rouge">[AllowAnonymous]</code> attribute içeren metotları kapsamamaktadır. Çünkü <code class="language-plaintext highlighter-rouge">[AllowAnonymous]</code> attribute içeren metotlar <code class="language-plaintext highlighter-rouge">[Authorize]</code> attribute yapısını ezmektedir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">Authorize</span><span class="p">]</span>
+<span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"[controller]"</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">UserController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="n">IUserService</span> <span class="n">_userService</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">UserController</span><span class="p">(</span><span class="n">IUserService</span> <span class="n">userService</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_userService</span> <span class="p">=</span> <span class="n">userService</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="p">[</span><span class="n">AllowAnonymous</span><span class="p">]</span>
+    <span class="p">[</span><span class="nf">HttpPost</span><span class="p">(</span><span class="s">"auth"</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="n">ActionResult</span> <span class="nf">Authenticate</span><span class="p">([</span><span class="n">FromBody</span><span class="p">]</span> <span class="n">AuthModel</span> <span class="n">authModel</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="n">_userService</span><span class="p">.</span><span class="nf">Authenticate</span><span class="p">(</span><span class="n">authModel</span><span class="p">.</span><span class="n">UserName</span><span class="p">,</span> <span class="n">authModel</span><span class="p">.</span><span class="n">Password</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">user</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="k">return</span> <span class="nf">BadRequest</span><span class="p">(</span><span class="k">new</span> <span class="p">{</span><span class="n">message</span> <span class="p">=</span> <span class="s">"Kullanıcı adı yada şifre yanlış"</span><span class="p">});</span>
+        <span class="k">return</span> <span class="nf">Ok</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+    <span class="k">public</span> <span class="n">ActionResult</span> <span class="nf">GetAll</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">users</span> <span class="p">=</span> <span class="n">_userService</span><span class="p">.</span><span class="nf">GetAll</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nf">Ok</span><span class="p">(</span><span class="n">users</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--appsettings">ASP.NET Core Web API – AppSettings</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">AppSettings</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Secret</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="aspnet-core-web-api--appsettingsjson">ASP.NET Core Web API – appsettings.json</h2>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="nl">"AppSettings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"Secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BU ALANA IMZA ICIN BIR ANAHTAR BILGISI GIRMEMIZ GEREKMEKTEDIR"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="postman-ile-kullanımı">Postman ile Kullanımı</h2>
+
+<p>Proje içeren dosyaları indirdiğimizde aspnetcore-3-1-web-api-jwt\WebApi klasöründeki WebApi.sln projesini açıp çalıştırıyoruz.</p>
+
+<p><img src="/assets/img/posts/jwt-project-folder.jpg" alt="JWT Project Folder" />
+<em>JWT Project Folder</em></p>
+
+<p>Postman ile öncelikle user servisine username ve password gönderip bir post işlemi yapıyoruz. Bu şekilde token bilgisini elde etmiş oluyoruz.</p>
+
+<p><img src="/assets/img/posts/jwt-post-auth.jpg" alt="JWT Post Auth" />
+<em>JWT Post Auth</em></p>
+
+<p>Daha sonra elde ettiğimiz token bilgisi ile user servisine get işlemi yapıyoruz ve user listelerine erişebiliyoruz.</p>
+
+<p><img src="/assets/img/posts/jwt-get-user.jpg" alt="JWT Get User" />
+<em>JWT Get User</em></p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-user-entity">ASP.NET Core Web API – User Entity</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-item-entity">ASP.NET Core Web API – Item Entity</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-authmodel">ASP.NET Core Web API – AuthModel</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-startup">ASP.NET Core Web API – Startup</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-userservice">ASP.NET Core Web API – UserService</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-itemservice">ASP.NET Core Web API – ItemService</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-usercontroller">ASP.NET Core Web API – UserController</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-appsettings">ASP.NET Core Web API – AppSettings</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#asp-net-core-web-api-appsettings-json">ASP.NET Core Web API – appsettings.json</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#postman-ile-kullanımı">Postman ile Kullanımı</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

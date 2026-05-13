@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Building an ESP32 GPS Tracker with SIM800, WiFi, and AT Command Integration | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Building an ESP32 GPS Tracker with SIM800, WiFi, and AT Command Integration" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this article, we explore a robust ESP32-based GPS tracking system that integrates: ✅ SIM800 module (GPRS) for cellular internet ✅ WiFi for wireless local connectivity ✅ TinyGPS++ library to handle GPS data ✅ LittleFS for onboard file storage ✅ AT command interpreter to control behavior over serial or a remote service" />
+<meta property="og:description" content="In this article, we explore a robust ESP32-based GPS tracking system that integrates: ✅ SIM800 module (GPRS) for cellular internet ✅ WiFi for wireless local connectivity ✅ TinyGPS++ library to handle GPS data ✅ LittleFS for onboard file storage ✅ AT command interpreter to control behavior over serial or a remote service" />
+<link rel="canonical" href="http://localhost:4000/2025/esp32-gps-tracker-with-sim800-wifi-and-at-commands/" />
+<meta property="og:url" content="http://localhost:4000/2025/esp32-gps-tracker-with-sim800-wifi-and-at-commands/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-10T05:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Building an ESP32 GPS Tracker with SIM800, WiFi, and AT Command Integration" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-10T05:00:00+03:00","datePublished":"2025-05-10T05:00:00+03:00","description":"In this article, we explore a robust ESP32-based GPS tracking system that integrates: ✅ SIM800 module (GPRS) for cellular internet ✅ WiFi for wireless local connectivity ✅ TinyGPS++ library to handle GPS data ✅ LittleFS for onboard file storage ✅ AT command interpreter to control behavior over serial or a remote service","headline":"Building an ESP32 GPS Tracker with SIM800, WiFi, and AT Command Integration","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/esp32-gps-tracker-with-sim800-wifi-and-at-commands/"},"url":"http://localhost:4000/2025/esp32-gps-tracker-with-sim800-wifi-and-at-commands/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>In this article, we explore a robust ESP32-based GPS tracking system that integrates:<br />
+✅ SIM800 module (GPRS) for cellular internet<br />
+✅ WiFi for wireless local connectivity<br />
+✅ TinyGPS++ library to handle GPS data<br />
+✅ LittleFS for onboard file storage<br />
+✅ AT command interpreter to control behavior over serial or a remote service</p>
+
+<hr />
+
+<h2 id="system-overview">System Overview</h2>
+
+<p>The ESP32 runs firmware that does the following:</p>
+
+<ul>
+  <li>Continuously reads GPS data (latitude, longitude, speed, time).</li>
+  <li>Stores data points in a local log (<code class="language-plaintext highlighter-rouge">/gpslog.txt</code>).</li>
+  <li>Every 10 seconds, sends the collected data to a remote telemetry service over the internet, using either SIM800 (GPRS) or WiFi.</li>
+  <li>Listens for remote AT commands (via HTTP GET) or local serial AT commands to dynamically change settings.</li>
+</ul>
+
+<hr />
+
+<h2 id="internet-connection-modes">Internet Connection Modes</h2>
+
+<p>✅ <strong>SIM800 Mode:</strong></p>
+
+<ul>
+  <li>Initializes GPRS (<code class="language-plaintext highlighter-rouge">AT+SAPBR</code>) and sends HTTP requests with AT commands.</li>
+  <li>Retrieves and runs remote commands via <code class="language-plaintext highlighter-rouge">/api/TelemetryData/NextCommand/{DEVICE_ID}</code>.</li>
+  <li>Sends collected GPS telemetry via HTTP POST.</li>
+</ul>
+
+<p>✅ <strong>WiFi Mode:</strong></p>
+
+<ul>
+  <li>Connects to a local WiFi network using configured SSID and password.</li>
+  <li>Uses <code class="language-plaintext highlighter-rouge">WiFiClient</code> to connect to the service IP and port.</li>
+  <li>Dynamically switches between WiFi or SIM800 via AT commands.</li>
+</ul>
+
+<hr />
+
+<h2 id="gps-logging">GPS Logging</h2>
+
+<ul>
+  <li>Uses TinyGPS++ to read NMEA data from the GPS module.</li>
+  <li>Captures: latitude, longitude, speed, and UTC timestamp.</li>
+  <li>Logs each data point to LittleFS (<code class="language-plaintext highlighter-rouge">/gpslog.txt</code>).</li>
+  <li>On every post interval (default 10s), reads the log file, builds a JSON array, and transmits it to the telemetry API.</li>
+</ul>
+
+<hr />
+
+<h2 id="dynamic-configuration-with-at-commands">Dynamic Configuration with AT Commands</h2>
+
+<p>The system accepts AT commands over:</p>
+
+<ul>
+  <li><strong>Serial input</strong> (e.g., <code class="language-plaintext highlighter-rouge">AT+SETID=NEWID</code>).</li>
+  <li><strong>Remote service</strong> (via HTTP GET).</li>
+</ul>
+
+<p>Supported commands:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">AT+SETID</code>, <code class="language-plaintext highlighter-rouge">AT+GETID</code>: manage device ID.</li>
+  <li><code class="language-plaintext highlighter-rouge">AT+SETADDR</code>, <code class="language-plaintext highlighter-rouge">AT+GETADDR</code>: set or get the telemetry service IP and port.</li>
+  <li><code class="language-plaintext highlighter-rouge">AT+SETMODE=WIFI</code> or <code class="language-plaintext highlighter-rouge">AT+SETMODE=SIM800</code>: switch internet modes.</li>
+  <li><code class="language-plaintext highlighter-rouge">AT+SETWIFI=SSID,PASSWORD</code>: configure WiFi credentials.</li>
+  <li><code class="language-plaintext highlighter-rouge">AT+STARTGPS</code>, <code class="language-plaintext highlighter-rouge">AT+STOPGPS</code>: enable or disable GPS logging.</li>
+  <li><code class="language-plaintext highlighter-rouge">AT+RESTART</code>: restart the ESP32 device.</li>
+  <li><code class="language-plaintext highlighter-rouge">AT+TESTPOST</code>: perform a test POST to verify connectivity.</li>
+</ul>
+
+<hr />
+
+<h2 id="service-endpoint-example">Service Endpoint Example</h2>
+
+<p>By default, the firmware targets:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://serviceaddr:port/api/TelemetryData
+</code></pre></div></div>
+
+<p>You can change this at runtime by sending:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AT+SETADDR=192.168.1.100:8080
+</code></pre></div></div>
+
+<p>or programmatically adjusting:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SERVICE_IP</span> <span class="o">=</span> <span class="s">"192.168.1.100"</span><span class="p">;</span>
+<span class="n">SERVICE_PORT</span> <span class="o">=</span> <span class="s">"8080"</span><span class="p">;</span>
+<span class="n">saveServiceAddress</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>This flexibility allows you to redirect the device to <strong>development</strong>, <strong>test</strong>, or <strong>production</strong> servers without reflashing.</p>
+
+<hr />
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<ul>
+  <li>Dual internet mode (SIM800 + WiFi) increases resilience.</li>
+  <li>Modular AT command system simplifies live reconfiguration.</li>
+  <li>File system (LittleFS) ensures reliable buffering when the network is unavailable.</li>
+  <li>TinyGPS++ integration makes GPS handling precise and efficient.</li>
+</ul>
+
+<hr />
+
+<h2 id="how-to-use">How to Use</h2>
+
+<ul>
+  <li>Update the service address, SSID, or APN in your environment.</li>
+  <li>Connect your GPS module (e.g., NEO-6M) to the defined pins.</li>
+  <li>Deploy the firmware and start capturing real-world telemetry.</li>
+</ul>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#system-overview">System Overview</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#internet-connection-modes">Internet Connection Modes</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#gps-logging">GPS Logging</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#dynamic-configuration-with-at-commands">Dynamic Configuration with AT Commands</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#service-endpoint-example">Service Endpoint Example</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#key-takeaways">Key Takeaways</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#how-to-use">How to Use</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

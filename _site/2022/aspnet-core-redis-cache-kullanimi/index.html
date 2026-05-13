@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>ASP.NET Core Distributed Redis Cache Kullanımı | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="ASP.NET Core Distributed Redis Cache Kullanımı" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar bu makalede ASP.NET Core projesinde Redis ile distributed cache yapısını inceleyeceğiz. Öncelikle Redis hakkında bilgi sahibi olmak isterseniz Redis Nedir? Ne İşe Yarar? Nerelerde Kullanılır? konusunu incelediğim makalemi okuyabilirsiniz. Öncelikle bir netcorerediscache isminde ASP.NET Core Web API projesi oluşturuyorum. Projeye Microsoft.Extensions.Caching.StackExchangeRedis paketini ekliyorum." />
+<meta property="og:description" content="Merhabalar bu makalede ASP.NET Core projesinde Redis ile distributed cache yapısını inceleyeceğiz. Öncelikle Redis hakkında bilgi sahibi olmak isterseniz Redis Nedir? Ne İşe Yarar? Nerelerde Kullanılır? konusunu incelediğim makalemi okuyabilirsiniz. Öncelikle bir netcorerediscache isminde ASP.NET Core Web API projesi oluşturuyorum. Projeye Microsoft.Extensions.Caching.StackExchangeRedis paketini ekliyorum." />
+<link rel="canonical" href="http://localhost:4000/2022/aspnet-core-redis-cache-kullanimi/" />
+<meta property="og:url" content="http://localhost:4000/2022/aspnet-core-redis-cache-kullanimi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-17T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ASP.NET Core Distributed Redis Cache Kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2022-04-17T19:33:00+03:00","datePublished":"2022-04-17T19:33:00+03:00","description":"Merhabalar bu makalede ASP.NET Core projesinde Redis ile distributed cache yapısını inceleyeceğiz. Öncelikle Redis hakkında bilgi sahibi olmak isterseniz Redis Nedir? Ne İşe Yarar? Nerelerde Kullanılır? konusunu incelediğim makalemi okuyabilirsiniz. Öncelikle bir netcorerediscache isminde ASP.NET Core Web API projesi oluşturuyorum. Projeye Microsoft.Extensions.Caching.StackExchangeRedis paketini ekliyorum.","headline":"ASP.NET Core Distributed Redis Cache Kullanımı","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/aspnet-core-redis-cache-kullanimi/"},"url":"http://localhost:4000/2022/aspnet-core-redis-cache-kullanimi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar bu makalede ASP.NET Core projesinde Redis ile distributed cache yapısını inceleyeceğiz. Öncelikle Redis hakkında bilgi sahibi olmak isterseniz Redis Nedir? Ne İşe Yarar? Nerelerde Kullanılır? konusunu incelediğim makalemi okuyabilirsiniz. Öncelikle bir netcorerediscache isminde ASP.NET Core Web API projesi oluşturuyorum. Projeye <code class="language-plaintext highlighter-rouge">Microsoft.Extensions.Caching.StackExchangeRedis</code> paketini ekliyorum.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet add package Microsoft.Extensions.Caching.StackExchangeRedis
+</code></pre></div></div>
+
+<p>StackExchangeRedis eklendikten sonra Program.cs içerisinde <code class="language-plaintext highlighter-rouge">AddStackExchangeRedisCache</code> metodunu ekliyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddStackExchangeRedisCache</span><span class="p">(</span><span class="n">options</span> <span class="p">=&gt;</span>
+  <span class="p">{</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">ConfigurationOptions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ConfigurationOptions</span>
+    <span class="p">{</span>
+        <span class="n">EndPoints</span> <span class="p">=</span> <span class="p">{</span> <span class="s">"localhost:6379"</span> <span class="p">},</span>
+        <span class="n">Password</span> <span class="p">=</span> <span class="s">"msuzen123!"</span><span class="p">,</span>
+    <span class="p">};</span>
+  <span class="p">});</span>
+</code></pre></div></div>
+
+<p>Projeyi oluşturduğumda standart oluşan WeatherForecastController’da cache işlemlerini yapıyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">dataList</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>
+    <span class="kt">string</span> <span class="n">serializedCacheData</span><span class="p">;</span>
+
+    <span class="kt">var</span> <span class="n">cacheKey</span> <span class="p">=</span> <span class="s">"summaries"</span><span class="p">;</span>
+    <span class="kt">var</span> <span class="n">cacheData</span> <span class="p">=</span> <span class="n">_distributedCache</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cacheData</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">serializedCacheData</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="nf">GetString</span><span class="p">(</span><span class="n">cacheData</span><span class="p">);</span>
+        <span class="n">dataList</span> <span class="p">=</span> <span class="n">JsonSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="p">&lt;</span><span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;&gt;(</span><span class="n">serializedCacheData</span><span class="p">);</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>_distributedCache.Get(cacheKey) ile “summaries” anahtarındaki cache değerini alıyorum. Eğer değer null değil ise değer string listesine deserialize yaparak set ediyorum. Eğer null ise aşağıdaki kod bloğu ile bu sefer veritabanından yada örnekteki gibi sabit listeyi byte[] tipinde serialize yaparak cache ekleme işlemi yapıyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">dataList</span> <span class="p">=</span> <span class="n">Summaries</span><span class="p">.</span><span class="nf">ToList</span><span class="p">();</span>
+        <span class="n">serializedCacheData</span> <span class="p">=</span> <span class="n">JsonSerializer</span><span class="p">.</span><span class="nf">Serialize</span><span class="p">(</span><span class="n">dataList</span><span class="p">);</span>
+        <span class="n">cacheData</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="nf">GetBytes</span><span class="p">(</span><span class="n">serializedCacheData</span><span class="p">);</span>
+        <span class="n">_distributedCache</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">,</span><span class="n">cacheData</span><span class="p">,</span><span class="k">new</span> <span class="nf">DistributedCacheEntryOptions</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">AbsoluteExpiration</span> <span class="p">=</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="nf">AddMinutes</span><span class="p">(</span><span class="m">10</span><span class="p">),</span>
+            <span class="n">SlidingExpiration</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromMinutes</span><span class="p">(</span><span class="m">2</span><span class="p">),</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">dataList</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Burada <code class="language-plaintext highlighter-rouge">DistributedCacheEntryOptions</code> parametrelerinden iki tanesine değineceğim.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">AbsoluteExpiration:</code> Verilen süre sonunda cachedeki verinin expire olmasını sağlar.</li>
+  <li><code class="language-plaintext highlighter-rouge">SlidingExpiration:</code> Veri expire olmadan istendiğinde istek sonrasında expire süresine verilen süre eklenir.</li>
+</ul>
+
+<p>Tüm controller kod bloğu aşağıdaki gibidir.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text.Json</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Mvc</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.Extensions.Caching.Distributed</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">netcorerediscache.Controllers</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"[controller]"</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">WeatherForecastController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="n">IDistributedCache</span> <span class="n">_distributedCache</span><span class="p">;</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="kt">string</span><span class="p">[]</span> <span class="n">Summaries</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span>
+        <span class="p">{</span>
+        <span class="s">"Freezing"</span><span class="p">,</span> <span class="s">"Bracing"</span><span class="p">,</span> <span class="s">"Chilly"</span><span class="p">,</span> <span class="s">"Cool"</span><span class="p">,</span> <span class="s">"Mild"</span><span class="p">,</span> <span class="s">"Warm"</span><span class="p">,</span> <span class="s">"Balmy"</span><span class="p">,</span> <span class="s">"Hot"</span><span class="p">,</span> <span class="s">"Sweltering"</span><span class="p">,</span> <span class="s">"Scorching"</span>
+        <span class="p">};</span>
+
+
+        <span class="k">public</span> <span class="nf">WeatherForecastController</span><span class="p">(</span><span class="n">IDistributedCache</span> <span class="n">distributedCache</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_distributedCache</span> <span class="p">=</span> <span class="n">distributedCache</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="nf">HttpGet</span><span class="p">(</span><span class="n">Name</span> <span class="p">=</span> <span class="s">"GetWeatherForecast"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">dataList</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>
+            <span class="kt">string</span> <span class="n">serializedCacheData</span><span class="p">;</span>
+
+            <span class="kt">var</span> <span class="n">cacheKey</span> <span class="p">=</span> <span class="s">"summaries"</span><span class="p">;</span>
+            <span class="kt">var</span> <span class="n">cacheData</span> <span class="p">=</span> <span class="n">_distributedCache</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">cacheData</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">serializedCacheData</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="nf">GetString</span><span class="p">(</span><span class="n">cacheData</span><span class="p">);</span>
+                <span class="n">dataList</span> <span class="p">=</span> <span class="n">JsonSerializer</span><span class="p">.</span><span class="n">Deserialize</span><span class="p">&lt;</span><span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;&gt;(</span><span class="n">serializedCacheData</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">dataList</span> <span class="p">=</span> <span class="n">Summaries</span><span class="p">.</span><span class="nf">ToList</span><span class="p">();</span>
+                <span class="n">serializedCacheData</span> <span class="p">=</span> <span class="n">JsonSerializer</span><span class="p">.</span><span class="nf">Serialize</span><span class="p">(</span><span class="n">dataList</span><span class="p">);</span>
+                <span class="n">cacheData</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="nf">GetBytes</span><span class="p">(</span><span class="n">serializedCacheData</span><span class="p">);</span>
+                <span class="n">_distributedCache</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">,</span><span class="n">cacheData</span><span class="p">,</span><span class="k">new</span> <span class="nf">DistributedCacheEntryOptions</span><span class="p">()</span>
+                <span class="p">{</span>
+                    <span class="n">AbsoluteExpiration</span> <span class="p">=</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="nf">AddMinutes</span><span class="p">(</span><span class="m">10</span><span class="p">),</span>
+                    <span class="n">SlidingExpiration</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromMinutes</span><span class="p">(</span><span class="m">2</span><span class="p">),</span>
+                <span class="p">});</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">dataList</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Projeyi çalıştırıp swagger yardımıyla test ettiğimde ilk istekte cache boş olduğu için cache ekleyip statik veriyi geri döndürüyor. İkinci istekte cache verisini geri döndürüyor. Bir sonraki makalede görüşmek üzere.</p>
+
+<p>Kaynaklar</p>
+
+<p><a href="https://codewithmukesh.com/blog/redis-caching-in-aspnet-core/">https://codewithmukesh.com/blog/redis-caching-in-aspnet-core/</a></p>
+
+<p><a href="https://www.c-sharpcorner.com/article/distributed-redis-caching-in-asp-net-core/">https://www.c-sharpcorner.com/article/distributed-redis-caching-in-asp-net-core/</a></p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

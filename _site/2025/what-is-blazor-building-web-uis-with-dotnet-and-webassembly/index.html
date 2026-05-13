@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What Is Blazor? Building Web UIs with .NET and WebAssembly | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What Is Blazor? Building Web UIs with .NET and WebAssembly" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Blazor is a cutting-edge framework from Microsoft that allows developers to build interactive web applications using C# and .NET, running in the browser via WebAssembly. This means you can write rich, client-side web apps without JavaScript." />
+<meta property="og:description" content="Blazor is a cutting-edge framework from Microsoft that allows developers to build interactive web applications using C# and .NET, running in the browser via WebAssembly. This means you can write rich, client-side web apps without JavaScript." />
+<link rel="canonical" href="http://localhost:4000/2025/what-is-blazor-building-web-uis-with-dotnet-and-webassembly/" />
+<meta property="og:url" content="http://localhost:4000/2025/what-is-blazor-building-web-uis-with-dotnet-and-webassembly/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-04T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What Is Blazor? Building Web UIs with .NET and WebAssembly" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-04T12:00:00+03:00","datePublished":"2025-05-04T12:00:00+03:00","description":"Blazor is a cutting-edge framework from Microsoft that allows developers to build interactive web applications using C# and .NET, running in the browser via WebAssembly. This means you can write rich, client-side web apps without JavaScript.","headline":"What Is Blazor? Building Web UIs with .NET and WebAssembly","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/what-is-blazor-building-web-uis-with-dotnet-and-webassembly/"},"url":"http://localhost:4000/2025/what-is-blazor-building-web-uis-with-dotnet-and-webassembly/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Blazor is a cutting-edge framework from Microsoft that allows developers to build <strong>interactive web applications</strong> using C# and .NET, running in the browser via WebAssembly. This means you can write rich, client-side web apps <strong>without JavaScript</strong>.</p>
+
+<p>In this article, we’ll cover <strong>what Blazor is</strong>, <strong>how it works</strong>, <strong>setup steps</strong>, and explore real-world examples and best practices.</p>
+
+<hr />
+
+<h2 id="what-is-blazor">What Is Blazor?</h2>
+
+<p>Blazor is part of the ASP.NET Core ecosystem and provides two hosting models:</p>
+
+<p>✅ <strong>Blazor WebAssembly (WASM)</strong> — Runs C# directly in the browser using WebAssembly.<br />
+✅ <strong>Blazor Server</strong> — Executes C# code on the server, with UI updates sent over a SignalR connection.</p>
+
+<p>The key idea is: you can use <strong>C#, Razor, and .NET libraries</strong> to build full web UIs, reusing logic across server and client.</p>
+
+<hr />
+
+<h2 id="why-use-blazor">Why Use Blazor?</h2>
+
+<p>✅ Full-stack .NET development — share code between frontend and backend.<br />
+✅ Avoid JavaScript for most UI logic.<br />
+✅ Strong typing, tooling, and compile-time checks.<br />
+✅ Access to existing .NET libraries and ecosystem.<br />
+✅ Deploy as static files (Blazor WebAssembly) or connected apps (Blazor Server).</p>
+
+<hr />
+
+<h2 id="setting-up-blazor">Setting Up Blazor</h2>
+
+<h3 id="step-1-install-sdk">Step 1: Install SDK</h3>
+
+<p>Make sure you have .NET 7 or later installed.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet --version
+</code></pre></div></div>
+
+<h3 id="step-2-create-a-new-blazor-webassembly-app">Step 2: Create a New Blazor WebAssembly App</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet new blazorwasm -o BlazorApp
+cd BlazorApp
+</code></pre></div></div>
+
+<h3 id="step-3-run-the-app">Step 3: Run the App</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet run
+</code></pre></div></div>
+
+<p>Visit <code class="language-plaintext highlighter-rouge">https://localhost:5001</code> — you’ll see a running Blazor app!</p>
+
+<hr />
+
+<h2 id="understanding-blazor-components">Understanding Blazor Components</h2>
+
+<p>A <strong>Blazor component</strong> is a reusable piece of UI, written in <code class="language-plaintext highlighter-rouge">.razor</code> files.</p>
+
+<p>Example <code class="language-plaintext highlighter-rouge">Counter.razor</code>:</p>
+
+<pre><code class="language-razor">&lt;h3&gt;Counter&lt;/h3&gt;
+
+&lt;p&gt;Current count: @currentCount&lt;/p&gt;
+
+&lt;button class="btn btn-primary" @onclick="IncrementCount"&gt;Click me&lt;/button&gt;
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
+</code></pre>
+
+<p>This component updates interactively when the button is clicked.</p>
+
+<hr />
+
+<h2 id="blazor-webassembly-vs-blazor-server">Blazor WebAssembly vs Blazor Server</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>Blazor WebAssembly</th>
+      <th>Blazor Server</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Runs in</td>
+      <td>Browser (client-side, WebAssembly)</td>
+      <td>Server (with SignalR connection)</td>
+    </tr>
+    <tr>
+      <td>Performance</td>
+      <td>Faster for local interactions</td>
+      <td>Lower initial download, higher latency</td>
+    </tr>
+    <tr>
+      <td>Offline support</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Resource usage</td>
+      <td>Uses client resources</td>
+      <td>Uses server resources</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Choose based on your app’s needs.</p>
+
+<hr />
+
+<h2 id="data-binding-and-events">Data Binding and Events</h2>
+
+<p>Blazor makes binding data simple:</p>
+
+<pre><code class="language-razor">&lt;input @bind="username" /&gt;
+&lt;p&gt;You typed: @username&lt;/p&gt;
+
+@code {
+    private string username = "";
+}
+</code></pre>
+
+<p>Events like button clicks:</p>
+
+<pre><code class="language-razor">&lt;button @onclick="HandleClick"&gt;Click me&lt;/button&gt;
+
+@code {
+    void HandleClick()
+    {
+        Console.WriteLine("Button clicked");
+    }
+}
+</code></pre>
+
+<hr />
+
+<h2 id="calling-apis">Calling APIs</h2>
+
+<p>You can use <code class="language-plaintext highlighter-rouge">HttpClient</code> to make API calls:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">@inject</span> <span class="n">HttpClient</span> <span class="n">Http</span>
+
+<span class="n">@code</span> <span class="p">{</span>
+    <span class="n">WeatherForecast</span><span class="p">[]</span> <span class="n">forecasts</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">OnInitializedAsync</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">forecasts</span> <span class="p">=</span> <span class="k">await</span> <span class="n">Http</span><span class="p">.</span><span class="n">GetFromJsonAsync</span><span class="p">&lt;</span><span class="n">WeatherForecast</span><span class="p">[</span><span class="k">]&gt;</span><span class="p">(</span><span class="s">"WeatherForecast"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Use components to break UI into reusable pieces.<br />
+✅ Avoid large monolithic pages — keep things modular.<br />
+✅ Use asynchronous methods (<code class="language-plaintext highlighter-rouge">async/await</code>) for I/O work.<br />
+✅ Consider Blazor WebAssembly size optimization (AOT, trimming) for production.<br />
+✅ Protect server-side resources with authentication and authorization.</p>
+
+<hr />
+
+<h2 id="real-world-use-cases">Real-World Use Cases</h2>
+
+<ul>
+  <li>Internal business apps (dashboards, forms, management tools)</li>
+  <li>Progressive Web Apps (PWAs) with offline support</li>
+  <li>Interactive public websites with live data</li>
+  <li>Hybrid apps (with .NET MAUI or Electron)</li>
+</ul>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>Blazor represents a major leap forward in .NET web development, allowing you to write client-side, interactive web UIs using C# and WebAssembly. Whether you choose Blazor WebAssembly or Blazor Server, the framework empowers you to create rich, maintainable web apps using the full .NET ecosystem.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-blazor">What Is Blazor?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#why-use-blazor">Why Use Blazor?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#setting-up-blazor">Setting Up Blazor</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-install-sdk">Step 1: Install SDK</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-create-a-new-blazor-webassembly-app">Step 2: Create a New Blazor WebAssembly App</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-3-run-the-app">Step 3: Run the App</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#understanding-blazor-components">Understanding Blazor Components</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#blazor-webassembly-vs-blazor-server">Blazor WebAssembly vs Blazor Server</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#data-binding-and-events">Data Binding and Events</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#calling-apis">Calling APIs</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-use-cases">Real-World Use Cases</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

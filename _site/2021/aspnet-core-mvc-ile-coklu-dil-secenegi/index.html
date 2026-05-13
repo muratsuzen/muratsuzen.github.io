@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>ASP.NET Core MVC ile Çoklu Dil Seçeneği Ekleme | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="ASP.NET Core MVC ile Çoklu Dil Seçeneği Ekleme" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Merhabalar bu makalede ASP.NET Core MVC uygulamasına nasıl çoklu dil desteği ekleyebileceğimizi inceleyeceğim. Öncelikle destekleyeceğimiz dil tanımlarını resource dosyalarında tutacağım için uygulamanın dizinine Resources klasörünü oluşturuyorum. Daha sonra içerisine SharedResource.tr-TR.resx ve SharedResource.en-US.resx isminde iki Resource dosyası ekliyorum. Burada dikkat etmeniz gereken yer Languages. ifadesinden sonra Culture isimleri olmalı. Farklı dilleri de bu şekilde ekleyerek çoğaltabilirsiniz." />
+<meta property="og:description" content="Merhabalar bu makalede ASP.NET Core MVC uygulamasına nasıl çoklu dil desteği ekleyebileceğimizi inceleyeceğim. Öncelikle destekleyeceğimiz dil tanımlarını resource dosyalarında tutacağım için uygulamanın dizinine Resources klasörünü oluşturuyorum. Daha sonra içerisine SharedResource.tr-TR.resx ve SharedResource.en-US.resx isminde iki Resource dosyası ekliyorum. Burada dikkat etmeniz gereken yer Languages. ifadesinden sonra Culture isimleri olmalı. Farklı dilleri de bu şekilde ekleyerek çoğaltabilirsiniz." />
+<link rel="canonical" href="http://localhost:4000/2021/aspnet-core-mvc-ile-coklu-dil-secenegi/" />
+<meta property="og:url" content="http://localhost:4000/2021/aspnet-core-mvc-ile-coklu-dil-secenegi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-20T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ASP.NET Core MVC ile Çoklu Dil Seçeneği Ekleme" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2021-09-20T19:33:00+03:00","datePublished":"2021-09-20T19:33:00+03:00","description":"Merhabalar bu makalede ASP.NET Core MVC uygulamasına nasıl çoklu dil desteği ekleyebileceğimizi inceleyeceğim. Öncelikle destekleyeceğimiz dil tanımlarını resource dosyalarında tutacağım için uygulamanın dizinine Resources klasörünü oluşturuyorum. Daha sonra içerisine SharedResource.tr-TR.resx ve SharedResource.en-US.resx isminde iki Resource dosyası ekliyorum. Burada dikkat etmeniz gereken yer Languages. ifadesinden sonra Culture isimleri olmalı. Farklı dilleri de bu şekilde ekleyerek çoğaltabilirsiniz.","headline":"ASP.NET Core MVC ile Çoklu Dil Seçeneği Ekleme","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/aspnet-core-mvc-ile-coklu-dil-secenegi/"},"url":"http://localhost:4000/2021/aspnet-core-mvc-ile-coklu-dil-secenegi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Merhabalar bu makalede ASP.NET Core MVC uygulamasına nasıl çoklu dil desteği ekleyebileceğimizi inceleyeceğim. Öncelikle destekleyeceğimiz dil tanımlarını resource dosyalarında tutacağım için uygulamanın dizinine <code class="language-plaintext highlighter-rouge">Resources</code> klasörünü oluşturuyorum. Daha sonra içerisine <code class="language-plaintext highlighter-rouge">SharedResource.tr-TR.resx</code> ve <code class="language-plaintext highlighter-rouge">SharedResource.en-US.resx</code> isminde iki Resource dosyası ekliyorum. Burada dikkat etmeniz gereken yer Languages. ifadesinden sonra Culture isimleri olmalı. Farklı dilleri de bu şekilde ekleyerek çoğaltabilirsiniz.</p>
+
+<p><img src="/assets/img/posts/resource-files.jpg" alt="Resource Files" />
+<em>Resource Files</em></p>
+
+<p>Uygulama dizinine SharedResource isminde bir sınıf oluşturuyorum. Önceki versiyonlarda uygulama dizinine oluşturduğumuz Languages sınıfını <code class="language-plaintext highlighter-rouge">Resources</code> klasörüne oluşturuyorduk.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">MultiLanguage</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">SharedResource</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Uygulama dizinine Utilities klasörü oluşturup IStringLocalizer yapısını ayağa kaldıracak SharedViewLocalizer sınıfını geliştirelim.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">System.Reflection</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.Extensions.Localization</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MultiLanguage.Utilities</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">SharedViewLocalizer</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">IStringLocalizer</span> <span class="n">_localizer</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">SharedViewLocalizer</span><span class="p">(</span><span class="n">IStringLocalizerFactory</span> <span class="n">factory</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">type</span> <span class="p">=</span> <span class="k">typeof</span><span class="p">(</span><span class="n">SharedResource</span><span class="p">);</span>
+            <span class="kt">var</span> <span class="n">assemblyName</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">AssemblyName</span><span class="p">(</span><span class="n">type</span><span class="p">.</span><span class="nf">GetTypeInfo</span><span class="p">().</span><span class="n">Assembly</span><span class="p">.</span><span class="n">FullName</span><span class="p">);</span>
+            <span class="n">_localizer</span> <span class="p">=</span> <span class="n">factory</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="s">"SharedResource"</span><span class="p">,</span> <span class="n">assemblyName</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="n">LocalizedString</span> <span class="k">this</span><span class="p">[</span><span class="kt">string</span> <span class="n">key</span><span class="p">]</span> <span class="p">=&gt;</span> <span class="n">_localizer</span><span class="p">[</span><span class="n">key</span><span class="p">];</span>
+
+        <span class="k">public</span> <span class="n">LocalizedString</span> <span class="nf">GetLocalizedString</span><span class="p">(</span><span class="kt">string</span> <span class="n">key</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">_localizer</span><span class="p">[</span><span class="n">key</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Startup.cs dosyasında ConfigureServices ve Configure metodlarına Localization ayarlarını ekliyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">void</span> <span class="nf">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">services</span><span class="p">.</span><span class="nf">AddLocalization</span><span class="p">(</span><span class="n">opts</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="n">opts</span><span class="p">.</span><span class="n">ResourcesPath</span> <span class="p">=</span> <span class="s">"Resources"</span><span class="p">;</span> <span class="p">});</span>
+
+        <span class="n">services</span><span class="p">.</span><span class="nf">Configure</span><span class="p">(</span><span class="n">options</span> <span class="p">=&gt;</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">supportedCultures</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">List</span><span class="p">()</span>
+            <span class="p">{</span>
+                <span class="k">new</span> <span class="nf">CultureInfo</span><span class="p">(</span><span class="s">"tr-TR"</span><span class="p">),</span>
+                <span class="k">new</span> <span class="nf">CultureInfo</span><span class="p">(</span><span class="s">"en-US"</span><span class="p">),</span>
+            <span class="p">};</span>
+
+            <span class="n">options</span><span class="p">.</span><span class="n">DefaultRequestCulture</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">RequestCulture</span><span class="p">(</span><span class="n">supportedCultures</span><span class="p">.</span><span class="nf">First</span><span class="p">());</span>
+            <span class="n">options</span><span class="p">.</span><span class="n">SupportedCultures</span> <span class="p">=</span> <span class="n">supportedCultures</span><span class="p">;</span>
+            <span class="n">options</span><span class="p">.</span><span class="n">SupportedUICultures</span> <span class="p">=</span> <span class="n">supportedCultures</span><span class="p">;</span>
+        <span class="p">});</span>
+        <span class="n">services</span><span class="p">.</span><span class="nf">AddSingleton</span><span class="p">();</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">void</span> <span class="nf">Configure</span><span class="p">(</span><span class="n">IApplicationBuilder</span> <span class="n">app</span><span class="p">,</span> <span class="n">IWebHostEnvironment</span> <span class="n">env</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">locOptions</span> <span class="p">=</span> <span class="n">app</span><span class="p">.</span><span class="n">ApplicationServices</span><span class="p">.</span><span class="n">GetService</span><span class="p">&gt;();</span>
+        <span class="n">app</span><span class="p">.</span><span class="nf">UseRequestLocalization</span><span class="p">(</span><span class="n">locOptions</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Servis ayarlarını tamamladıktan sonra View lerde kullanacağım IHtmlHelper genişletmesini yapabilmek için uygulama dizinine ExtensionMethods klasörü ve HtmlHelperExtensionMethods genişletme sınıfını oluşturuyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">MultiLanguage.ExtensionMethods</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">HtmlHelperExtensionMethods</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">Translate</span><span class="p">(</span><span class="k">this</span> <span class="n">IHtmlHelper</span> <span class="n">helper</span><span class="p">,</span> <span class="kt">string</span> <span class="n">key</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">IServiceProvider</span> <span class="n">services</span> <span class="p">=</span> <span class="n">helper</span><span class="p">.</span><span class="n">ViewContext</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">RequestServices</span><span class="p">;</span>
+            <span class="n">SharedViewLocalizer</span> <span class="n">localizer</span> <span class="p">=</span> <span class="n">services</span><span class="p">.</span><span class="nf">GetRequiredService</span><span class="p">();</span>
+            <span class="kt">string</span> <span class="n">result</span> <span class="p">=</span> <span class="n">localizer</span><span class="p">[</span><span class="n">key</span><span class="p">];</span>
+            <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Daha sonra HomeController sınıfında Index metoduna services ayarlarında tanımladığım kullanabileceğim CultureInfo değerlerinden oluşan bir listeyi <code class="language-plaintext highlighter-rouge">ViewData</code> olarak set ediyorum.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">Index</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">defaultCultures</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">List</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="k">new</span> <span class="nf">CultureInfo</span><span class="p">(</span><span class="s">"tr-TR"</span><span class="p">),</span>
+            <span class="k">new</span> <span class="nf">CultureInfo</span><span class="p">(</span><span class="s">"en-US"</span><span class="p">),</span>
+        <span class="p">};</span>
+
+        <span class="n">CultureInfo</span><span class="p">[]</span> <span class="n">cinfo</span> <span class="p">=</span> <span class="n">CultureInfo</span><span class="p">.</span><span class="nf">GetCultures</span><span class="p">(</span><span class="n">CultureTypes</span><span class="p">.</span><span class="n">AllCultures</span><span class="p">);</span>
+        <span class="kt">var</span> <span class="n">cultureItems</span> <span class="p">=</span> <span class="n">cinfo</span><span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">defaultCultures</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">SelectListItem</span> <span class="p">{</span> <span class="n">Value</span> <span class="p">=</span> <span class="n">c</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">Text</span> <span class="p">=</span> <span class="n">c</span><span class="p">.</span><span class="n">DisplayName</span> <span class="p">})</span>
+            <span class="p">.</span><span class="nf">ToList</span><span class="p">();</span>
+        <span class="n">ViewData</span><span class="p">[</span><span class="s">"Cultures"</span><span class="p">]</span> <span class="p">=</span> <span class="n">cultureItems</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nf">View</span><span class="p">();</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>ViewData ile gönderdiğim CultureInfo listesi ile bir section doldurup seçili Culture değerine göre Cookie yapısını değiştireceğim bir Action ekliyorum</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">HttpPost</span><span class="p">]</span>
+<span class="k">public</span> <span class="n">IActionResult</span> <span class="nf">SetLanguage</span><span class="p">(</span><span class="kt">string</span> <span class="n">culture</span><span class="p">,</span> <span class="kt">string</span> <span class="n">returnUrl</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="nf">Append</span><span class="p">(</span>
+        <span class="n">CookieRequestCultureProvider</span><span class="p">.</span><span class="n">DefaultCookieName</span><span class="p">,</span>
+        <span class="n">CookieRequestCultureProvider</span><span class="p">.</span><span class="nf">MakeCookieValue</span><span class="p">(</span><span class="k">new</span> <span class="nf">RequestCulture</span><span class="p">(</span><span class="n">culture</span><span class="p">)),</span>
+        <span class="k">new</span> <span class="n">CookieOptions</span> <span class="p">{</span> <span class="n">Expires</span> <span class="p">=</span> <span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="nf">AddYears</span><span class="p">(</span><span class="m">1</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nf">LocalRedirect</span><span class="p">(</span><span class="n">returnUrl</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Daha sonra Index.cshtml dosyasını aşağıdaki değişikliği yapıyorum.</p>
+
+<p><img src="/assets/img/posts/index.jpg" alt="Index" />
+<em>Index</em></p>
+
+<p>Resource dosyalarına <code class="language-plaintext highlighter-rouge">LB_WELCOME</code> name value değerlerini ekliyorum. Bu şekilde @Html.Translate(“LB_WELCOME”) gibi resource dosyalarına eklediğimiz her etiketi kullanabiliriz.</p>
+
+<p><img src="/assets/img/posts/tr_resource.jpg" alt="TR-Resource" />
+<em>TR-Resource</em></p>
+
+<p><img src="/assets/img/posts/en_resource.jpg" alt="EN-Resource" />
+<em>EN-Resource</em></p>
+
+<p><img src="/assets/img/posts/index-page.jpg" alt="Index-Page" />
+<em>Index-Page</em></p>
+
+<p>Projeyi <a href="https://github.com/muratsuzen/dotnetcore-samples/tree/main/MultiLanguage"><strong>buradan</strong></a> indirebilirsiniz. Bir sonraki makalede görüşmek üzere.</p>
+
+<p>Kaynaklar :</p>
+
+<p><a href="https://docs.microsoft.com/tr-tr/aspnet/core/fundamentals/localization?view=aspnetcore-5.0/">https://docs.microsoft.com/tr-tr/aspnet/core/fundamentals/localization?view=aspnetcore-5.0/</a>
+<a href="https://medium.com/@flouss/asp-net-core-localization-one-resx-to-rule-them-all-de5c07692fa4/">https://medium.com/@flouss/asp-net-core-localization-one-resx-to-rule-them-all-de5c07692fa4/</a></p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

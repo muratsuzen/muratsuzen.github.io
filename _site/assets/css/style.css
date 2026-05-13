@@ -1,0 +1,230 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    background-color: #FAF8F5;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #343C4B;
+    padding: 3rem 2rem;
+    border-right: 1px solid #ddd;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.sidebar-header {
+    margin-bottom: 1.5rem;
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0;
+    transition: color 0.3s ease;
+}
+
+.sidebar-header a:hover .sidebar-name {
+    color: #cbd5e0;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 1.5rem 0;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
+.sidebar-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav a {
+    text-decoration: none;
+    color: #cbd5e0;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    display: block;
+    padding: 0.5rem 0;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-nav a:hover {
+    color: white;
+    padding-left: 1rem;
+    border-left: 3px solid #86807C;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-footer {
+    padding-top: 1rem;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #cbd5e0;
+    transition: all 0.2s;
+}
+
+.social-link svg {
+    width: 22px;
+    height: 22px;
+}
+
+.social-link:hover {
+    color: #0077b5; /* LinkedIn Blue */
+}
+
+.content {
+    margin-left: 300px;
+    flex: 1;
+    padding: 3rem 4rem;
+    background-color: #FAF8F5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: flex-start; /* Align everything to the left */
+    gap: 4rem;
+}
+
+.post-wrapper {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* TOC Styles */
+.toc-container {
+    width: 250px;
+    position: sticky;
+    top: 3rem;
+    height: fit-content;
+    padding-left: 2rem;
+    border-left: 1px solid #e2e8f0;
+    display: none;
+}
+
+.is-post .toc-container {
+    display: block;
+}
+
+.toc-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #718096;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.toc-nav, .toc-nav ul {
+    list-style: none !important;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-nav ul {
+    padding-left: 1rem;
+}
+
+.toc-nav li {
+    margin-bottom: 0.5rem;
+    list-style: none !important;
+}
+
+.toc-nav a {
+    text-decoration: none;
+    color: #a0aec0;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    line-height: 1.4;
+    display: block;
+}
+
+.toc-nav a:hover {
+    color: #343C4B;
+}
+
+/* Post list styles */
+.year-group {
+    margin-bottom: 3rem;
+}
+
+.year-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #718096;
+    font-weight: 600;
+}
+
+.post-item {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 1rem;
+}
+
+.post-date {
+    min-width: 80px;
+    color: #a0aec0;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.post-link {
+    text-decoration: none;
+    color: rgb(61, 54, 49);
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+}
+
+.post-link:hover {
+    color: #86807C;
+    text-decoration: underline;
+}
+
+/* Ensure headings in posts don't have markers */
+.post-wrapper h1, .post-wrapper h2, .post-wrapper h3, 
+.post-wrapper h4, .post-wrapper h5, .post-wrapper h6 {
+    list-style: none !important;
+}
+
+@media (max-width: 1200px) {
+    .toc-container {
+        display: none !important;
+    }
+}

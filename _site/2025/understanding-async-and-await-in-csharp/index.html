@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Understanding Async and Await in C# | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Understanding Async and Await in C#" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Asynchronous programming is a key skill for modern .NET developers. In this guide, we’ll cover async and await in C# — what they are, why they matter, and how you can use them to write efficient, non-blocking applications." />
+<meta property="og:description" content="Asynchronous programming is a key skill for modern .NET developers. In this guide, we’ll cover async and await in C# — what they are, why they matter, and how you can use them to write efficient, non-blocking applications." />
+<link rel="canonical" href="http://localhost:4000/2025/understanding-async-and-await-in-csharp/" />
+<meta property="og:url" content="http://localhost:4000/2025/understanding-async-and-await-in-csharp/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-08T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Understanding Async and Await in C#" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-08T12:00:00+03:00","datePublished":"2025-05-08T12:00:00+03:00","description":"Asynchronous programming is a key skill for modern .NET developers. In this guide, we’ll cover async and await in C# — what they are, why they matter, and how you can use them to write efficient, non-blocking applications.","headline":"Understanding Async and Await in C#","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/understanding-async-and-await-in-csharp/"},"url":"http://localhost:4000/2025/understanding-async-and-await-in-csharp/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Asynchronous programming is a key skill for modern .NET developers. In this guide, we’ll cover <strong>async</strong> and <strong>await</strong> in C# — what they are, why they matter, and how you can use them to write efficient, non-blocking applications.</p>
+
+<p>By the end, you’ll understand the mechanics behind asynchronous code, see hands-on examples, learn best practices, and know when and when not to use it.</p>
+
+<hr />
+
+<h2 id="why-do-we-need-asynchronous-programming">Why Do We Need Asynchronous Programming?</h2>
+
+<p>In traditional synchronous programming, every operation happens one after another. If one task takes a long time (like waiting for a web response or reading a large file), the entire application halts.</p>
+
+<p>Example problem:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">response</span> <span class="p">=</span> <span class="nf">GetDataFromApi</span><span class="p">();</span> <span class="c1">// This blocks until the data is returned</span>
+<span class="nf">ProcessResponse</span><span class="p">(</span><span class="n">response</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This is fine for short tasks but <strong>terrible for UI applications</strong> or <strong>high-performance servers</strong> because it ties up threads unnecessarily.</p>
+
+<h3 id="benefits-of-async-programming">Benefits of Async Programming</h3>
+
+<p>✅ Keep the UI responsive (no frozen windows)<br />
+✅ Allow servers to handle many more requests concurrently<br />
+✅ Free up system resources for other work</p>
+
+<hr />
+
+<h2 id="what-are-async-and-await">What Are Async and Await?</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">async</code> is a modifier that marks a method as asynchronous, meaning it can use the <code class="language-plaintext highlighter-rouge">await</code> keyword.</li>
+  <li><code class="language-plaintext highlighter-rouge">await</code> tells the compiler: “Pause this method here, let other work run, and resume when the awaited task completes.”</li>
+</ul>
+
+<p>This works hand-in-hand with the <code class="language-plaintext highlighter-rouge">Task</code> type, which represents a unit of work running in the background.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">GetDataAsync</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="nn">var</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">HttpClient</span><span class="p">();</span>
+    <span class="kt">string</span> <span class="n">result</span> <span class="p">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="s">"https://api.example.com/data"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Notice: <code class="language-plaintext highlighter-rouge">await</code> <strong>does not block the thread</strong>; it returns control to the caller until the task completes.</p>
+
+<hr />
+
+<h2 id="hands-on-example-downloading-data">Hands-On Example: Downloading Data</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Net.Http</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading.Tasks</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Program</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Starting download..."</span><span class="p">);</span>
+
+        <span class="kt">string</span> <span class="n">content</span> <span class="p">=</span> <span class="k">await</span> <span class="nf">DownloadPageAsync</span><span class="p">(</span><span class="s">"https://example.com"</span><span class="p">);</span>
+
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">"Download complete."</span><span class="p">);</span>
+        <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="n">content</span><span class="p">.</span><span class="nf">Substring</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">200</span><span class="p">));</span> <span class="c1">// Show first 200 chars</span>
+    <span class="p">}</span>
+
+    <span class="k">static</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">DownloadPageAsync</span><span class="p">(</span><span class="kt">string</span> <span class="n">url</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">using</span> <span class="nn">var</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">HttpClient</span><span class="p">();</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">client</span><span class="p">.</span><span class="nf">GetStringAsync</span><span class="p">(</span><span class="n">url</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This program <strong>does not block the main thread</strong> while waiting for the download. It lets the system handle other tasks or UI updates.</p>
+
+<hr />
+
+<h2 id="common-mistakes-and-gotchas">Common Mistakes and Gotchas</h2>
+
+<p>❌ Blocking on async code (DON’T DO THIS):</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="nf">GetDataAsync</span><span class="p">().</span><span class="n">Result</span><span class="p">;</span> <span class="c1">// Deadlocks in UI apps</span>
+</code></pre></div></div>
+
+<p>✅ Instead, <strong>always</strong> <code class="language-plaintext highlighter-rouge">await</code> async calls:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="k">await</span> <span class="nf">GetDataAsync</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>❌ Forgetting to configure the context:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nf">SomeAsyncMethod</span><span class="p">().</span><span class="nf">ConfigureAwait</span><span class="p">(</span><span class="k">false</span><span class="p">);</span> <span class="c1">// Recommended in library code</span>
+</code></pre></div></div>
+
+<p>This prevents capturing the synchronization context (especially important for ASP.NET Core).</p>
+
+<hr />
+
+<h2 id="parallel-vs-asynchronous">Parallel vs Asynchronous</h2>
+
+<p>Many confuse <strong>parallel</strong> with <strong>asynchronous</strong>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Asynchronous</th>
+      <th>Parallel</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Designed to free up the thread</td>
+      <td>Designed to use multiple threads</td>
+    </tr>
+    <tr>
+      <td>Uses <code class="language-plaintext highlighter-rouge">async</code>/<code class="language-plaintext highlighter-rouge">await</code>, <code class="language-plaintext highlighter-rouge">Task</code>, <code class="language-plaintext highlighter-rouge">I/O</code></td>
+      <td>Uses <code class="language-plaintext highlighter-rouge">Parallel.For</code>, <code class="language-plaintext highlighter-rouge">Task.Run</code>, CPU work</td>
+    </tr>
+    <tr>
+      <td>Best for I/O-bound work (disk, network)</td>
+      <td>Best for CPU-bound work (calculations)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Example of parallel code (CPU-bound):</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Parallel</span><span class="p">.</span><span class="nf">For</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1000</span><span class="p">,</span> <span class="n">i</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>Example of async code (I/O-bound):</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="n">File</span><span class="p">.</span><span class="nf">ReadAllTextAsync</span><span class="p">(</span><span class="s">"file.txt"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="chaining-async-calls">Chaining Async Calls</h2>
+
+<p>You can combine multiple async calls:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">GetCombinedDataAsync</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">data1</span> <span class="p">=</span> <span class="k">await</span> <span class="nf">GetDataAsync</span><span class="p">(</span><span class="s">"https://api1.example.com"</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">data2</span> <span class="p">=</span> <span class="k">await</span> <span class="nf">GetDataAsync</span><span class="p">(</span><span class="s">"https://api2.example.com"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data1</span> <span class="p">+</span> <span class="n">data2</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Or run them <strong>in parallel</strong> (more efficient!):</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="nf">GetParallelDataAsync</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">task1</span> <span class="p">=</span> <span class="nf">GetDataAsync</span><span class="p">(</span><span class="s">"https://api1.example.com"</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">task2</span> <span class="p">=</span> <span class="nf">GetDataAsync</span><span class="p">(</span><span class="s">"https://api2.example.com"</span><span class="p">);</span>
+
+    <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="nf">WhenAll</span><span class="p">(</span><span class="n">task1</span><span class="p">,</span> <span class="n">task2</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">task1</span><span class="p">.</span><span class="n">Result</span> <span class="p">+</span> <span class="n">task2</span><span class="p">.</span><span class="n">Result</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ <strong>Use async all the way</strong> — avoid mixing sync and async code.<br />
+✅ <strong>Avoid Task.Result or Task.Wait</strong> — these can cause deadlocks.<br />
+✅ <strong>Use ConfigureAwait(false)</strong> in library code to avoid context issues.<br />
+✅ <strong>Catch exceptions</strong> using try/catch, especially when awaiting tasks.<br />
+✅ <strong>Monitor performance</strong> — async adds some overhead.</p>
+
+<hr />
+
+<h2 id="real-world-scenario-aspnet-core">Real-World Scenario: ASP.NET Core</h2>
+
+<p>In ASP.NET Core, async code allows the server to handle thousands of requests efficiently.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="nf">GetData</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">data</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_service</span><span class="p">.</span><span class="nf">GetDataAsync</span><span class="p">();</span>
+    <span class="k">return</span> <span class="nf">Ok</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Without async, each request ties up a thread, reducing scalability.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>Async and await are essential for modern C# development. They let you write <strong>non-blocking, efficient, scalable</strong> code without complex thread management.</p>
+
+<p>By mastering these tools, you’ll unlock the full power of .NET for web, desktop, cloud, and beyond.</p>
+
+<p>In tomorrow’s article, we’ll cover <strong>Entity Framework Core</strong> — how to work with databases in an elegant, object-oriented way.</p>
+
+<p>Stay tuned for more advanced guides!</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#why-do-we-need-asynchronous-programming">Why Do We Need Asynchronous Programming?</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#benefits-of-async-programming">Benefits of Async Programming</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#what-are-async-and-await">What Are Async and Await?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#hands-on-example-downloading-data">Hands-On Example: Downloading Data</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#common-mistakes-and-gotchas">Common Mistakes and Gotchas</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#parallel-vs-asynchronous">Parallel vs Asynchronous</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#chaining-async-calls">Chaining Async Calls</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-scenario-asp-net-core">Real-World Scenario: ASP.NET Core</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

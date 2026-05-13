@@ -1,0 +1,25 @@
+title: Murat Süzen | Software Engineer & Technical Lead
+description: Technical Lead at ÖZKA İNŞAAT. Expert in .NET, IoT (ESP32), and Construction Process Optimization.
+author:
+  name: Murat Süzen
+  twitter: muratsuzen
+baseurl: ""
+url: "http://localhost:4000"
+markdown: kramdown
+kramdown:
+  input: GFM
+  auto_ids: true
+permalink: /:year/:title/
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

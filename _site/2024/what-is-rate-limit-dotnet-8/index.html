@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What is Rate Limit? How to use in .NET 8? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What is Rate Limit? How to use in .NET 8?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Rate limiting restricts the number of requests a client can make to an API endpoint. By doing so, it prevents abuse, protects resources, and maintains system stability. There are various rate limiting algorithms, but we’ll focus on two common ones: Fixed Window and Sliding Window." />
+<meta property="og:description" content="Rate limiting restricts the number of requests a client can make to an API endpoint. By doing so, it prevents abuse, protects resources, and maintains system stability. There are various rate limiting algorithms, but we’ll focus on two common ones: Fixed Window and Sliding Window." />
+<link rel="canonical" href="http://localhost:4000/2024/what-is-rate-limit-dotnet-8/" />
+<meta property="og:url" content="http://localhost:4000/2024/what-is-rate-limit-dotnet-8/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:image" content="http://localhost:4000/assets/img/stocks/api_rate_limit.jpg" />
+<meta property="og:image:height" content="500" />
+<meta property="og:image:width" content="800" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-03-04T08:33:00+03:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="http://localhost:4000/assets/img/stocks/api_rate_limit.jpg" />
+<meta property="twitter:title" content="What is Rate Limit? How to use in .NET 8?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2024-03-04T08:33:00+03:00","datePublished":"2024-03-04T08:33:00+03:00","description":"Rate limiting restricts the number of requests a client can make to an API endpoint. By doing so, it prevents abuse, protects resources, and maintains system stability. There are various rate limiting algorithms, but we’ll focus on two common ones: Fixed Window and Sliding Window.","headline":"What is Rate Limit? How to use in .NET 8?","image":{"width":800,"height":500,"alt":null,"url":"http://localhost:4000/assets/img/stocks/api_rate_limit.jpg","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/what-is-rate-limit-dotnet-8/"},"url":"http://localhost:4000/2024/what-is-rate-limit-dotnet-8/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Rate limiting restricts the number of requests a client can make to an API endpoint. By doing so, it prevents abuse, protects resources, and maintains system stability. There are various rate limiting algorithms, but we’ll focus on two common ones: Fixed Window and Sliding Window.</p>
+
+<h2 id="fixed-window-rate-limiting">Fixed Window Rate Limiting</h2>
+
+<p>In .NET 8, the Rate Limiter middleware provides a way to control the rate at which requests are processed by your application. One of the rate limiting algorithms available is the Fixed Window Limiter. Let’s dive into the details:</p>
+
+<ul>
+  <li>This algorithm uses a fixed time window to limit requests.</li>
+  <li>When the time window expires, a new window starts, and the request limit is reset.</li>
+  <li>Here’s an example of how to configure it in your ASP.NET Core app:</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.RateLimiting</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading.RateLimiting</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddRateLimiter</span><span class="p">(</span><span class="n">_</span> <span class="p">=&gt;</span> <span class="n">_</span><span class="p">.</span><span class="nf">AddFixedWindowLimiter</span><span class="p">(</span><span class="n">policyName</span><span class="p">:</span> <span class="s">"fixed"</span><span class="p">,</span> <span class="n">options</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">PermitLimit</span> <span class="p">=</span> <span class="m">4</span><span class="p">;</span> <span class="c1">// Maximum 4 requests per 12-second window</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">Window</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromSeconds</span><span class="p">(</span><span class="m">12</span><span class="p">);</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">QueueProcessingOrder</span> <span class="p">=</span> <span class="n">QueueProcessingOrder</span><span class="p">.</span><span class="n">OldestFirst</span><span class="p">;</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">QueueLimit</span> <span class="p">=</span> <span class="m">2</span><span class="p">;</span>
+<span class="p">}));</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddControllers</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddEndpointsApiExplorer</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddSwaggerGen</span><span class="p">();</span>
+
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseRateLimiter</span><span class="p">();</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="nf">IsDevelopment</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwagger</span><span class="p">();</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwaggerUI</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseAuthorization</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapControllers</span><span class="p">().</span><span class="nf">RequireRateLimiting</span><span class="p">(</span><span class="s">"fixed"</span><span class="p">);</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+
+</code></pre></div></div>
+
+<p>In this example:</p>
+
+<ul>
+  <li>We add a rate limiting service using AddRateLimiter.</li>
+  <li>The fixed window limiter is configured with a policy name of <code class="language-plaintext highlighter-rouge">fixed</code>.</li>
+  <li>It allows a maximum of 4 requests per 12-second window.</li>
+  <li>The queue processing order is set to oldest first, and the queue limit is 2.</li>
+</ul>
+
+<h2 id="sliding-window-rate-limiting">Sliding Window Rate Limiting</h2>
+
+<p>In .NET 8, the Rate Limiter middleware offers several algorithms to control the rate at which requests are processed by your application. One of these algorithms is the Sliding Window Limiter. Let’s explore its details:</p>
+
+<ul>
+  <li>This algorithm is similar to the fixed window limiter but with a twist.</li>
+  <li>Instead of resetting the request limit at the end of a fixed time window, the sliding window limiter slides the maximum allowed requests through defined segments.</li>
+  <li>It provides more flexibility by allowing requests to be distributed across the entire time window.</li>
+  <li>Here’s an example of how to configure it in your ASP.NET Core app:</li>
+</ul>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.RateLimiting</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading.RateLimiting</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddRateLimiter</span><span class="p">(</span><span class="n">_</span> <span class="p">=&gt;</span> <span class="n">_</span><span class="p">.</span><span class="nf">AddSlidingWindowLimiter</span><span class="p">(</span><span class="n">policyName</span><span class="p">:</span> <span class="s">"sliding"</span><span class="p">,</span> <span class="n">options</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">PermitLimit</span> <span class="p">=</span> <span class="m">10</span><span class="p">;</span> <span class="c1">// Maximum 10 requests per sliding window</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">Window</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="nf">FromMinutes</span><span class="p">(</span><span class="m">1</span><span class="p">);</span> <span class="c1">// 1-minute sliding window</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">QueueProcessingOrder</span> <span class="p">=</span> <span class="n">QueueProcessingOrder</span><span class="p">.</span><span class="n">OldestFirst</span><span class="p">;</span>
+    <span class="n">options</span><span class="p">.</span><span class="n">QueueLimit</span> <span class="p">=</span> <span class="m">5</span><span class="p">;</span>
+<span class="p">}));</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddControllers</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddEndpointsApiExplorer</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddSwaggerGen</span><span class="p">();</span>
+
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseRateLimiter</span><span class="p">();</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="nf">IsDevelopment</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwagger</span><span class="p">();</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwaggerUI</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseAuthorization</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapControllers</span><span class="p">().</span><span class="nf">RequireRateLimiting</span><span class="p">(</span><span class="s">"sliding"</span><span class="p">);</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+
+
+</code></pre></div></div>
+
+<p>In this example:</p>
+
+<ul>
+  <li>We add a rate limiting service using AddRateLimiter.</li>
+  <li>The sliding window limiter is configured with a policy name of <code class="language-plaintext highlighter-rouge">sliding</code>.</li>
+  <li>It allows a maximum of 10 requests per 1-minute sliding window.</li>
+  <li>The queue processing order is set to oldest first, and the queue limit is 5.</li>
+</ul>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#fixed-window-rate-limiting">Fixed Window Rate Limiting</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#sliding-window-rate-limiting">Sliding Window Rate Limiting</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

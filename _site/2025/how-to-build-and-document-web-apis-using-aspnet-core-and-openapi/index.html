@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to Build and Document Web APIs Using ASP.NET Core and OpenAPI | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="How to Build and Document Web APIs Using ASP.NET Core and OpenAPI" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Building Web APIs is a central task in modern software development. ASP.NET Core provides a robust framework for creating APIs, and with OpenAPI (Swagger), you can automatically generate interactive documentation, making your APIs easier to consume and test." />
+<meta property="og:description" content="Building Web APIs is a central task in modern software development. ASP.NET Core provides a robust framework for creating APIs, and with OpenAPI (Swagger), you can automatically generate interactive documentation, making your APIs easier to consume and test." />
+<link rel="canonical" href="http://localhost:4000/2025/how-to-build-and-document-web-apis-using-aspnet-core-and-openapi/" />
+<meta property="og:url" content="http://localhost:4000/2025/how-to-build-and-document-web-apis-using-aspnet-core-and-openapi/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-03T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to Build and Document Web APIs Using ASP.NET Core and OpenAPI" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-03T12:00:00+03:00","datePublished":"2025-05-03T12:00:00+03:00","description":"Building Web APIs is a central task in modern software development. ASP.NET Core provides a robust framework for creating APIs, and with OpenAPI (Swagger), you can automatically generate interactive documentation, making your APIs easier to consume and test.","headline":"How to Build and Document Web APIs Using ASP.NET Core and OpenAPI","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/how-to-build-and-document-web-apis-using-aspnet-core-and-openapi/"},"url":"http://localhost:4000/2025/how-to-build-and-document-web-apis-using-aspnet-core-and-openapi/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Building Web APIs is a central task in modern software development. ASP.NET Core provides a robust framework for creating APIs, and with <strong>OpenAPI (Swagger)</strong>, you can automatically generate interactive documentation, making your APIs easier to consume and test.</p>
+
+<p>In this article, we’ll explore <strong>how to create Web APIs using ASP.NET Core</strong> and <strong>integrate OpenAPI/Swagger</strong> for seamless documentation.</p>
+
+<hr />
+
+<h2 id="what-is-openapi">What Is OpenAPI?</h2>
+
+<p>OpenAPI (formerly known as Swagger) is a specification for describing RESTful APIs. It defines how your API endpoints, request/response models, and authentication work, making it easier for developers and tools to understand and interact with your API.</p>
+
+<p>Swagger UI uses OpenAPI definitions to provide a <strong>live, interactive web page</strong> where you can test API calls directly.</p>
+
+<hr />
+
+<h2 id="setting-up-an-aspnet-core-web-api">Setting Up an ASP.NET Core Web API</h2>
+
+<h3 id="step-1-create-a-new-project">Step 1: Create a New Project</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet new webapi -o MyApiApp
+cd MyApiApp
+</code></pre></div></div>
+
+<p>This scaffolds a minimal API project with a sample <code class="language-plaintext highlighter-rouge">WeatherForecast</code> controller.</p>
+
+<h3 id="step-2-explore-the-structure">Step 2: Explore the Structure</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Program.cs</code> — main app configuration</li>
+  <li><code class="language-plaintext highlighter-rouge">Controllers/WeatherForecastController.cs</code> — sample API controller</li>
+  <li><code class="language-plaintext highlighter-rouge">appsettings.json</code> — configuration file</li>
+</ul>
+
+<hr />
+
+<h2 id="understanding-minimal-apis-optional">Understanding Minimal APIs (Optional)</h2>
+
+<p>Starting with .NET 6, you can create APIs without controllers, using <strong>Minimal APIs</strong>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapGet</span><span class="p">(</span><span class="s">"/hello"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="s">"Hello, world!"</span><span class="p">);</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>For more complex APIs, use controllers and proper routing.</p>
+
+<hr />
+
+<h2 id="adding-swagger--openapi-support">Adding Swagger / OpenAPI Support</h2>
+
+<p>ASP.NET Core Web API templates come with Swagger by default.</p>
+
+<p>In <code class="language-plaintext highlighter-rouge">Program.cs</code>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddEndpointsApiExplorer</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddSwaggerGen</span><span class="p">();</span>
+
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="nf">IsDevelopment</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwagger</span><span class="p">();</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwaggerUI</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseHttpsRedirection</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="nf">UseAuthorization</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="nf">MapControllers</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>When you run the app and navigate to <code class="language-plaintext highlighter-rouge">/swagger</code>, you’ll see the Swagger UI.</p>
+
+<hr />
+
+<h2 id="customizing-api-documentation">Customizing API Documentation</h2>
+
+<p>You can customize Swagger with attributes and XML comments.</p>
+
+<h3 id="adding-xml-comments">Adding XML Comments</h3>
+
+<p>1️⃣ Enable XML comments in <code class="language-plaintext highlighter-rouge">.csproj</code>:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;PropertyGroup&gt;</span>
+  <span class="nt">&lt;GenerateDocumentationFile&gt;</span>true<span class="nt">&lt;/GenerateDocumentationFile&gt;</span>
+  <span class="nt">&lt;NoWarn&gt;</span>$(NoWarn);1591<span class="nt">&lt;/NoWarn&gt;</span>
+<span class="nt">&lt;/PropertyGroup&gt;</span>
+</code></pre></div></div>
+
+<p>2️⃣ In <code class="language-plaintext highlighter-rouge">Program.cs</code>:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddSwaggerGen</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">xmlFile</span> <span class="p">=</span> <span class="s">$"</span><span class="p">{</span><span class="n">Assembly</span><span class="p">.</span><span class="nf">GetExecutingAssembly</span><span class="p">().</span><span class="nf">GetName</span><span class="p">().</span><span class="n">Name</span><span class="p">}</span><span class="s">.xml"</span><span class="p">;</span>
+    <span class="kt">var</span> <span class="n">xmlPath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="nf">Combine</span><span class="p">(</span><span class="n">AppContext</span><span class="p">.</span><span class="n">BaseDirectory</span><span class="p">,</span> <span class="n">xmlFile</span><span class="p">);</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">IncludeXmlComments</span><span class="p">(</span><span class="n">xmlPath</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>3️⃣ Document controllers and actions:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">/// &lt;summary&gt;</span>
+<span class="c1">/// Gets all products.</span>
+<span class="c1">/// &lt;/summary&gt;</span>
+<span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+<span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">()</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="securing-the-api-with-authentication">Securing the API with Authentication</h2>
+
+<p>Swagger can be configured to handle authentication headers:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddSwaggerGen</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">AddSecurityDefinition</span><span class="p">(</span><span class="s">"Bearer"</span><span class="p">,</span> <span class="k">new</span> <span class="n">OpenApiSecurityScheme</span>
+    <span class="p">{</span>
+        <span class="n">In</span> <span class="p">=</span> <span class="n">ParameterLocation</span><span class="p">.</span><span class="n">Header</span><span class="p">,</span>
+        <span class="n">Description</span> <span class="p">=</span> <span class="s">"Please insert JWT with Bearer into field"</span><span class="p">,</span>
+        <span class="n">Name</span> <span class="p">=</span> <span class="s">"Authorization"</span><span class="p">,</span>
+        <span class="n">Type</span> <span class="p">=</span> <span class="n">SecuritySchemeType</span><span class="p">.</span><span class="n">ApiKey</span>
+    <span class="p">});</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">AddSecurityRequirement</span><span class="p">(</span><span class="k">new</span> <span class="n">OpenApiSecurityRequirement</span> <span class="p">{</span>
+    <span class="p">{</span>
+        <span class="k">new</span> <span class="n">OpenApiSecurityScheme</span>
+        <span class="p">{</span>
+            <span class="n">Reference</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OpenApiReference</span>
+            <span class="p">{</span>
+                <span class="n">Type</span> <span class="p">=</span> <span class="n">ReferenceType</span><span class="p">.</span><span class="n">SecurityScheme</span><span class="p">,</span>
+                <span class="n">Id</span> <span class="p">=</span> <span class="s">"Bearer"</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="p">}});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>This allows you to test protected endpoints directly from the Swagger UI.</p>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Use <code class="language-plaintext highlighter-rouge">ApiController</code> attribute for consistent routing and validation.<br />
+✅ Validate input using <code class="language-plaintext highlighter-rouge">[FromBody]</code>, <code class="language-plaintext highlighter-rouge">[FromQuery]</code>, and data annotations.<br />
+✅ Return proper status codes (<code class="language-plaintext highlighter-rouge">Ok()</code>, <code class="language-plaintext highlighter-rouge">NotFound()</code>, <code class="language-plaintext highlighter-rouge">BadRequest()</code>).<br />
+✅ Version your APIs (<code class="language-plaintext highlighter-rouge">/api/v1/products</code>).<br />
+✅ Keep OpenAPI specs up-to-date to improve developer experience.</p>
+
+<hr />
+
+<h2 id="real-world-example-products-api">Real-World Example: Products API</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+<span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"api/[controller]"</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ProductsController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="n">_products</span> <span class="p">=</span> <span class="k">new</span><span class="p">();</span>
+
+    <span class="p">[</span><span class="n">HttpGet</span><span class="p">]</span>
+    <span class="k">public</span> <span class="n">ActionResult</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;&gt;</span> <span class="nf">Get</span><span class="p">()</span> <span class="p">=&gt;</span> <span class="nf">Ok</span><span class="p">(</span><span class="n">_products</span><span class="p">);</span>
+
+    <span class="p">[</span><span class="n">HttpPost</span><span class="p">]</span>
+    <span class="k">public</span> <span class="n">ActionResult</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="nf">Post</span><span class="p">(</span><span class="n">Product</span> <span class="n">product</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_products</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="n">product</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nf">CreatedAtAction</span><span class="p">(</span><span class="k">nameof</span><span class="p">(</span><span class="n">Get</span><span class="p">),</span> <span class="k">new</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="n">product</span><span class="p">.</span><span class="n">Id</span> <span class="p">},</span> <span class="n">product</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>By combining ASP.NET Core Web APIs with OpenAPI/Swagger, you make your APIs <strong>discoverable, testable, and easier to integrate</strong>. This boosts team productivity, reduces integration errors, and enhances the developer experience.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#what-is-openapi">What Is OpenAPI?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#setting-up-an-asp-net-core-web-api">Setting Up an ASP.NET Core Web API</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-create-a-new-project">Step 1: Create a New Project</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-2-explore-the-structure">Step 2: Explore the Structure</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#understanding-minimal-apis-optional">Understanding Minimal APIs (Optional)</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#adding-swagger-openapi-support">Adding Swagger / OpenAPI Support</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#customizing-api-documentation">Customizing API Documentation</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#adding-xml-comments">Adding XML Comments</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#securing-the-api-with-authentication">Securing the API with Authentication</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-example-products-api">Real-World Example: Products API</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

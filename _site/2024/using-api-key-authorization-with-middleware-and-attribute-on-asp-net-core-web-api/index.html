@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Using API Key Authorization with Middleware and Attribute on ASP.NET Core Web API | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Using API Key Authorization with Middleware and Attribute on ASP.NET Core Web API" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Hello, in this article, we will API Key authorization on ASP.NET Core Web API with middleware and attribute. We will create an ASP.NET Core Web API project named ApiKeyAuthentication." />
+<meta property="og:description" content="Hello, in this article, we will API Key authorization on ASP.NET Core Web API with middleware and attribute. We will create an ASP.NET Core Web API project named ApiKeyAuthentication." />
+<link rel="canonical" href="http://localhost:4000/2024/using-api-key-authorization-with-middleware-and-attribute-on-asp-net-core-web-api/" />
+<meta property="og:url" content="http://localhost:4000/2024/using-api-key-authorization-with-middleware-and-attribute-on-asp-net-core-web-api/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-01-08T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Using API Key Authorization with Middleware and Attribute on ASP.NET Core Web API" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2024-01-08T19:33:00+03:00","datePublished":"2024-01-08T19:33:00+03:00","description":"Hello, in this article, we will API Key authorization on ASP.NET Core Web API with middleware and attribute. We will create an ASP.NET Core Web API project named ApiKeyAuthentication.","headline":"Using API Key Authorization with Middleware and Attribute on ASP.NET Core Web API","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/using-api-key-authorization-with-middleware-and-attribute-on-asp-net-core-web-api/"},"url":"http://localhost:4000/2024/using-api-key-authorization-with-middleware-and-attribute-on-asp-net-core-web-api/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Hello, in this article, we will API Key authorization on ASP.NET Core Web API with middleware and attribute. We will create an ASP.NET Core Web API project named ApiKeyAuthentication.</p>
+
+<h2 id="using-middleware">Using Middleware</h2>
+
+<p>We add a Middlewares folder to the project and add a class called ApiKeyMiddleware.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">namespace</span> <span class="nn">ApiKeyAuthentication.Middlewares</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">ApiKeyMiddleware</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">RequestDelegate</span> <span class="n">_requestDelegate</span><span class="p">;</span>
+        <span class="k">private</span> <span class="k">const</span> <span class="kt">string</span> <span class="n">ApiKey</span> <span class="p">=</span> <span class="s">"X-API-KEY"</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">ApiKeyMiddleware</span><span class="p">(</span><span class="n">RequestDelegate</span> <span class="n">requestDelegate</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_requestDelegate</span> <span class="p">=</span> <span class="n">requestDelegate</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">Invoke</span><span class="p">(</span><span class="n">HttpContext</span> <span class="n">context</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(!</span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">TryGetValue</span><span class="p">(</span><span class="n">ApiKey</span><span class="p">,</span> <span class="k">out</span> <span class="kt">var</span> <span class="n">apiKeyVal</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span> <span class="p">=</span> <span class="m">401</span><span class="p">;</span>
+                <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"Api Key not found!"</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="kt">var</span> <span class="n">appSettings</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">RequestServices</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="p">&lt;</span><span class="n">IConfiguration</span><span class="p">&gt;();</span>
+            <span class="kt">var</span> <span class="n">apiKey</span> <span class="p">=</span> <span class="n">appSettings</span><span class="p">.</span><span class="n">GetValue</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">ApiKey</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(!</span><span class="n">apiKey</span><span class="p">.</span><span class="nf">Equals</span><span class="p">(</span><span class="n">apiKeyVal</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span> <span class="p">=</span> <span class="m">401</span><span class="p">;</span>
+                <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"Unauthorized client"</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">await</span> <span class="nf">_requestDelegate</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ApiKeyMiddleware.cs</p>
+
+<p>When we examine the code, we check the X-API-KEY in HttpContext Headers. If there is a value, we compare it with the X-API-KEY value in appsettings. If the value is true, we continue the process.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">ApiKeyAuthentication.Middlewares</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.OpenApi.Models</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">builder</span> <span class="p">=</span> <span class="n">WebApplication</span><span class="p">.</span><span class="nf">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="c1">// Add services to the container.</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddControllers</span><span class="p">();</span>
+<span class="c1">// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddEndpointsApiExplorer</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="nf">AddSwaggerGen</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="n">x</span><span class="p">.</span><span class="nf">AddSecurityDefinition</span><span class="p">(</span><span class="s">"X-API-KEY"</span><span class="p">,</span><span class="k">new</span> <span class="n">OpenApiSecurityScheme</span>
+    <span class="p">{</span>
+        <span class="n">Name</span> <span class="p">=</span> <span class="s">"X-API-KEY"</span><span class="p">,</span>
+        <span class="n">Type</span> <span class="p">=</span> <span class="n">SecuritySchemeType</span><span class="p">.</span><span class="n">ApiKey</span><span class="p">,</span>
+        <span class="n">Scheme</span> <span class="p">=</span> <span class="s">"ApiKeyScheme"</span><span class="p">,</span>
+        <span class="n">In</span> <span class="p">=</span> <span class="n">ParameterLocation</span><span class="p">.</span><span class="n">Header</span><span class="p">,</span>
+        <span class="n">Description</span> <span class="p">=</span> <span class="s">"ApiKey must appear in header"</span>
+    <span class="p">});</span>
+    <span class="n">x</span><span class="p">.</span><span class="nf">AddSecurityRequirement</span><span class="p">(</span><span class="k">new</span> <span class="n">OpenApiSecurityRequirement</span>
+    <span class="p">{</span>
+        <span class="p">{</span>
+            <span class="k">new</span> <span class="n">OpenApiSecurityScheme</span>
+            <span class="p">{</span>
+                <span class="n">Reference</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OpenApiReference</span>
+                <span class="p">{</span>
+                    <span class="n">Type</span> <span class="p">=</span> <span class="n">ReferenceType</span><span class="p">.</span><span class="n">SecurityScheme</span><span class="p">,</span>
+                    <span class="n">Id</span> <span class="p">=</span> <span class="s">"X-API-KEY"</span>
+                <span class="p">},</span>
+                <span class="n">In</span> <span class="p">=</span> <span class="n">ParameterLocation</span><span class="p">.</span><span class="n">Header</span>
+            <span class="p">},</span>
+            <span class="k">new</span> <span class="kt">string</span><span class="p">[]{}</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="kt">var</span> <span class="n">app</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">Build</span><span class="p">();</span>
+
+<span class="c1">// Configure the HTTP request pipeline.</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="nf">IsDevelopment</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwagger</span><span class="p">();</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">UseSwaggerUI</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">//app.UseMiddleware&lt;ApiKeyMiddleware&gt;();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseHttpsRedirection</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">UseAuthorization</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">MapControllers</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Program.cs</p>
+
+<p>Here we should pay attention to the swagger configuration. If we want to send api key with Swagger, we configure AddSecurityDefinition and AddSecurityRequirement in the AddSwaggerGen method.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"Logging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"LogLevel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"Default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Information"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Microsoft.AspNetCore"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Warning"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"AllowedHosts"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"X-API-KEY"</span><span class="p">:</span><span class="w"> </span><span class="s2">"QXBpS2V5TWlkZGxld2FyZQ=="</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>appsettings.json</p>
+
+<h2 id="using-atrribute">Using Atrribute</h2>
+
+<p>We create a folder named Attributes and create a class called ApiKey Attribute.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Mvc.Filters</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">ApiKeyAuthentication.Attributes</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="nf">AttributeUsage</span><span class="p">(</span><span class="n">AttributeTargets</span><span class="p">.</span><span class="n">Class</span> <span class="p">|</span> <span class="n">AttributeTargets</span><span class="p">.</span><span class="n">Method</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">ApiKeyAttribute</span> <span class="p">:</span> <span class="n">Attribute</span><span class="p">,</span> <span class="n">IAsyncActionFilter</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">const</span> <span class="kt">string</span> <span class="n">ApiKey</span> <span class="p">=</span> <span class="s">"X-API-KEY"</span><span class="p">;</span>
+        <span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="nf">OnActionExecutionAsync</span><span class="p">(</span><span class="n">ActionExecutingContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">ActionExecutionDelegate</span> <span class="n">next</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(!</span><span class="n">context</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Headers</span><span class="p">.</span><span class="nf">TryGetValue</span><span class="p">(</span><span class="n">ApiKey</span><span class="p">,</span> <span class="k">out</span> <span class="kt">var</span> <span class="n">apiKeyVal</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="n">context</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span> <span class="p">=</span> <span class="m">401</span><span class="p">;</span>
+                <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"Api Key not found!"</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="kt">var</span> <span class="n">appSettings</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">RequestServices</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="p">&lt;</span><span class="n">IConfiguration</span><span class="p">&gt;();</span>
+            <span class="kt">var</span> <span class="n">apiKey</span> <span class="p">=</span> <span class="n">appSettings</span><span class="p">.</span><span class="n">GetValue</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">ApiKey</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(!</span><span class="n">apiKey</span><span class="p">.</span><span class="nf">Equals</span><span class="p">(</span><span class="n">apiKeyVal</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="n">context</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span> <span class="p">=</span> <span class="m">401</span><span class="p">;</span>
+                <span class="k">await</span> <span class="n">context</span><span class="p">.</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="nf">WriteAsync</span><span class="p">(</span><span class="s">"Unauthorized client"</span><span class="p">);</span>
+            <span class="p">}</span>
+
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ApiKeyAttribute.cs</p>
+
+<p>As we did in the Middleware class, we continue the process after reaching the api key value in the HttpContext Header and verifying it.<strong>[AttributeUsage]</strong> is the part we should pay attention to here. With this attribute, we set in which parts of the class our class can be used.</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">ApiKeyAuthentication.Attributes</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.AspNetCore.Mvc</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">ApiKeyAuthentication.Controllers</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">ApiController</span><span class="p">]</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"[controller]"</span><span class="p">)]</span>
+    <span class="p">[</span><span class="n">ApiKey</span><span class="p">]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">WeatherForecastController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="kt">string</span><span class="p">[]</span> <span class="n">Summaries</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span>
+        <span class="p">{</span>
+        <span class="s">"Freezing"</span><span class="p">,</span> <span class="s">"Bracing"</span><span class="p">,</span> <span class="s">"Chilly"</span><span class="p">,</span> <span class="s">"Cool"</span><span class="p">,</span> <span class="s">"Mild"</span><span class="p">,</span> <span class="s">"Warm"</span><span class="p">,</span> <span class="s">"Balmy"</span><span class="p">,</span> <span class="s">"Hot"</span><span class="p">,</span> <span class="s">"Sweltering"</span><span class="p">,</span> <span class="s">"Scorching"</span>
+    <span class="p">};</span>
+
+        <span class="k">private</span> <span class="k">readonly</span> <span class="n">ILogger</span><span class="p">&lt;</span><span class="n">WeatherForecastController</span><span class="p">&gt;</span> <span class="n">_logger</span><span class="p">;</span>
+
+        <span class="k">public</span> <span class="nf">WeatherForecastController</span><span class="p">(</span><span class="n">ILogger</span><span class="p">&lt;</span><span class="n">WeatherForecastController</span><span class="p">&gt;</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_logger</span> <span class="p">=</span> <span class="n">logger</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">[</span><span class="nf">HttpGet</span><span class="p">(</span><span class="n">Name</span> <span class="p">=</span> <span class="s">"GetWeatherForecast"</span><span class="p">)]</span>
+        <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">WeatherForecast</span><span class="p">&gt;</span> <span class="nf">Get</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">Enumerable</span><span class="p">.</span><span class="nf">Range</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">5</span><span class="p">).</span><span class="nf">Select</span><span class="p">(</span><span class="n">index</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">WeatherForecast</span>
+            <span class="p">{</span>
+                <span class="n">Date</span> <span class="p">=</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="nf">AddDays</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+                <span class="n">TemperatureC</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Shared</span><span class="p">.</span><span class="nf">Next</span><span class="p">(-</span><span class="m">20</span><span class="p">,</span> <span class="m">55</span><span class="p">),</span>
+                <span class="n">Summary</span> <span class="p">=</span> <span class="n">Summaries</span><span class="p">[</span><span class="n">Random</span><span class="p">.</span><span class="n">Shared</span><span class="p">.</span><span class="nf">Next</span><span class="p">(</span><span class="n">Summaries</span><span class="p">.</span><span class="n">Length</span><span class="p">)]</span>
+            <span class="p">})</span>
+            <span class="p">.</span><span class="nf">ToArray</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>WeatherForecastController.cs</p>
+
+<p><em>Test Postman</em>
+<img src="/assets/img/posts/apikey-middleware1.png" alt="Test Postman" />
+<em>Test Postman</em></p>
+
+<p><em>Test Postman</em>
+<img src="/assets/img/posts/apikey-middleware2.png" alt="Test Postman" />
+<em>Test Postman</em></p>
+
+<p><em>Test Postman</em>
+<img src="/assets/img/posts/apikey-middleware3.png" alt="Test Postman" />
+<em>Test Postman</em></p>
+
+<p>You can <a href="https://github.com/muratsuzen/ApiKeyAuthentication.git"><strong>download</strong></a> the project here. Please let me know if there are typos in my post.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#using-middleware">Using Middleware</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#using-atrribute">Using Atrribute</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>ESP32 GPS Tracker with SIM800 and WiFi Today’s Deep Dive | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="ESP32 GPS Tracker with SIM800 and WiFi Today’s Deep Dive" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Today, we take a detailed look at a powerful ESP32-based GPS tracker that uses both SIM800 (GPRS) and WiFi to send data, ensuring high resilience and flexibility. This article explores today’s deployment lessons, technical deep dive, and key implementation tips." />
+<meta property="og:description" content="Today, we take a detailed look at a powerful ESP32-based GPS tracker that uses both SIM800 (GPRS) and WiFi to send data, ensuring high resilience and flexibility. This article explores today’s deployment lessons, technical deep dive, and key implementation tips." />
+<link rel="canonical" href="http://localhost:4000/2025/esp32-gps-sim800-wifi-integration/" />
+<meta property="og:url" content="http://localhost:4000/2025/esp32-gps-sim800-wifi-integration/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-10T05:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ESP32 GPS Tracker with SIM800 and WiFi Today’s Deep Dive" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-10T05:00:00+03:00","datePublished":"2025-05-10T05:00:00+03:00","description":"Today, we take a detailed look at a powerful ESP32-based GPS tracker that uses both SIM800 (GPRS) and WiFi to send data, ensuring high resilience and flexibility. This article explores today’s deployment lessons, technical deep dive, and key implementation tips.","headline":"ESP32 GPS Tracker with SIM800 and WiFi Today’s Deep Dive","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/esp32-gps-sim800-wifi-integration/"},"url":"http://localhost:4000/2025/esp32-gps-sim800-wifi-integration/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Today, we take a detailed look at a powerful ESP32-based GPS tracker that uses both SIM800 (GPRS) and WiFi to send data, ensuring high resilience and flexibility. This article explores <strong>today’s deployment lessons</strong>, <strong>technical deep dive</strong>, and <strong>key implementation tips</strong>.</p>
+
+<hr />
+
+<h2 id="-system-highlights">🛠 System Highlights</h2>
+
+<p>✅ ESP32 MCU with dual connectivity (WiFi + SIM800)<br />
+✅ NEO-6M GPS module to capture real-time positions<br />
+✅ LittleFS file system for local storage<br />
+✅ TinyGPS++ library for parsing NMEA data<br />
+✅ AT command system to control settings live</p>
+
+<p>This setup logs GPS coordinates, stores them, and sends them over HTTP to a server — <strong>either via mobile network or local WiFi</strong>.</p>
+
+<hr />
+
+<h2 id="-dual-connectivity-why-use-both">🌐 Dual Connectivity: Why Use Both?</h2>
+
+<p>Many IoT systems face environments where WiFi is unavailable or unreliable. By adding SIM800, your tracker can:</p>
+
+<ul>
+  <li><strong>Fallback to mobile networks</strong> when WiFi fails.</li>
+  <li>Cover remote regions without WiFi infrastructure.</li>
+  <li>Switch between modes using <code class="language-plaintext highlighter-rouge">AT+SETMODE=WIFI</code> or <code class="language-plaintext highlighter-rouge">AT+SETMODE=SIM800</code> without rebooting.</li>
+</ul>
+
+<p>This makes the system <strong>field-deployable and self-recovering</strong>.</p>
+
+<hr />
+
+<h2 id="-gps-data-flow">📍 GPS Data Flow</h2>
+
+<h3 id="step-1-collect-data">Step 1: Collect Data</h3>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="p">(</span><span class="n">gpsSerial</span><span class="p">.</span><span class="nf">available</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">gps</span><span class="p">.</span><span class="nf">encode</span><span class="p">(</span><span class="n">gpsSerial</span><span class="p">.</span><span class="nf">read</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">gps</span><span class="p">.</span><span class="n">location</span><span class="p">.</span><span class="nf">isUpdated</span><span class="p">())</span> <span class="p">{</span>
+    <span class="kt">float</span> <span class="n">lat</span> <span class="p">=</span> <span class="n">gps</span><span class="p">.</span><span class="n">location</span><span class="p">.</span><span class="nf">lat</span><span class="p">();</span>
+    <span class="kt">float</span> <span class="n">lng</span> <span class="p">=</span> <span class="n">gps</span><span class="p">.</span><span class="n">location</span><span class="p">.</span><span class="nf">lng</span><span class="p">();</span>
+    <span class="kt">float</span> <span class="n">speed</span> <span class="p">=</span> <span class="n">gps</span><span class="p">.</span><span class="n">speed</span><span class="p">.</span><span class="nf">kmph</span><span class="p">();</span>
+    <span class="n">String</span> <span class="n">timestamp</span> <span class="p">=</span> <span class="nf">getFormattedTime</span><span class="p">();</span>
+    <span class="n">String</span> <span class="k">record</span> <span class="err">=</span> <span class="nc">String</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="m">6</span><span class="p">)</span> <span class="p">+</span> <span class="s">","</span> <span class="p">+</span> <span class="nf">String</span><span class="p">(</span><span class="n">lng</span><span class="p">,</span> <span class="m">6</span><span class="p">)</span> <span class="p">+</span> <span class="s">","</span> <span class="p">+</span> <span class="nf">String</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="m">2</span><span class="p">)</span> <span class="p">+</span> <span class="s">","</span> <span class="p">+</span> <span class="n">timestamp</span><span class="p">;</span>
+    <span class="nf">appendToFile</span><span class="p">(</span><span class="s">"/gpslog.txt"</span><span class="p">,</span> <span class="k">record</span><span class="err">);</span>
+<span class="err">}</span>
+</code></pre></div></div>
+
+<p>✅ Logs are saved every update, ensuring no data is lost if the network is temporarily down.</p>
+
+<hr />
+
+<h2 id="-sending-data-via-sim800">📡 Sending Data via SIM800</h2>
+
+<h3 id="preparing-sim800">Preparing SIM800</h3>
+
+<p>1️⃣ Activate bearer (APN):</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+SAPBR=1,1"</span><span class="p">,</span> <span class="m">2000</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>2️⃣ Setup HTTP:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPINIT"</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPPARA=\"URL\",\"http://server/api\""</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>3️⃣ Push data:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPDATA=length,timeout"</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+<span class="n">sim800Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">jsonPayload</span><span class="p">);</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPACTION=1"</span><span class="p">,</span> <span class="m">10000</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>4️⃣ Cleanup:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPTERM"</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>✅ <strong>Debug tip</strong>: Use <code class="language-plaintext highlighter-rouge">AT+CSQ</code> to check signal; aim for strength &gt;10.</p>
+
+<hr />
+
+<h2 id="-sending-data-via-wifi">📶 Sending Data via WiFi</h2>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">client</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">SERVICE_IP</span><span class="p">.</span><span class="nf">c_str</span><span class="p">(),</span> <span class="n">SERVICE_PORT</span><span class="p">.</span><span class="nf">toInt</span><span class="p">()))</span> <span class="p">{</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s">"POST /api HTTP/1.1"</span><span class="p">);</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s">"Host: "</span> <span class="p">+</span> <span class="n">SERVICE_IP</span><span class="p">);</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="s">"Content-Type: application/json"</span><span class="p">);</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"Content-Length: "</span><span class="p">);</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="nf">length</span><span class="p">());</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">println</span><span class="p">();</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">json</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>✅ <strong>Resilience tip</strong>: Use connection retries and check <code class="language-plaintext highlighter-rouge">WiFi.status()</code> regularly.</p>
+
+<hr />
+
+<h2 id="-dynamic-at-command-control">🔧 Dynamic AT Command Control</h2>
+
+<p>With the built-in AT command system, you can change settings live:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AT+SETID=&lt;ID&gt;</code></td>
+      <td>Update device ID</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AT+SETADDR=&lt;IP:PORT&gt;</code></td>
+      <td>Change server address</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AT+SETMODE=WIFI</code></td>
+      <td>Switch to WiFi mode</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AT+SETMODE=SIM800</code></td>
+      <td>Switch to SIM800 mode</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AT+STARTGPS</code></td>
+      <td>Enable GPS logging</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AT+STOPGPS</code></td>
+      <td>Disable GPS logging</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>✅ <strong>Field tip</strong>: You can also pull commands from the server dynamically via <code class="language-plaintext highlighter-rouge">/api/TelemetryData/NextCommand/{DEVICE_ID}</code>.</p>
+
+<hr />
+
+<h2 id="-real-world-use-cases">🌍 Real-World Use Cases</h2>
+
+<ul>
+  <li>Vehicle tracking in mixed rural/urban zones</li>
+  <li>Wildlife monitoring where WiFi is rare</li>
+  <li>Delivery fleet systems that need dual redundancy</li>
+  <li>Remote sensors pushing environmental data</li>
+</ul>
+
+<hr />
+
+<h2 id="-summary">✅ Summary</h2>
+
+<p>Today’s build showcases a <strong>flexible, powerful ESP32 GPS tracker</strong> that seamlessly switches between WiFi and SIM800 connections, ensuring robust field operation. With smart AT command integration and careful data handling, you can confidently deploy this system in real-world scenarios.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#system-highlights">🛠 System Highlights</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#dual-connectivity-why-use-both">🌐 Dual Connectivity: Why Use Both?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#gps-data-flow">📍 GPS Data Flow</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#step-1-collect-data">Step 1: Collect Data</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#sending-data-via-sim800">📡 Sending Data via SIM800</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#preparing-sim800">Preparing SIM800</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#sending-data-via-wifi">📶 Sending Data via WiFi</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#dynamic-at-command-control">🔧 Dynamic AT Command Control</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#real-world-use-cases">🌍 Real-World Use Cases</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">✅ Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

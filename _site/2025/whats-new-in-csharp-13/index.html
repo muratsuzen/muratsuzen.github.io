@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What’s New in C# 13? Official Features and Practical Examples | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What’s New in C# 13? Official Features and Practical Examples" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="C# 13 is officially here! Released alongside .NET 9, this version continues the evolution of the language with new capabilities designed to improve expressiveness, developer productivity, and performance." />
+<meta property="og:description" content="C# 13 is officially here! Released alongside .NET 9, this version continues the evolution of the language with new capabilities designed to improve expressiveness, developer productivity, and performance." />
+<link rel="canonical" href="http://localhost:4000/2025/whats-new-in-csharp-13/" />
+<meta property="og:url" content="http://localhost:4000/2025/whats-new-in-csharp-13/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-10T04:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What’s New in C# 13? Official Features and Practical Examples" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-10T04:00:00+03:00","datePublished":"2025-05-10T04:00:00+03:00","description":"C# 13 is officially here! Released alongside .NET 9, this version continues the evolution of the language with new capabilities designed to improve expressiveness, developer productivity, and performance.","headline":"What’s New in C# 13? Official Features and Practical Examples","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/whats-new-in-csharp-13/"},"url":"http://localhost:4000/2025/whats-new-in-csharp-13/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>C# 13 is officially here! Released alongside .NET 9, this version continues the evolution of the language with new capabilities designed to improve expressiveness, developer productivity, and performance.</p>
+
+<p>In this article, we’ll explore the <strong>confirmed features of C# 13</strong>, explain their purpose, and provide practical code examples so you can start using them right away.</p>
+
+<hr />
+
+<h2 id="1️⃣-default-interface-struct-implementations">1️⃣ Default Interface Struct Implementations</h2>
+
+<p>C# 13 allows <strong>default struct implementations</strong> in interfaces, improving the flexibility of interfaces when working with value types.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">interface</span> <span class="nc">IPoint</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">X</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">Y</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="k">void</span> <span class="nf">Move</span><span class="p">(</span><span class="kt">int</span> <span class="n">dx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dy</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">X</span> <span class="p">+=</span> <span class="n">dx</span><span class="p">;</span> <span class="n">Y</span> <span class="p">+=</span> <span class="n">dy</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ Allows interfaces to evolve without breaking implementations<br />
+✅ Provides reusable logic even for structs</p>
+
+<hr />
+
+<h2 id="2️⃣-extended-collection-patterns">2️⃣ Extended Collection Patterns</h2>
+
+<p>C# 13 expands pattern matching with <strong>extended collection patterns</strong>, enabling you to match the head, tail, and middle of lists more elegantly.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="k">is</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="p">..</span> <span class="kt">var</span> <span class="n">middle</span><span class="p">,</span> <span class="m">9</span><span class="p">])</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">$"Middle section: </span><span class="p">{</span><span class="kt">string</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="s">","</span><span class="p">,</span> <span class="n">middle</span><span class="p">)}</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ Cleaner data deconstruction<br />
+✅ Simplifies working with arrays and lists</p>
+
+<hr />
+
+<h2 id="3️⃣-parameter-null-checking-with-">3️⃣ Parameter Null Checking with <code class="language-plaintext highlighter-rouge">!!</code></h2>
+
+<p>Instead of writing manual null checks, C# 13 introduces <strong>parameter null checking</strong> with the <code class="language-plaintext highlighter-rouge">!!</code> operator.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">void</span> <span class="nf">PrintName</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">!!)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This automatically throws <code class="language-plaintext highlighter-rouge">ArgumentNullException</code> if <code class="language-plaintext highlighter-rouge">name</code> is null.</p>
+
+<p>Why it matters:</p>
+
+<p>✅ Less boilerplate<br />
+✅ Enforces parameter integrity consistently</p>
+
+<hr />
+
+<h2 id="4️⃣-lambda-enhancements">4️⃣ Lambda Enhancements</h2>
+
+<p>C# 13 further enhances lambdas with:</p>
+
+<ul>
+  <li>Capturing <code class="language-plaintext highlighter-rouge">ref</code> variables</li>
+  <li>Allowing attributes on lambdas</li>
+  <li>Improved target-typing for lambdas</li>
+</ul>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="k">add</span> <span class="p">=</span> <span class="p">[</span><span class="n">MyAttribute</span><span class="p">]</span> <span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">a</span> <span class="p">+</span> <span class="n">b</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ More powerful functional constructs<br />
+✅ Fine-grained control over lambda behavior</p>
+
+<hr />
+
+<h2 id="5️⃣-improvements-to-raw-string-literals">5️⃣ Improvements to Raw String Literals</h2>
+
+<p>Introduced in C# 11, <strong>raw string literals</strong> are further refined in C# 13, including:</p>
+
+<ul>
+  <li>Better escape handling</li>
+  <li>Multiline formatting improvements</li>
+</ul>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">json</span> <span class="p">=</span>
+</code></pre></div></div>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#1️⃣-default-interface-struct-implementations">1️⃣ Default Interface Struct Implementations</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#2️⃣-extended-collection-patterns">2️⃣ Extended Collection Patterns</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#code">!!</code</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#4️⃣-lambda-enhancements">4️⃣ Lambda Enhancements</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#5️⃣-improvements-to-raw-string-literals">5️⃣ Improvements to Raw String Literals</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

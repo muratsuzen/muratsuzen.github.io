@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What’s New in C# 12? Exploring the Latest Features | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="What’s New in C# 12? Exploring the Latest Features" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="C# 12, released alongside .NET 8, introduces several exciting new features that enhance developer productivity, improve code expressiveness, and simplify common patterns. Whether you’re building enterprise applications or working on smaller projects, these features can help you write cleaner, more maintainable code." />
+<meta property="og:description" content="C# 12, released alongside .NET 8, introduces several exciting new features that enhance developer productivity, improve code expressiveness, and simplify common patterns. Whether you’re building enterprise applications or working on smaller projects, these features can help you write cleaner, more maintainable code." />
+<link rel="canonical" href="http://localhost:4000/2025/whats-new-in-csharp-12/" />
+<meta property="og:url" content="http://localhost:4000/2025/whats-new-in-csharp-12/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-01-10T12:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What’s New in C# 12? Exploring the Latest Features" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-01-10T12:00:00+03:00","datePublished":"2025-01-10T12:00:00+03:00","description":"C# 12, released alongside .NET 8, introduces several exciting new features that enhance developer productivity, improve code expressiveness, and simplify common patterns. Whether you’re building enterprise applications or working on smaller projects, these features can help you write cleaner, more maintainable code.","headline":"What’s New in C# 12? Exploring the Latest Features","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/whats-new-in-csharp-12/"},"url":"http://localhost:4000/2025/whats-new-in-csharp-12/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>C# 12, released alongside .NET 8, introduces several exciting new features that enhance developer productivity, improve code expressiveness, and simplify common patterns. Whether you’re building enterprise applications or working on smaller projects, these features can help you write cleaner, more maintainable code.</p>
+
+<p>In this article, we’ll walk through the <strong>key highlights of C# 12</strong>, explain when and why to use them, and provide practical examples.</p>
+
+<hr />
+
+<h2 id="1️⃣-primary-constructors-for-non-record-types">1️⃣ Primary Constructors for Non-Record Types</h2>
+
+<p>Previously, <strong>primary constructors</strong> were available only for record types. With C# 12, they now work on classes and structs.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">age</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">Introduce</span><span class="p">()</span> <span class="p">=&gt;</span> <span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">$"Hi, I'm </span><span class="p">{</span><span class="n">name</span><span class="p">}</span><span class="s">, </span><span class="p">{</span><span class="n">age</span><span class="p">}</span><span class="s"> years old."</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ Less boilerplate code<br />
+✅ Cleaner constructor-based initialization<br />
+✅ Improves readability, especially for simple data holders</p>
+
+<hr />
+
+<h2 id="2️⃣-collection-expressions">2️⃣ Collection Expressions</h2>
+
+<p>C# 12 introduces <strong>collection expressions</strong> (similar to array and collection literals) to simplify collection creation.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">numbers</span> <span class="p">=</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">];</span>
+<span class="kt">var</span> <span class="n">moreNumbers</span> <span class="p">=</span> <span class="p">[..</span><span class="n">numbers</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">6</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ Create arrays, lists, and spans using a uniform, concise syntax<br />
+✅ Use the spread operator (<code class="language-plaintext highlighter-rouge">..</code>) to include elements from other collections</p>
+
+<hr />
+
+<h2 id="3️⃣-default-lambda-parameters">3️⃣ Default Lambda Parameters</h2>
+
+<p>You can now define <strong>default parameter values</strong> in lambda expressions.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Func</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">&gt;</span> <span class="k">add</span> <span class="p">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">=</span> <span class="m">10</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">x</span> <span class="p">+</span> <span class="n">y</span><span class="p">;</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="k">add</span><span class="p">(</span><span class="m">5</span><span class="p">));</span>      <span class="c1">// Outputs 15</span>
+<span class="n">Console</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="k">add</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">20</span><span class="p">));</span>  <span class="c1">// Outputs 25</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ More flexible lambdas<br />
+✅ Closer parity with method declarations</p>
+
+<hr />
+
+<h2 id="4️⃣-using-aliases-for-any-type">4️⃣ Using Aliases for Any Type</h2>
+
+<p>C# 12 expands <code class="language-plaintext highlighter-rouge">using</code> alias declarations to support <strong>any type</strong>, including tuples and array types.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="nn">MyTuple</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span> <span class="n">Id</span><span class="p">,</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">);</span>
+<span class="n">MyTuple</span> <span class="n">person</span> <span class="p">=</span> <span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="s">"Alice"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ Makes complex types more readable<br />
+✅ Improves maintainability in large codebases</p>
+
+<hr />
+
+<h2 id="5️⃣-inline-arrays">5️⃣ Inline Arrays</h2>
+
+<p>Inline arrays let you define <strong>fixed-size arrays</strong> inside a struct, improving performance by avoiding heap allocations.</p>
+
+<p>Example:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nf">InlineArray</span><span class="p">(</span><span class="m">10</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">struct</span> <span class="nc">SmallBuffer</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">int</span> <span class="n">_element0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Why it matters:</p>
+
+<p>✅ Avoids allocations on the heap<br />
+✅ Useful in performance-critical scenarios like game development or low-level networking</p>
+
+<hr />
+
+<h2 id="additional-improvements">Additional Improvements</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">nameof</code> in attributes: Use <code class="language-plaintext highlighter-rouge">nameof</code> expressions inside attribute arguments.</li>
+  <li>Interpolated string handlers: Further performance optimizations.</li>
+  <li>Better <code class="language-plaintext highlighter-rouge">params</code> support: More flexible parameter lists.</li>
+</ul>
+
+<hr />
+
+<h2 id="best-practices">Best Practices</h2>
+
+<p>✅ Use primary constructors for simple, immutable objects.<br />
+✅ Apply collection expressions to reduce clutter when building lists or arrays.<br />
+✅ Adopt default lambda parameters carefully to maintain code clarity.<br />
+✅ Use type aliases to simplify complex declarations.<br />
+✅ Benchmark inline arrays before using them in performance-sensitive code.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>C# 12 introduces several enhancements that streamline daily coding tasks, improve performance, and reduce boilerplate. By learning and integrating these features, you can make your .NET applications cleaner, faster, and more maintainable.</p>
+
+<p>Make sure to update your SDK and compiler to start experimenting with these features in your projects!</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#1️⃣-primary-constructors-for-non-record-types">1️⃣ Primary Constructors for Non-Record Types</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#2️⃣-collection-expressions">2️⃣ Collection Expressions</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#3️⃣-default-lambda-parameters">3️⃣ Default Lambda Parameters</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#4️⃣-using-aliases-for-any-type">4️⃣ Using Aliases for Any Type</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#5️⃣-inline-arrays">5️⃣ Inline Arrays</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#additional-improvements">Additional Improvements</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#best-practices">Best Practices</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#summary">Summary</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Detailed Guide ESP32 GPS Data Collection and Transmission via SIM800 | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Detailed Guide ESP32 GPS Data Collection and Transmission via SIM800" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This guide dives deeply into how an ESP32-based system collects GPS data using TinyGPS++, stores it locally, and transmits it over a cellular GPRS connection using a SIM800 module. We’ll cover each step with explanations, practical details, and insights." />
+<meta property="og:description" content="This guide dives deeply into how an ESP32-based system collects GPS data using TinyGPS++, stores it locally, and transmits it over a cellular GPRS connection using a SIM800 module. We’ll cover each step with explanations, practical details, and insights." />
+<link rel="canonical" href="http://localhost:4000/2025/detailed-esp32-gps-sim800-tracker/" />
+<meta property="og:url" content="http://localhost:4000/2025/detailed-esp32-gps-sim800-tracker/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-05-10T05:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Detailed Guide ESP32 GPS Data Collection and Transmission via SIM800" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2025-05-10T05:00:00+03:00","datePublished":"2025-05-10T05:00:00+03:00","description":"This guide dives deeply into how an ESP32-based system collects GPS data using TinyGPS++, stores it locally, and transmits it over a cellular GPRS connection using a SIM800 module. We’ll cover each step with explanations, practical details, and insights.","headline":"Detailed Guide ESP32 GPS Data Collection and Transmission via SIM800","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/detailed-esp32-gps-sim800-tracker/"},"url":"http://localhost:4000/2025/detailed-esp32-gps-sim800-tracker/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>This guide dives deeply into how an ESP32-based system collects GPS data using TinyGPS++, stores it locally, and transmits it over a cellular GPRS connection using a SIM800 module. We’ll cover each step with explanations, practical details, and insights.</p>
+
+<hr />
+
+<h2 id="system-architecture-overview">System Architecture Overview</h2>
+
+<p>✅ <strong>Hardware components</strong>:</p>
+
+<ul>
+  <li>ESP32 microcontroller</li>
+  <li>SIM800L (or SIM800C) GPRS modem</li>
+  <li>NEO-6M or similar GPS module</li>
+  <li>Power supply and antennas</li>
+</ul>
+
+<p>✅ <strong>Main functionalities</strong>:</p>
+
+<ul>
+  <li>Read real-time GPS coordinates and speed</li>
+  <li>Log data locally using LittleFS</li>
+  <li>Batch-send collected data every 10 seconds over HTTP POST</li>
+  <li>Handle communication either over WiFi or SIM800, depending on mode</li>
+</ul>
+
+<p>In this article, we focus specifically on <strong>GPS data acquisition</strong> and <strong>SIM800 transmission</strong>.</p>
+
+<hr />
+
+<h2 id="step-1-reading-gps-data-with-tinygps">Step 1: Reading GPS Data with TinyGPS++</h2>
+
+<p>The GPS module sends NMEA sentences (standardized ASCII messages) over serial. The TinyGPS++ library parses these into usable data:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="p">(</span><span class="n">gpsSerial</span><span class="p">.</span><span class="nf">available</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">gps</span><span class="p">.</span><span class="nf">encode</span><span class="p">(</span><span class="n">gpsSerial</span><span class="p">.</span><span class="nf">read</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">gps</span><span class="p">.</span><span class="n">location</span><span class="p">.</span><span class="nf">isUpdated</span><span class="p">())</span> <span class="p">{</span>
+    <span class="kt">float</span> <span class="n">latitude</span> <span class="p">=</span> <span class="n">gps</span><span class="p">.</span><span class="n">location</span><span class="p">.</span><span class="nf">lat</span><span class="p">();</span>
+    <span class="kt">float</span> <span class="n">longitude</span> <span class="p">=</span> <span class="n">gps</span><span class="p">.</span><span class="n">location</span><span class="p">.</span><span class="nf">lng</span><span class="p">();</span>
+    <span class="kt">float</span> <span class="n">speedKmph</span> <span class="p">=</span> <span class="n">gps</span><span class="p">.</span><span class="n">speed</span><span class="p">.</span><span class="nf">kmph</span><span class="p">();</span>
+    <span class="n">String</span> <span class="n">timeUTC</span> <span class="p">=</span> <span class="nf">getFormattedTime</span><span class="p">();</span>
+
+    <span class="n">Serial</span><span class="p">.</span><span class="nf">printf</span><span class="p">(</span><span class="s">"Lat: %.6f, Lng: %.6f, Speed: %.2f km/h, Time: %s\n"</span><span class="p">,</span>
+                  <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">speedKmph</span><span class="p">,</span> <span class="n">timeUTC</span><span class="p">.</span><span class="nf">c_str</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>✅ <strong>Important notes</strong>:</p>
+
+<ul>
+  <li>Always check <code class="language-plaintext highlighter-rouge">isUpdated()</code> to avoid stale data.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">.lat()</code> and <code class="language-plaintext highlighter-rouge">.lng()</code> for high-precision coordinates.</li>
+  <li>Retrieve time only if <code class="language-plaintext highlighter-rouge">gps.time.isValid()</code>.</li>
+</ul>
+
+<hr />
+
+<h2 id="step-2-storing-data-locally-with-littlefs">Step 2: Storing Data Locally with LittleFS</h2>
+
+<p>Collected points are stored in a text file (<code class="language-plaintext highlighter-rouge">/gpslog.txt</code>) on the ESP32’s flash memory:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">String</span> <span class="k">record</span> <span class="err">=</span> <span class="nc">String</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="m">6</span><span class="p">)</span> <span class="p">+</span> <span class="s">","</span> <span class="p">+</span> <span class="nf">String</span><span class="p">(</span><span class="n">longitude</span><span class="p">,</span> <span class="m">6</span><span class="p">)</span> <span class="p">+</span> <span class="s">","</span> <span class="p">+</span>
+                <span class="nf">String</span><span class="p">(</span><span class="n">speedKmph</span><span class="p">,</span> <span class="m">2</span><span class="p">)</span> <span class="p">+</span> <span class="s">","</span> <span class="p">+</span> <span class="n">timeUTC</span><span class="p">;</span>
+
+<span class="nf">appendToFile</span><span class="p">(</span><span class="s">"/gpslog.txt"</span><span class="p">,</span> <span class="k">record</span><span class="err">);</span>
+</code></pre></div></div>
+
+<p>✅ <strong>Why store locally?</strong></p>
+
+<ul>
+  <li>If the connection is down, you avoid data loss.</li>
+  <li>You can batch-send multiple points in one POST request, reducing overhead.</li>
+</ul>
+
+<hr />
+
+<h2 id="step-3-preparing-json-for-transmission">Step 3: Preparing JSON for Transmission</h2>
+
+<p>Before sending, the code reads the log file and builds a valid JSON array:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span>
+  <span class="p">{</span>
+    <span class="s">"deviceId"</span><span class="p">:</span> <span class="s">"SCM-AA0001"</span><span class="p">,</span>
+    <span class="s">"latitude"</span><span class="p">:</span> <span class="m">41.123456</span><span class="p">,</span>
+    <span class="s">"longitude"</span><span class="p">:</span> <span class="m">29.987654</span><span class="p">,</span>
+    <span class="s">"speed"</span><span class="p">:</span> <span class="m">12.34</span><span class="p">,</span>
+    <span class="s">"timeStamp"</span><span class="p">:</span> <span class="s">"2025-05-09T12:34:56Z"</span>
+  <span class="p">},</span>
+  <span class="p">...</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<p>✅ <strong>Batching advantage</strong>:</p>
+
+<ul>
+  <li>Reduce SIM800 data session usage.</li>
+  <li>Ensure multiple data points are preserved.</li>
+</ul>
+
+<hr />
+
+<h2 id="step-4-sending-data-over-sim800-gprs">Step 4: Sending Data over SIM800 GPRS</h2>
+
+<p>Using AT commands, the ESP32 communicates with SIM800 via serial (<code class="language-plaintext highlighter-rouge">sim800Serial</code>):</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPINIT"</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPPARA=\"CID\",1"</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPPARA=\"URL\",\"http://&lt;IP&gt;:&lt;PORT&gt;/api/TelemetryData\""</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPPARA=\"CONTENT\",\"application/json\""</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPDATA="</span> <span class="p">+</span> <span class="nf">String</span><span class="p">(</span><span class="n">jsonArray</span><span class="p">.</span><span class="nf">length</span><span class="p">())</span> <span class="p">+</span> <span class="s">",10000"</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+
+<span class="n">sim800Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">jsonArray</span><span class="p">);</span>
+<span class="nf">delay</span><span class="p">(</span><span class="m">2000</span><span class="p">);</span>
+
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPACTION=1"</span><span class="p">,</span> <span class="m">10000</span><span class="p">);</span>  <span class="c1">// POST</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPREAD"</span><span class="p">,</span> <span class="m">3000</span><span class="p">);</span>
+<span class="nf">sendATCommand</span><span class="p">(</span><span class="s">"AT+HTTPTERM"</span><span class="p">,</span> <span class="m">1000</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>✅ <strong>Key points</strong>:</p>
+
+<ul>
+  <li>Always initialize HTTP (<code class="language-plaintext highlighter-rouge">HTTPINIT</code>) before sending.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">HTTPPARA</code> to set headers and target URL.</li>
+  <li>Set <code class="language-plaintext highlighter-rouge">CID</code> to 1, which refers to the active GPRS context (<code class="language-plaintext highlighter-rouge">SAPBR</code>).</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">HTTPDATA</code> to indicate payload length and prepare the modem.</li>
+</ul>
+
+<p>✅ <strong>GPRS prerequisites</strong>:</p>
+
+<ul>
+  <li>Ensure APN is set (<code class="language-plaintext highlighter-rouge">AT+SAPBR=3,1,"APN","internet"</code>).</li>
+  <li>Ensure GPRS session is activated (<code class="language-plaintext highlighter-rouge">AT+SAPBR=1,1</code>).</li>
+</ul>
+
+<hr />
+
+<h2 id="example-at-command-flow-sim800">Example AT Command Flow (SIM800)</h2>
+
+<p>1️⃣ Check module: <code class="language-plaintext highlighter-rouge">AT</code> → <code class="language-plaintext highlighter-rouge">OK</code><br />
+2️⃣ Open bearer: <code class="language-plaintext highlighter-rouge">AT+SAPBR=1,1</code><br />
+3️⃣ Initialize HTTP: <code class="language-plaintext highlighter-rouge">AT+HTTPINIT</code><br />
+4️⃣ Set URL: <code class="language-plaintext highlighter-rouge">AT+HTTPPARA="URL",...</code><br />
+5️⃣ Load data: <code class="language-plaintext highlighter-rouge">AT+HTTPDATA</code><br />
+6️⃣ Execute POST: <code class="language-plaintext highlighter-rouge">AT+HTTPACTION=1</code><br />
+7️⃣ Read result: <code class="language-plaintext highlighter-rouge">AT+HTTPREAD</code><br />
+8️⃣ Terminate HTTP: <code class="language-plaintext highlighter-rouge">AT+HTTPTERM</code></p>
+
+<p>If anything fails, you can reset the connection with:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">restartSIM800Connection</span><span class="p">();</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="debugging-tips">Debugging Tips</h2>
+
+<p>✅ Enable serial prints to monitor AT command responses.<br />
+✅ Check signal strength with <code class="language-plaintext highlighter-rouge">AT+CSQ</code>.<br />
+✅ Use <code class="language-plaintext highlighter-rouge">AT+CGATT?</code> to ensure GPRS is attached.<br />
+✅ Retry failed actions or implement a reconnection loop.</p>
+
+<hr />
+
+<h2 id="final-thoughts">Final Thoughts</h2>
+
+<p>By combining ESP32, TinyGPS++, and SIM800, you build a resilient, flexible GPS tracker capable of working in both WiFi and mobile network environments. Understanding the AT command flow is crucial for reliable data transmission.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#system-architecture-overview">System Architecture Overview</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-1-reading-gps-data-with-tinygps">Step 1: Reading GPS Data with TinyGPS++</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-2-storing-data-locally-with-littlefs">Step 2: Storing Data Locally with LittleFS</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-3-preparing-json-for-transmission">Step 3: Preparing JSON for Transmission</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#step-4-sending-data-over-sim800-gprs">Step 4: Sending Data over SIM800 GPRS</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#example-at-command-flow-sim800">Example AT Command Flow (SIM800)</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#debugging-tips">Debugging Tips</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#final-thoughts">Final Thoughts</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

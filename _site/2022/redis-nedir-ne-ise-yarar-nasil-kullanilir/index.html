@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Redis Nedir? Ne İşe Yarar? Nasıl Kullanılır? | Murat Süzen Software Engineer &amp; Technical Lead</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Redis Nedir? Ne İşe Yarar? Nasıl Kullanılır?" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Uygulamalarımızda verileri servislerden yada veri tabanlarından listeleyip kullanıcılara göstermekteyiz. Veri yoğunluğu nedeniyle performans sorunları yaşamamak için verilerde değişiklik olmadığında, veri kopyasını sunucu (RAM) üzerinde tutarak istek geldiğinde veritabanına gitmeden RAM üzerinden okuyup gösterilmesi işlemlerine In Memory Cache denilmektedir. Bu cache işlemlerini anahtar-değer (key-value) NoSQL veritabanları sayesinde yapabiliyoruz." />
+<meta property="og:description" content="Uygulamalarımızda verileri servislerden yada veri tabanlarından listeleyip kullanıcılara göstermekteyiz. Veri yoğunluğu nedeniyle performans sorunları yaşamamak için verilerde değişiklik olmadığında, veri kopyasını sunucu (RAM) üzerinde tutarak istek geldiğinde veritabanına gitmeden RAM üzerinden okuyup gösterilmesi işlemlerine In Memory Cache denilmektedir. Bu cache işlemlerini anahtar-değer (key-value) NoSQL veritabanları sayesinde yapabiliyoruz." />
+<link rel="canonical" href="http://localhost:4000/2022/redis-nedir-ne-ise-yarar-nasil-kullanilir/" />
+<meta property="og:url" content="http://localhost:4000/2022/redis-nedir-ne-ise-yarar-nasil-kullanilir/" />
+<meta property="og:site_name" content="Murat Süzen Software Engineer &amp; Technical Lead" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-08T19:33:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Redis Nedir? Ne İşe Yarar? Nasıl Kullanılır?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2022-04-08T19:33:00+03:00","datePublished":"2022-04-08T19:33:00+03:00","description":"Uygulamalarımızda verileri servislerden yada veri tabanlarından listeleyip kullanıcılara göstermekteyiz. Veri yoğunluğu nedeniyle performans sorunları yaşamamak için verilerde değişiklik olmadığında, veri kopyasını sunucu (RAM) üzerinde tutarak istek geldiğinde veritabanına gitmeden RAM üzerinden okuyup gösterilmesi işlemlerine In Memory Cache denilmektedir. Bu cache işlemlerini anahtar-değer (key-value) NoSQL veritabanları sayesinde yapabiliyoruz.","headline":"Redis Nedir? Ne İşe Yarar? Nasıl Kullanılır?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2022/redis-nedir-ne-ise-yarar-nasil-kullanilir/"},"url":"http://localhost:4000/2022/redis-nedir-ne-ise-yarar-nasil-kullanilir/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <p>Uygulamalarımızda verileri servislerden yada veri tabanlarından listeleyip kullanıcılara göstermekteyiz. Veri yoğunluğu nedeniyle performans sorunları yaşamamak için verilerde değişiklik olmadığında, veri kopyasını sunucu (RAM) üzerinde tutarak istek geldiğinde veritabanına gitmeden RAM üzerinden okuyup gösterilmesi işlemlerine <code class="language-plaintext highlighter-rouge">In Memory Cache</code> denilmektedir. Bu cache işlemlerini anahtar-değer (key-value) NoSQL veritabanları sayesinde yapabiliyoruz.</p>
+
+<h2 id="redis-remote-dictionary-service-nedir">Redis (Remote Dictionary Service) Nedir?</h2>
+
+<p>Redis caching, message broker, session yönetimi amacıyla kullanılan C ile yazılmış key-value yapısında tasarlanmış bir NoSQL veritabanıdır. Redis, verileri RAM üzerinde saklamasının yanı sıra isteğimize göre verileri belirli zaman aralıklarıyla disk’e kaydedebiliriz. Bu şekilde veri tutarlılığını sağlayabiliriz.</p>
+
+<h2 id="redis-ne-i̇şe-yarar">Redis Ne İşe Yarar?</h2>
+
+<p>Redis caching, message broker, session yönetimi amacıyla kullanılmaktadır.</p>
+
+<h2 id="caching">Caching</h2>
+
+<p>Veritabanı sorgularını ön belleğe (RAM) alarak performans sağlayabiliriz. Redis ile istenen veriler mili saniyler süresinde geri döndürülebilir. Bu nedenle sıklıkla caching işlemlerinde Redis kullanılmaktadır.</p>
+
+<h2 id="session-store">Session Store</h2>
+
+<p>Uygulamalarımızda Redis ile kimlik bilgilerini, kullanıcı bilgilerini, vb. gibi session verilerini yüksek hızlarda okuyabilmenize olanak sağlar.</p>
+
+<h2 id="message-broker">Message Broker</h2>
+
+<p>Redis 2.0’dan sürümünden itibaren Pub/Sub işlevini destekleyen komutlara sahiptir.</p>
+
+<h2 id="redis-nasıl-kullanılır">Redis Nasıl Kullanılır?</h2>
+
+<p>Redis paketlerinin kurulu olduğu dizinde <code class="language-plaintext highlighter-rouge">"redis-cli.exe"</code> uygulamasını çalıştırıyorum. Redis için bir şifre belirlediğimizde bağlantı için “auth” komutunu kullanmalıyız.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; <span class="nb">set </span>userName Murat
+<span class="o">(</span>error<span class="o">)</span> NOAUTH Authentication required.
+</code></pre></div></div>
+
+<p>Şifre gönderilmeden herhangi bir komut çalıştırıldığında yukarıdaki gibi bağlantı hatası ile karşılaşırız.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; auth password123!
+OK
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; <span class="nb">set </span>fullName Murat
+OK
+</code></pre></div></div>
+
+<p>Şifreyi auth komutu ile set ettiğimizde “userName” anahtarına “Murat” değerini kayıt edebiliyoruz. Veriler <code class="language-plaintext highlighter-rouge">&lt;key,value&gt;</code> şeklinde string olarak tutulmaktadır.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; <span class="nb">set </span>fullName <span class="s2">"Murat"</span>
+OK
+127.0.0.1:6379&gt; get fullName
+<span class="s2">"Murat"</span>
+</code></pre></div></div>
+
+<p>Set komutuyla değer ataması yapılıyor, Get komutuyla gönderilen anahtar bilgisinin değeri alınıyor. Append komutu ile string bir değerin sonuna string veri ekleme işlemi yapılmaktadır.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; append fullName <span class="s2">" Suzen"</span>
+<span class="o">(</span>integer<span class="o">)</span> 11
+127.0.0.1:6379&gt; get fullName
+<span class="s2">"Murat Suzen"</span>
+</code></pre></div></div>
+
+<p>Keys * komutu ile bütün anahtarların (key) listelenmesini sağlayabiliriz.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; keys <span class="k">*</span>
+1<span class="o">)</span> <span class="s2">"fullName"</span>
+</code></pre></div></div>
+
+<p>Del komutu ile verilen anahtar bilgisi silinir.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; del fullName
+<span class="o">(</span>integer<span class="o">)</span> 1
+127.0.0.1:6379&gt; get fullName
+<span class="o">(</span>nil<span class="o">)</span>
+</code></pre></div></div>
+
+<p>Flushall komutu ile tüm veriler silinir.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; flushall
+OK
+</code></pre></div></div>
+
+<p>Exists komutu ile gönderilen anahtarın (key) olup olmadığını kontrol edebiliriz</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1:6379&gt; <span class="nb">set </span>key1 <span class="s2">"Merhaba"</span>
+OK
+127.0.0.1:6379&gt; exists key1
+<span class="o">(</span>integer<span class="o">)</span> 1
+127.0.0.1:6379&gt; exists key2
+<span class="o">(</span>integer<span class="o">)</span> 0
+</code></pre></div></div>
+
+<p>Diğer Redis komutlarına <a href="https://redis.io/commands"><em>buradan</em></a> ulaşabilirsiniz. Ayrıca verileri görüntüleyip yönetebileceğiniz Another Redis Desktop Manager uygulamasını buradan indirebilirsiniz.</p>
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#redis-remote-dictionary-service-nedir">Redis (Remote Dictionary Service) Nedir?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#redis-ne-i̇şe-yarar">Redis Ne İşe Yarar?</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#caching">Caching</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#session-store">Session Store</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#message-broker">Message Broker</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#redis-nasıl-kullanılır">Redis Nasıl Kullanılır?</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>
