@@ -228,3 +228,88 @@ body {
         display: none !important;
     }
 }
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 2rem 1rem;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar-header {
+        margin-bottom: 1rem;
+    }
+
+    .profile-img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 0.5rem;
+    }
+
+    .sidebar-name {
+        font-size: 1.1rem;
+    }
+
+    .sidebar-divider {
+        margin: 1rem 0;
+        width: 100%;
+    }
+
+    .sidebar-nav ul {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .sidebar-nav li {
+        margin-bottom: 0;
+    }
+
+    .sidebar-nav a:hover {
+        padding-left: 0;
+        border-left: none;
+        border-bottom: 2px solid #86807C;
+    }
+
+    .sidebar-footer {
+        padding-top: 1rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 2rem 1rem;
+    }
+
+    .year-title {
+        font-size: 1.5rem;
+    }
+
+    .post-item {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .post-date {
+        font-size: 0.85rem;
+    }
+
+    .post-link {
+        font-size: 1rem;
+    }
+}
