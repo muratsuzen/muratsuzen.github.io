@@ -49,8 +49,15 @@ body {
     font-size: 1.25rem;
     font-weight: 600;
     color: white;
-    margin-bottom: 0;
+    margin-bottom: 0.25rem;
     transition: color 0.3s ease;
+}
+
+.sidebar-title {
+    font-size: 0.85rem;
+    color: #cbd5e0;
+    font-weight: 400;
+    margin-bottom: 0;
 }
 
 .sidebar-header a:hover .sidebar-name {

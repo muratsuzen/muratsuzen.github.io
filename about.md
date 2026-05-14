@@ -11,35 +11,24 @@ permalink: /about/
 
     <section class="about-intro">
         <p class="highlight-text">
-            I am a Software Engineer and Technical Lead focused on optimizing complex industrial processes through modern software and IoT solutions.
+            I am a Senior Principal Developer focused on optimizing complex industrial processes through modern software and IoT solutions.
         </p>
         <p>
-            Currently, I am working at <strong>ÖZKA İNŞAAT</strong>, where I play a dual role as a <strong>Technical Lead and Developer</strong>. My work focuses on digitalizing and optimizing construction workflows to increase efficiency and safety on large-scale project sites.
+            With a career built on solving high-stakes real-world problems, I specialize in building robust backend systems, integrating IoT devices, and architecting scalable solutions that bridge the gap between physical hardware and digital platforms.
         </p>
-    </section>
-
-    <section class="about-section">
-        <h2>What I Do at ÖZKA İNŞAAT</h2>
-        <p>
-            I lead the development of specialized applications that solve real-world logistical and safety challenges in the construction industry:
-        </p>
-        <ul>
-            <li><strong>Truck Movement Tracking:</strong> Optimizing logistics and material transport through real-time monitoring.</li>
-            <li><strong>Tunnel Personnel Tracking:</strong> Ensuring the safety of workers in high-risk environments using IoT solutions.</li>
-            <li><strong>Site Equipment Tracking:</strong> Managing and monitoring heavy machinery and equipment across expansive construction sites.</li>
-        </ul>
     </section>
 
     <section class="about-section">
         <h2>Technical Expertise</h2>
         <p>
-            My experience bridges the gap between high-level software architecture and low-level hardware integration:
+            My experience bridges the gap between complex business logic and hardware integration, with a strong focus on building scalable industrial and commercial systems:
         </p>
         <ul>
-            <li><strong>Backend Development:</strong> Expertise in .NET ecosystem (ASP.NET Core, Web API, .NET 9).</li>
-            <li><strong>IoT & Embedded Systems:</strong> Working with ESP32, SIM800, and various tracking sensors to collect real-world data.</li>
-            <li><strong>Architecture & Design:</strong> Implementing clean code, Repository Pattern, and scalable database designs.</li>
-            <li><strong>Optimization:</strong> Using data-driven insights to improve industrial operational efficiency.</li>
+            <li><strong>Enterprise Systems & ERP Engineering:</strong> Architecting and developing robust modules for financial management, inventory control, and automated industrial workflows.</li>
+            <li><strong>System Integration:</strong> Designing and implementing seamless integrations between specialized business applications and main ERP platforms.</li>
+            <li><strong>Backend Development:</strong> Professional experience with the .NET ecosystem, focusing on high-performance APIs and robust services.</li>
+            <li><strong>IoT & Embedded Systems:</strong> Experience working with ESP32 and various sensors to digitalize physical processes and collect real-world data.</li>
+            <li><strong>Data & Reporting:</strong> Continuous implementation of automated reporting systems and data-driven process optimization.</li>
         </ul>
     </section>
 
@@ -61,7 +50,7 @@ permalink: /about/
     </section>
 
     <footer class="about-footer">
-        <p><em>Murat Süzen — Technical Lead & Software Engineer specializing in industrial tracking and construction process optimization.</em></p>
+        <p><em>Murat Süzen — Senior Principal Developer specializing in .NET ecosystem, IoT, and process optimization.</em></p>
     </footer>
 </div>
 
