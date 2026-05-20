@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>.NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2) | Murat Süzen Senior Principal Developer</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content=".NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content=".NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)" />
+<meta property="og:description" content=".NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)" />
+<link rel="canonical" href="http://localhost:4000/2026/dotnet-ai-lab-phase2-blog/" />
+<meta property="og:url" content="http://localhost:4000/2026/dotnet-ai-lab-phase2-blog/" />
+<meta property="og:site_name" content="Murat Süzen Senior Principal Developer" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-05-18T13:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content=".NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2026-05-18T13:00:00+03:00","datePublished":"2026-05-18T13:00:00+03:00","description":".NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)","headline":".NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2026/dotnet-ai-lab-phase2-blog/"},"url":"http://localhost:4000/2026/dotnet-ai-lab-phase2-blog/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                        <p class="sidebar-title">Senior Principal Developer</p>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <h1 id="net-ai-architect-laboratory-making-ai-work-and-execute-tools-phase-2">.NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)</h1>
+
+<p>In Phase 1 of this project, we built a type-safe “Brain” using .NET 10 and Google Vertex AI. In Phase 2, we successfully gave hands and feet to our AI substrate. By connecting Microsoft Semantic Kernel, we created an autonomous agent that can read real local project files, think independently, and detect security vulnerabilities or performance bottlenecks.</p>
+
+<p>Here is a quick summary of what I accomplished and the critical technical lessons I learned during Phase 2.</p>
+
+<hr />
+
+<h2 id="️-key-accomplishments">🛠️ Key Accomplishments</h2>
+
+<ul>
+  <li><strong>Autonomous Tool Execution:</strong> The AI agent now receives a high-level goal (e.g., <em>“Find architectural patterns and security bugs”</em>). It automatically runs native C# plugins like <code class="language-plaintext highlighter-rouge">ListProjectFiles</code> and <code class="language-plaintext highlighter-rouge">ReadCodeFile</code> to explore and analyze the workspace without manual guidance.</li>
+  <li><strong>Dynamic Provider Routing:</strong> I implemented a dynamic runtime pipeline. The system can switch between <strong>Gemini 2.5 Flash</strong> and <strong>Groq (Llama 3.3 / Llama 3.1)</strong> on the fly based on user selection, completely decoupling the business logic from a single AI vendor.</li>
+  <li><strong>Angular 19 Cyber-Dashboard:</strong> Built a modern interface using <strong>Angular Signals</strong> and <strong>Tailwind CSS v3</strong> to visualize the agent’s real-time analysis results, complexity scores, and strategic recommendation logs.</li>
+</ul>
+
+<hr />
+
+<h2 id="-important-technical-lessons-learned">🧠 Important Technical Lessons Learned</h2>
+
+<ul>
+  <li><strong>The .NET Scope Trap:</strong> Trying to resolve request-scoped Semantic Kernel instances directly from the root <code class="language-plaintext highlighter-rouge">IServiceProvider</code> container crashes the Kestrel server. I resolved this runtime boundary issue by shifting keyed service lookups to <strong><code class="language-plaintext highlighter-rouge">HttpContext.RequestServices</code></strong> to keep the kernel container safely isolated per HTTP request.</li>
+  <li><strong>Enforcing Deterministic JSON:</strong> Small models like Llama 3.1 8B love to output conversational text or messy “thought chains” instead of clean data. Prompt engineering alone is too brittle. I fixed this by forcing strict <strong><code class="language-plaintext highlighter-rouge">ChatResponseFormat.Json</code></strong> settings at the API gateway level to mechanically guarantee valid JSON parsing.</li>
+  <li><strong>The Token Bleeding Filter:</strong> Forcing an LLM to output rigid JSON payloads while explaining complex source code in Turkish can confuse the token selection matrix, leaking weird characters (like Russian or Chinese letters). Instead of wasting prompt tokens, I added a simple <strong>Whitelist Regex Sanitizer</strong> inside the client-side Angular signal flow to clean them up instantly.</li>
+</ul>
+
+<hr />
+
+<h2 id="️-dashboard-interface-preview">🖥️ Dashboard Interface Preview</h2>
+
+<p>Here is how the live cyber-panel looks when a Llama-driven autonomous agent evaluates local C# source code:</p>
+
+<p><img src="https://raw.githubusercontent.com/muratsuzen/dotnet-ai-lab/main/src/frontend/ai-architect-ui/src/assets/dashboard-preview.png" alt=".NET AI Architect Laboratory Cyber Dashboard" /></p>
+
+<h2 id="-whats-next-phase-3-enterprise-memory">🚀 What’s Next? (Phase 3: Enterprise Memory)</h2>
+
+<p>Now that our type-safe brain can execute tools and display results perfectly, the next challenge is context retention. Fitting massive codebases into a single prompt window is expensive and degrades model accuracy.</p>
+
+<p>Next, we start <strong>Phase 3: Enterprise Memory (RAG)</strong>. I will integrate <strong>PostgreSQL/pgvector</strong> into the gateway to give our agent a permanent memory substrate of project histories and engineering standards.</p>
+
+<h3 id="-explore-the-code">🔗 Explore the Code</h3>
+
+<p>The complete blueprint, architecture blueprints, and step-by-step implementation files for Phase 2 are fully open-source. Feel free to explore, clone, or follow along as the laboratory evolves:</p>
+
+<p>👉 <strong>GitHub Repository:</strong> <a href="https://github.com/muratsuzen/dotnet-ai-lab">github.com/muratsuzen/dotnet-ai-lab</a></p>
+
+<hr />
+
+<p><em>The models themselves are just engines we rent; the true value lies in the architectural substrate, the context, and the documentation we build around them. This lab is my permanent digital logbook of that journey.</em></p>
+
+<hr />
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-2">
+                    <a href="#️-key-accomplishments">🛠️ Key Accomplishments</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#important-technical-lessons-learned">🧠 Important Technical Lessons Learned</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#️-dashboard-interface-preview">🖥️ Dashboard Interface Preview</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#what-s-next-phase-3-enterprise-memory">🚀 What’s Next? (Phase 3: Enterprise Memory)</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#explore-the-code">🔗 Explore the Code</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>

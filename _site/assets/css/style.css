@@ -230,6 +230,13 @@ body {
     list-style: none !important;
 }
 
+.post-wrapper img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 2rem 0;
+}
+
 @media (max-width: 1200px) {
     .toc-container {
         display: none !important;
