@@ -2,7 +2,7 @@
 layout: default
 title: ".NET AI Architect Laboratory: Making AI Work and Execute Tools (Phase 2)"
 author: Murat Süzen
-date: 2026-05-18 13:00:00 +0300
+date: 2026-05-20 13:00:00 +0300
 categories: [AI, .NET]
 ---
 

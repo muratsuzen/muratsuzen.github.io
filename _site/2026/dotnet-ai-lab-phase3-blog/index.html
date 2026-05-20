@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>.NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture (Phase 3) | Murat Süzen Senior Principal Developer</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content=".NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture (Phase 3)" />
+<meta name="author" content="Murat Süzen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content=".NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture" />
+<meta property="og:description" content=".NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture" />
+<link rel="canonical" href="http://localhost:4000/2026/dotnet-ai-lab-phase3-blog/" />
+<meta property="og:url" content="http://localhost:4000/2026/dotnet-ai-lab-phase3-blog/" />
+<meta property="og:site_name" content="Murat Süzen Senior Principal Developer" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-05-20T16:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content=".NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture (Phase 3)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Murat Süzen"},"dateModified":"2026-05-20T16:00:00+03:00","datePublished":"2026-05-20T16:00:00+03:00","description":".NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture","headline":".NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture (Phase 3)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2026/dotnet-ai-lab-phase3-blog/"},"url":"http://localhost:4000/2026/dotnet-ai-lab-phase3-blog/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="is-post">
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <a href="/blog/" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="/assets/images/profile.jpg" alt="Profile" class="profile-img">
+                        <h1 class="sidebar-name">Murat Süzen</h1>
+                        <p class="sidebar-title">Senior Principal Developer</p>
+                    </a>
+                </div>
+                
+                <div class="sidebar-divider"></div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/archive/">Archive</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="https://www.linkedin.com/in/muratsuzen" target="_blank" class="social-link" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="post-wrapper">
+                <h1 id="net-10-and-angular-signals-powered-local-first-enterprise-rag-vector-memory-architecture">.NET 10 and Angular Signals Powered ‘Local-First’ Enterprise RAG (Vector Memory) Architecture</h1>
+
+<p>During Phase 3 of my <strong>.NET AI Architect Laboratory</strong> project development, I completely disabled external and costly cloud-based vector database dependencies (Vendor Lock-in). Instead, I established a <strong>Local-First Enterprise RAG</strong> infrastructure operating on <strong>.NET 10 core</strong>, a local <strong>SQLite layer</strong>, and <strong>Angular Signals</strong>.</p>
+
+<p>The operations I have performed are as follows:</p>
+
+<h3 id="1-cleaning-up-experimental-preview-package-dependencies">1. Cleaning Up Experimental Preview Package Dependencies</h3>
+
+<p>I completely eliminated the experimental <code class="language-plaintext highlighter-rouge">SemanticKernel.Connectors</code> and <code class="language-plaintext highlighter-rouge">VectorData.Abstractions</code> preview packages from the project, which constantly caused version mismatches, unstable structures, and contained vulnerability warnings such as <code class="language-plaintext highlighter-rouge">NU1904</code>. I anchored the architecture to the framework’s own native, stable, and long-term supported enterprise packages.</p>
+
+<h3 id="2-provider-agnostic-embedding-substrate">2. Provider-Agnostic Embedding Substrate</h3>
+
+<p>I wrote a pure C# wrapper called <strong><code class="language-plaintext highlighter-rouge">GoogleEmbeddingGenerator</code></strong>, abstracting Microsoft’s new enterprise AI standards (<code class="language-plaintext highlighter-rouge">Microsoft.Extensions.AI</code>) alongside Google’s official GenAI SDK.</p>
+
+<ul>
+  <li>I dynamically cast the high-dimensional <code class="language-plaintext highlighter-rouge">double[]</code> arrays produced by the Gemini <code class="language-plaintext highlighter-rouge">text-embedding-004</code> model down to the <code class="language-plaintext highlighter-rouge">float[]</code> vectors expected by .NET interfaces.</li>
+  <li><strong>Architectural Gain:</strong> I provided the full flexibility to transition to OpenAI or a completely local LLM model (Ollama/Llama, etc.) in the upcoming stages by simply changing the IoC (DI) registry inside <code class="language-plaintext highlighter-rouge">Program.cs</code>, without touching a single line of the core endpoint architecture.</li>
+</ul>
+
+<h3 id="3-zero-dependency-pure-c-cosine-similarity-engine">3. Zero-Dependency Pure C# Cosine Similarity Engine</h3>
+
+<p>To calculate the semantic proximity between vectors, I created zero dependencies on any heavy external mathematical libraries or third-party Python services. I coded a memory-friendly and high-performance cosine similarity matrix running directly on .NET core:</p>
+
+<div class="language-csharp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">static</span> <span class="kt">float</span> <span class="nf">CosineSimilarity</span><span class="p">(</span><span class="kt">float</span><span class="p">[]</span> <span class="n">vectorA</span><span class="p">,</span> <span class="kt">float</span><span class="p">[]</span> <span class="n">vectorB</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">vectorA</span><span class="p">.</span><span class="n">Length</span> <span class="p">!=</span> <span class="n">vectorB</span><span class="p">.</span><span class="n">Length</span><span class="p">)</span>
+       <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentException</span><span class="p">(</span><span class="s">"Vectors must have the same identical dimensions."</span><span class="p">);</span>
+
+   <span class="kt">float</span> <span class="n">dotProduct</span> <span class="p">=</span> <span class="m">0.0f</span><span class="p">,</span> <span class="n">normA</span> <span class="p">=</span> <span class="m">0.0f</span><span class="p">,</span> <span class="n">normB</span> <span class="p">=</span> <span class="m">0.0f</span><span class="p">;</span>
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">vectorA</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+   <span class="p">{</span>
+       <span class="n">dotProduct</span> <span class="p">+=</span> <span class="n">vectorA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">*</span> <span class="n">vectorB</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+       <span class="n">normA</span> <span class="p">+=</span> <span class="n">vectorA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">*</span> <span class="n">vectorA</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+       <span class="n">normB</span> <span class="p">+=</span> <span class="n">vectorB</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">*</span> <span class="n">vectorB</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+   <span class="p">}</span>
+   <span class="k">return</span> <span class="p">(</span><span class="n">normA</span> <span class="p">==</span> <span class="m">0.0f</span> <span class="p">||</span> <span class="n">normB</span> <span class="p">==</span> <span class="m">0.0f</span><span class="p">)</span> <span class="p">?</span> <span class="m">0.0f</span> <span class="p">:</span> <span class="n">dotProduct</span> <span class="p">/</span> <span class="p">((</span><span class="kt">float</span><span class="p">)</span><span class="n">Math</span><span class="p">.</span><span class="nf">Sqrt</span><span class="p">(</span><span class="n">normA</span><span class="p">)</span> <span class="p">*</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">Math</span><span class="p">.</span><span class="nf">Sqrt</span><span class="p">(</span><span class="n">normB</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="4-deterministic-deduplication-against-data-inflation">4. Deterministic Deduplication Against Data Inflation</h3>
+
+<p>To prevent the SQLite table from inflating in case identical code blocks or files are added back-to-back into the system, I established a deterministic Base64 path-hashing mechanism inside the Angular frontend layer (<code class="language-plaintext highlighter-rouge">memory-dashboard.component.ts</code>) based on the file path. By ensuring a strictly unique and definite <code class="language-plaintext highlighter-rouge">Id</code> is generated for each file content, I triggered the SQLite native <code class="language-plaintext highlighter-rouge">ON CONFLICT(Id) DO UPDATE</code> constraint and completely zeroed out the duplicate row inflation within the database.</p>
+
+<h3 id="5-knowledge-augmented-agency-flow">5. Knowledge-Augmented Agency Flow</h3>
+
+<p>I integrated this created local vector memory with our autonomous multi-tool agent (<code class="language-plaintext highlighter-rouge">/api/architect/inspect-autonomous</code>). When the agent receives an architectural analysis task, it fires a query to this local SQLite vector layer in the background before directly scanning physical files on the disk. For example, when a user gives a general objective like <em>“review frontend access ports,”</em> our semantic search engine fetches the unmentioned CORS configuration code snippet from local memory and injects it into the agent’s real-time system context (Prompt). The agent generates decisions fully armed with localized enterprise domain experience.</p>
+
+<h2 id="️-dashboard-rag-panel-preview">🖥️ Dashboard RAG Panel Preview</h2>
+
+<p>The live screen artifact of the integrated RAG panel functions as follows:</p>
+
+<p><img src="https://raw.githubusercontent.com/muratsuzen/dotnet-ai-lab/main/src/frontend/ai-architect-ui/src/assets/rag-preview.png" alt=".NET AI Architect Laboratory Cyber Dashboard" /></p>
+
+<h3 id="6-reactive-management-board-angular-signals--tailwind-ui">6. Reactive Management Board: Angular Signals &amp; Tailwind UI</h3>
+
+<p>I visualized this entire local vector stream using Angular’s reactive <strong>Signals</strong> architecture and a dark-themed <strong>Tailwind CSS v3</strong> interface. Driven by a single reactive state flag, the system seamlessly toggles between the <em>Code Analyzer</em> room and the <em>Knowledge RAG</em> room with zero latency, converting the entire control flow into a single cockpit.</p>
+
+<hr />
+
+<h3 id="-explore-the-code">🔗 Explore the Code</h3>
+
+<p>The next step following the completion of Phase 3:
+Developing the <strong>Automatic Code Ingestion Pipeline (Phase 4)</strong>, which will automatically track modified code in the background and update local memory on the fly.</p>
+
+<p>👉 <strong>GitHub Repository:</strong> <a href="https://github.com/muratsuzen/dotnet-ai-lab">github.com/muratsuzen/dotnet-ai-lab</a></p>
+
+<hr />
+
+<p><em>The models themselves are just engines we rent; the true value lies in the architectural substrate, the context, and the documentation we build around them. This lab is my permanent digital logbook of that journey.</em></p>
+
+<hr />
+
+            </div>
+            
+            
+            <aside class="toc-container">
+                <div class="toc-title">Jump to</div>
+                <nav class="toc-nav">
+                    
+                <li class="toc-level-3">
+                    <a href="#1-cleaning-up-experimental-preview-package-dependencies">1. Cleaning Up Experimental Preview Package Dependencies</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#2-provider-agnostic-embedding-substrate">2. Provider-Agnostic Embedding Substrate</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#3-zero-dependency-pure-c-cosine-similarity-engine">3. Zero-Dependency Pure C# Cosine Similarity Engine</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#4-deterministic-deduplication-against-data-inflation">4. Deterministic Deduplication Against Data Inflation</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#5-knowledge-augmented-agency-flow">5. Knowledge-Augmented Agency Flow</a>
+                </li>
+            
+                <li class="toc-level-2">
+                    <a href="#️-dashboard-rag-panel-preview">🖥️ Dashboard RAG Panel Preview</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#6-reactive-management-board-angular-signals-amp-tailwind-ui">6. Reactive Management Board: Angular Signals &amp; Tailwind UI</a>
+                </li>
+            
+                <li class="toc-level-3">
+                    <a href="#explore-the-code">🔗 Explore the Code</a>
+                </li>
+            
+
+                </nav>
+            </aside>
+            
+        </main>
+    </div>
+</body>
+</html>
